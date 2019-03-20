@@ -155,9 +155,16 @@ public class BEDParser
      *
      * @param BEDFile BED file to create object from.
      * @throws InvalidBEDFileException if file is incorrect.
+     * @throws IllegalArgumentException if parameter is null.
      */
-    public BEDParser(File BEDFile) throws InvalidBEDFileException
+    public BEDParser(File BEDFile) throws InvalidBEDFileException, IllegalArgumentException
     {
+        if (BEDFile == null)
+        {
+            throw new IllegalArgumentException(
+                    "Error occurred while creating BEDParser object: [BEDFile] argument is null."
+            );
+        }
         this.bedFile = BEDFile;
         if (validate())
         {
@@ -172,11 +179,18 @@ public class BEDParser
      *
      * @param BEDFileName filename of the BED file to create object from.
      * @throws InvalidBEDFileException if file is incorrect.
+     * @throws IllegalArgumentException if parameter is null.
      */
-    public BEDParser(String BEDFileName) throws InvalidBEDFileException
+    public BEDParser(String BEDFileName) throws InvalidBEDFileException, IllegalArgumentException
     {
+        if (BEDFileName == null)
+        {
+            throw new IllegalArgumentException(
+                    "Error occurred while creating BEDParser object: [BEDFileName] argument is null."
+            );
+        }
         this.bedFile = new File(BEDFileName);
-        if (!validate())
+        if (validate())
         {
             throw new InvalidBEDFileException(
                     "Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status
@@ -197,13 +211,13 @@ public class BEDParser
             return true;
         }
 
-        if (!this.bedFile.canRead() || !this.bedFile.isFile())
+        if (!this.bedFile.isFile())
         {
             this.status = BEDFileError.CAN_NOT_READ;
             return true;
         }
 
-        String[] filename = this.bedFile.getName().split(".");
+        String[] filename = this.bedFile.getName().split("\\.");
         String extension = filename[filename.length - 1];
 
         if (!extension.toLowerCase().equals(BED_EXTENSION))
@@ -240,7 +254,7 @@ public class BEDParser
                     continue;
                 }
 
-                String[] rows = temp.split("\t");
+                String[] rows = temp.split("\\s+");
 
                 // check the input row of the table
                 if (rows.length < 3)

@@ -1,14 +1,10 @@
 package bam;
 
 import exception.InvalidBEDFileException;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.Assert;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import static org.junit.Assert.*;
 
-import static org.mockito.Mockito.*;
+import java.util.ArrayList;
 
 /**
  * Tests the {@link BEDParser} class methods.
@@ -18,22 +14,86 @@ import static org.mockito.Mockito.*;
 public class BEDParserTest
 {
     /**
-     * Testing {@link BEDParser} object.
+     * Path to non existent file.
      */
-    @Mock
-    private BEDParser parser;
+    private static final String pathToNonExistentFile = "/wrong/path/file.bed";
 
     /**
-     * Create new mockito rule for creating mockito mock objects.
+     * Path to file with wrong extension.
      */
-    @Rule public MockitoRule rule = MockitoJUnit.rule();
+    private static final String pathToFileWithWrongExt = "/home/ishvatov/Desktop/bio_relatives/src/test/resources/bam/BEDParser/file.txt";
 
-    private static final String pathToNonExistentFile = "wrong/path/file.bed";
-    private static final String pathToNonExistentFileWithWrongExt = "wrong/path/file.txt";
-    private static final String pathToIncorrectFile = "/bio_relatives/src/test/resources/incorrect.bed";
-    private static final String pathToCorrectFile = "/bio_relatives/src/test/resources/correct.bed";
-    private static final String pathToWrongExtFile = "/bio_relatives/src/test/resources/wrong.txt";
-    private static final String pathToFolder = "/bio_relatives/src/test/resources/";
+    /**
+     * Path to incorrect bed file .
+     */
+    private static final String pathToIncorrectFile = "/home/ishvatov/Desktop/bio_relatives/src/test/resources/bam/BEDParser/incorrect.bed";
 
-    //TODO Add testing of BEDParser here
+    /**
+     * Path to correct bed file.
+     */
+    private static final String pathToCorrectFile = "/home/ishvatov/Desktop/bio_relatives/src/test/resources/bam/BEDParser/correct.bed";
+
+    /**
+     * Path to directory.
+     */
+    private static final String pathToNotAFile = "/home/ishvatov/Desktop/bio_relatives/src/test/resources/bam/BEDParser/";
+
+    /**
+     * Correct start position values from the file.
+     */
+    private static final int[] correctStart = {127471196, 127472363, 127473530, 127474697, 127475864, 127477031};
+
+    /**
+     * Correct en position values from the file.
+     */
+    private static final int[] correctEnd = {127472363, 127473530, 127474697, 127475864, 127477031, 127478198};
+
+    /**
+     * Correct name of the chromosome from the file.
+     */
+    private static final String correctName = "chr7";
+
+    @Test(expected = InvalidBEDFileException.class)
+    public void CreationFromPathToNonExistentFile() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToNonExistentFile);
+    }
+
+    @Test(expected = InvalidBEDFileException.class)
+    public void CreationFromPathToFileWithWrongExtension() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToFileWithWrongExt);
+    }
+
+    @Test
+    public void CreationFromPathToCorrectFile() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToCorrectFile);
+    }
+
+    @Test(expected = InvalidBEDFileException.class)
+    public void CreationFromPathToNotAFile() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToNotAFile);
+    }
+
+    @Test(expected = InvalidBEDFileException.class)
+    public void ParsingIncorrectFile() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToIncorrectFile);
+        ArrayList<BEDParser.BEDFeature> result = parser.parse();
+    }
+
+    @Test
+    public void ParsingCorrectFile() throws Exception
+    {
+        BEDParser parser = new BEDParser(pathToCorrectFile);
+        ArrayList<BEDParser.BEDFeature> result = parser.parse();
+        for (int i = 0; i < result.size(); i++)
+        {
+            assertEquals(result.get(i).getStartPos(), correctStart[i]);
+            assertEquals(result.get(i).getEndPos(), correctEnd[i]);
+            assertEquals(result.get(i).getChromosomeName(), correctName);
+        }
+    }
 }

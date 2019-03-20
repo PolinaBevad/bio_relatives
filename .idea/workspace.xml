@@ -2,17 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f2d004cb-4e17-4be6-a0ac-5c601c8953f4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.10/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bam/BAMParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bam/BAMParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/bam/BEDReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bam/BEDParser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/genome/GenomeComparator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/genome/GenomeComparator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/genome/GenomeConstructor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/genome/GenomeConstructor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/genome/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/genome/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/genome/PersonRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/genome/PersonRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bam/BEDParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/bam/BEDParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/bam/BEDReader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -31,21 +24,14 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/bam/BEDParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2278">
-              <caret line="216" selection-start-line="216" selection-end-line="216" />
+            <state relative-caret-position="377">
+              <caret line="256" column="48" selection-start-line="256" selection-start-column="48" selection-end-line="256" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2734#2735#0" expanded="true" />
+                <element signature="e#2822#2823#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -54,11 +40,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="37" column="40" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+            <state relative-caret-position="2380">
+              <caret line="83" column="64" selection-start-line="83" selection-start-column="64" selection-end-line="83" selection-end-column="64" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/resources/bam/BEDParser/correct.bed">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="280">
+              <caret line="8" column="40" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -90,13 +85,16 @@
         <option value="$PROJECT_DIR$/src/main/java/genome/Person.java" />
         <option value="$PROJECT_DIR$/src/main/java/genome/PersonRole.java" />
         <option value="$PROJECT_DIR$/src/main/java/Main.java" />
-        <option value="$PROJECT_DIR$/src/main/java/bam/BEDParser.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
+        <option value="$PROJECT_DIR$/src/test/resources/bam/BEDParser/incorrect.bed" />
+        <option value="$PROJECT_DIR$/src/test/resources/bam/BEDParser/correct.bed" />
+        <option value="$PROJECT_DIR$/src/test/resources/bam/BEDParser/file.txt" />
+        <option value="$PROJECT_DIR$/src/main/java/bam/BEDParser.java" />
         <option value="$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="82" />
     <option name="y" value="84" />
     <option name="width" value="1400" />
@@ -111,7 +109,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -182,10 +179,35 @@
               <item name="java" type="462c0819:PsiDirectoryNode" />
               <item name="bam" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="bio_relatives.project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bio_relatives" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bio_relatives.project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bio_relatives" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="bam" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="bio_relatives.project" type="b2602c69:ProjectViewProjectNode" />
+              <item name="bio_relatives" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="bam" type="462c0819:PsiDirectoryNode" />
+              <item name="BEDParser" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -193,7 +215,7 @@
     <property name="Repository.Attach.Annotations" value="false" />
     <property name="Repository.Attach.JavaDocs" value="false" />
     <property name="Repository.Attach.Sources" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553017768730" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1553109145763" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -212,7 +234,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.BEDParserTest">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="bio_relatives.project.main" />
@@ -220,8 +242,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BEDParserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="bio_relatives.project.test" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="bam.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="bam" />
+      <option name="MAIN_CLASS_NAME" value="bam.BEDParserTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BEDParserTest" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -239,10 +276,43 @@
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="BEDParserTest - 2019.03.20 at 21h 55m 15s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 21h 55m 40s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 21h 56m 42s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 04m 59s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 06m 04s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 06m 57s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 09m 51s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 10m 14s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 11m 35s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="BEDParserTest - 2019.03.20 at 22h 11m 59s.xml">
+      <configuration name="BEDParserTest" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="ToolWindowManager">
     <frame x="72" y="-11" width="1849" height="1092" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18822876" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19044974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -250,17 +320,17 @@
       <window_info id="UI Designer" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.36886102" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32979852" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.36797455" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3997879" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32979852" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Build" order="10" visible="true" weight="0.30965006" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.3291536" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32873806" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -272,6 +342,18 @@
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="PlantUML" order="9" />
     </layout>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java</url>
+          <line>89</line>
+          <properties />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/settings.gradle">
@@ -350,13 +432,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bam/BAMParser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1478">
@@ -364,20 +439,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/bam/BEDReader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-837">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/bam/BEDParser/file.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="14" selection-start-column="14" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/bam/BEDParser/incorrect.bed">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="3" column="29" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/resources/bam/BEDParser/correct.bed">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="280">
+          <caret line="8" column="40" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/bam/BEDParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2278">
-          <caret line="216" selection-start-line="216" selection-end-line="216" />
+        <state relative-caret-position="377">
+          <caret line="256" column="48" selection-start-line="256" selection-start-column="48" selection-end-line="256" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2734#2735#0" expanded="true" />
+            <element signature="e#2822#2823#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/bam/BEDParserTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="37" column="40" selection-start-line="37" selection-start-column="40" selection-end-line="37" selection-end-column="40" />
+        <state relative-caret-position="2380">
+          <caret line="83" column="64" selection-start-line="83" selection-start-column="64" selection-end-line="83" selection-end-column="64" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

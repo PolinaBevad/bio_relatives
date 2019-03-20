@@ -3,10 +3,12 @@ package genome;
 /**
  * Defines the class, that compares and analyses the genomes of two people,
  * using {@link} algorithm.
+ *
  * @author Sergey Hvatov
  * @author Vladislav Marchenko
  */
-public class GenomeComparator {
+public class GenomeComparator
+{
     /**
      * Genome of the first person.
      */
@@ -19,7 +21,8 @@ public class GenomeComparator {
 
     /**
      * Default class constructor from genomes of two people.
-     * @param first Genome of the first person.
+     *
+     * @param first  Genome of the first person.
      * @param second Genome of the second person.
      */
     public GenomeComparator(String first, String second)
@@ -30,6 +33,7 @@ public class GenomeComparator {
 
     /**
      * Compares two genomes.
+     *
      * @return The percentage of the similarity between two genomes.
      */
     public double comparePercentage()

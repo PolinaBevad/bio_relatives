@@ -2,10 +2,12 @@ package genome;
 
 /**
  * Defines the class, that creates a new genome string from the input BAM file.
+ *
  * @author Sergey Hvatov
  * @author Vladislav Marchenko
  */
-public class GenomeConstructor {
+public class GenomeConstructor
+{
     /**
      * Genome result string.
      */
@@ -23,6 +25,7 @@ public class GenomeConstructor {
 
     /**
      * Default class constructor from the names of the input files.
+     *
      * @param bamFile Filename of the BAM file.
      * @param bedFile Filename of the BED file.
      */
@@ -35,6 +38,7 @@ public class GenomeConstructor {
 
     /**
      * Get the genome string from the input BAM file according to the BED file.
+     *
      * @return The genome sequence string.
      */
     public String getGenome()
@@ -45,6 +49,7 @@ public class GenomeConstructor {
     /**
      * Realization method, which using {@link} algorithm generates
      * genome string considering the quality of the input sequence.
+     *
      * @return The genome sequence string.
      */
     private String generateGenomeString()

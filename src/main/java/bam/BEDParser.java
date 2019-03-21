@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import exception.InvalidBEDFeatureException;
 import exception.InvalidBEDFileException;
@@ -22,6 +22,30 @@ public class BEDParser
     public static class BEDFeature
     {
         /**
+         * Set of characters that are allowed in genome symbol name.
+         */
+        private static HashSet<Character> ALLOWED_SYMBOLS = new HashSet<>();
+        static
+        {
+            for (char ch = 'a'; ch <= 'z'; ch++)
+            {
+                ALLOWED_SYMBOLS.add(ch);
+            }
+        }
+
+        /**
+         * Set of numbers that are allowed in genome symbol name.
+         */
+        private static HashSet<Character> ALLOWED_NUMBERS = new HashSet<>();
+        static
+        {
+            for (char ch = '0'; ch <= '9'; ch++)
+            {
+                ALLOWED_NUMBERS.add(ch);
+            }
+        }
+
+        /**
          * Name of the chromosome.
          */
         private String chrom_;
@@ -37,23 +61,56 @@ public class BEDParser
         private int end_;
 
         /**
+         * Name of the genome sequence.
+         */
+        private String genomeSymbol_;
+
+        /**
          * Default class constructor from chromosome name, start and positions of the feature.
          *
-         * @param chrom Name of the chromosome.
-         * @param start Start position.
-         * @param end   End position.
+         * @param chrom        Name of the chromosome.
+         * @param start        Start position.
+         * @param end          End position.
+         * @param genomeSymbol Name of the genome sequence.
          * @throws InvalidBEDFeatureException if start or end positions are incorrect.
          */
-        public BEDFeature(String chrom, int start, int end) throws InvalidBEDFeatureException
+        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws InvalidBEDFeatureException
         {
+            if (chrom == null)
+            {
+                throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [chrom] argument is null.");
+            }
             this.chrom_ = chrom;
 
-            // check the input data
-            if (start <= 0 || end <= 0
-                    || start >= end)
+            if (genomeSymbol == null)
+            {
+                throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [genomeSymbol] argument is null.");
+            }
+            boolean containsChars = false;
+            for (char ch : genomeSymbol.toLowerCase().toCharArray())
+            {
+                // check if input string contains inappropriate symbols
+                if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch))
+                {
+                     throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                    "Incorrect parameter was passed: [" + genomeSymbol + "]");
+                }
+                if (ALLOWED_SYMBOLS.contains(ch))
+                {
+                    containsChars = true;
+                }
+            }
+            if (!containsChars)
             {
                 throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
-                        "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + "]");
+                    "Incorrect parameter was passed: [" + genomeSymbol + "]");
+            }
+            this.genomeSymbol_ = genomeSymbol;
+
+            if (start <= 0 || end <= 0 || start >= end)
+            {
+                throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                    "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + "]");
             }
 
             this.start_ = start;
@@ -89,6 +146,16 @@ public class BEDParser
         {
             return end_;
         }
+
+        /**
+         * Get the genome symbol filed value method.
+         *
+         * @return Genome symbol filed value.
+         */
+        public String getGenomeSymbol()
+        {
+            return genomeSymbol_;
+        }
     }
 
     /**
@@ -97,29 +164,29 @@ public class BEDParser
     private enum BEDFileError
     {
         DOES_NOT_EXIST
+            {
+                @Override
+                public String toString()
                 {
-                    @Override
-                    public String toString()
-                    {
-                        return "this BED file doesn't exist";
-                    }
-                },
+                    return "this BED file doesn't exist";
+                }
+            },
         CAN_NOT_READ
+            {
+                @Override
+                public String toString()
                 {
-                    @Override
-                    public String toString()
-                    {
-                        return "can not read from this BED file";
-                    }
-                },
+                    return "can not read from this BED file";
+                }
+            },
         INCORRECT_EXTENSION
+            {
+                @Override
+                public String toString()
                 {
-                    @Override
-                    public String toString()
-                    {
-                        return "incorrect extension for the BED file";
-                    }
-                },
+                    return "incorrect extension for the BED file";
+                }
+            },
         OK
     }
 
@@ -129,16 +196,10 @@ public class BEDParser
     private static final String BED_EXTENSION = "bed";
 
     /**
-     * Default start word of the track line in
-     * the bed file we are not interested in.
-     */
-    private static final String TRACK_LINE = "track";
-
-    /**
      * Default start word of the browse line in
      * the bed file we are not interested in.
      */
-    private static final String BROWSE_LINE = "browse";
+    private static final String COMMENT_LINE = "#";
 
     /**
      * Input BED file.
@@ -153,48 +214,20 @@ public class BEDParser
     /**
      * Default class constructor from BED file.
      *
-     * @param BEDFile BED file to create object from.
-     * @throws InvalidBEDFileException if file is incorrect.
-     * @throws IllegalArgumentException if parameter is null.
-     */
-    public BEDParser(File BEDFile) throws InvalidBEDFileException, IllegalArgumentException
-    {
-        if (BEDFile == null)
-        {
-            throw new IllegalArgumentException(
-                    "Error occurred while creating BEDParser object: [BEDFile] argument is null."
-            );
-        }
-        this.bedFile = BEDFile;
-        if (validate())
-        {
-            throw new InvalidBEDFileException(
-                    "Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status
-            );
-        }
-    }
-
-    /**
-     * Default class constructor from BED file.
-     *
      * @param BEDFileName filename of the BED file to create object from.
-     * @throws InvalidBEDFileException if file is incorrect.
+     * @throws InvalidBEDFileException  if file is incorrect.
      * @throws IllegalArgumentException if parameter is null.
      */
     public BEDParser(String BEDFileName) throws InvalidBEDFileException, IllegalArgumentException
     {
         if (BEDFileName == null)
         {
-            throw new IllegalArgumentException(
-                    "Error occurred while creating BEDParser object: [BEDFileName] argument is null."
-            );
+            throw new IllegalArgumentException("Error occurred while creating BEDParser object: [BEDFileName] argument is null.");
         }
         this.bedFile = new File(BEDFileName);
         if (validate())
         {
-            throw new InvalidBEDFileException(
-                    "Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status
-            );
+            throw new InvalidBEDFileException("Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status);
         }
     }
 
@@ -249,7 +282,7 @@ public class BEDParser
             while ((temp = reader.readLine()) != null)
             {
                 // if not useful for us line appears
-                if (temp.startsWith(TRACK_LINE) || temp.startsWith(BROWSE_LINE))
+                if (temp.startsWith(COMMENT_LINE))
                 {
                     continue;
                 }
@@ -257,15 +290,13 @@ public class BEDParser
                 String[] rows = temp.split("\\s+");
 
                 // check the input row of the table
-                if (rows.length < 3)
+                if (rows.length != 4)
                 {
-                    // must be at least 3 elements
-                    throw new InvalidBEDFileException(
-                            "Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
-                                    "incorrect number of rows in the table. Expected at least 3, got " + rows.length
-                    );
+                    // must be at 4 elements in the row
+                    throw new InvalidBEDFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
+                        "incorrect number of rows in the table. Expected 4 (chrom, start, end, genome name), got " + rows.length);
                 }
-                exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2])));
+                exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2]), rows[3]));
             }
             return exons;
         } catch (IOException | NumberFormatException | InvalidBEDFeatureException ex)

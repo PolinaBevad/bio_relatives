@@ -16,32 +16,32 @@ public class BEDParserTest
     /**
      * Path to non existent file.
      */
-    private static final String pathToNonExistentFile = "/wrong/path/file.bed";
+    private final String pathToNonExistentFile = "/wrong/path/file.bed";
 
     /**
      * Path to file with wrong extension.
      */
-    private static final String pathToFileWithWrongExt = "C:\\Users\\Сергей\\Documents\\GitHub\\bio_relatives\\src\\test\\resources\\bam\\BEDParser\\file.txt";
+    private static final String pathToFileWithWrongExt = "src/test/resources/bam/BEDParser/file.txt";
 
     /**
      * Path to incorrect bed file with wrong start and end position.
      */
-    private static final String pathToIncorrectFile1 = "C:\\Users\\Сергей\\Documents\\GitHub\\bio_relatives\\src\\test\\resources\\bam\\BEDParser\\incorrect1.bed";
+    private static final String pathToIncorrectFile1 = "src/test/resources/bam/BEDParser/incorrect1.bed";
 
     /**
      * Path to incorrect bed file with wrong genome name.
      */
-    private static final String pathToIncorrectFile2 = "C:\\Users\\Сергей\\Documents\\GitHub\\bio_relatives\\src\\test\\resources\\bam\\BEDParser\\incorrect2.bed";
+    private static final String pathToIncorrectFile2 = "src/test/resources/bam/BEDParser/incorrect2.bed";
 
     /**
      * Path to correct bed file.
      */
-    private static final String pathToCorrectFile = "C:\\Users\\Сергей\\Documents\\GitHub\\bio_relatives\\src\\test\\resources\\bam\\BEDParser\\correct.bed";
+    private final String pathToCorrectFile = "src/test/resources/bam/BEDParser/correct.bed";
 
     /**
      * Path to directory.
      */
-    private static final String pathToNotAFile = "C:\\Users\\Сергей\\Documents\\GitHub\\bio_relatives\\src\\test\\resources\\bam\\BEDParser\\";
+    private static final String pathToNotAFile = "src/test/resources/bam/BEDParser/";
 
     /**
      * Correct start position values from the file.

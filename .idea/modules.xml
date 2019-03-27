@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bio_relatives.project.iml" filepath="$PROJECT_DIR$/.idea/modules/bio_relatives.project.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/bio_relatives.project_main.iml" filepath="$PROJECT_DIR$/.idea/modules/bio_relatives.project_main.iml" group="bio_relatives.project" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/bio_relatives.project_test.iml" filepath="$PROJECT_DIR$/.idea/modules/bio_relatives.project_test.iml" group="bio_relatives.project" />
     </modules>

@@ -1,4 +1,4 @@
-package genome;
+package genome.compare;
 
 /**
  * Defines basic person representation for the further

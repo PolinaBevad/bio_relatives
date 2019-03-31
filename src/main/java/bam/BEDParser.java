@@ -8,6 +8,8 @@ import java.util.*;
 
 import exception.InvalidBEDFeatureException;
 import exception.InvalidBEDFileException;
+import htsjdk.samtools.SAMException;
+import htsjdk.samtools.SAMFormatException;
 
 /**
  * Class that parses BED file.
@@ -299,7 +301,7 @@ public class BEDParser
                 exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2]), rows[3]));
             }
             return exons;
-        } catch (IOException | NumberFormatException | InvalidBEDFeatureException ex)
+        } catch (SAMException | IOException | NumberFormatException | InvalidBEDFeatureException ex)
         {
             // if catch an exception then create our InvalidBEDFileException exception,
             // set IOException as it's cause and throw it further

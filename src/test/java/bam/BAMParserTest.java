@@ -87,6 +87,7 @@ public class BAMParserTest {
         parser.parse();
         for (int i = 0; i < parser.getSamRecords().size(); i++) {
             assertEquals(parser.getSamRecords().get(i).getSAMString(), checkArray[i]);
+            assertEquals(parser.getSamRecords().get(i).getReadString().length(), 27);
         }
     }
 }

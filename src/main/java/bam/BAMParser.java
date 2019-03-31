@@ -72,7 +72,7 @@ public class BAMParser {
     private BAMFileStatus status = BAMFileStatus.OK;
 
     /**
-     * Deafult class constructor from BAM file and ArrayList of exons(class BEDFeature).
+     * Default class constructor from BAM file and ArrayList of exons(class BEDFeature).
      * @param BAMFile BAM file.
      * @param exons ArrayList of exons from the BED file.
      * @throws InvalidBAMFileException if input BAM file is invalid.
@@ -81,7 +81,7 @@ public class BAMParser {
         this.BAMFile = BAMFile;
         if (!isValid()) {
             throw new InvalidBAMFileException (
-                    "Error occured during validation of file [" + this.BAMFile.getName() + "] " + this.status
+                    "Error occurred during validation of file [" + this.BAMFile.getName() + "] " + this.status
             );
         }
         this.BAMFileName = BAMFile.getName();
@@ -89,7 +89,7 @@ public class BAMParser {
     }
 
     /**
-     * Deafult class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
+     * Default class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      * @param BAMFileName name of the BAM file.
      * @param exons ArrayList of exons from the BED file.
      * @throws InvalidBAMFileException if input BAM file is invalid.
@@ -99,7 +99,7 @@ public class BAMParser {
         this.BAMFile = new File(BAMFileName);
         if (!isValid()) {
             throw new InvalidBAMFileException (
-                    "Error occured during validation of file [" + this.BAMFileName + "] " + this.status
+                    "Error occurred during validation of file [" + this.BAMFileName + "] " + this.status
             );
         }
         this.exons = exons;
@@ -138,16 +138,21 @@ public class BAMParser {
      */
     public void parse() throws InvalidBAMFileException {
         // Opening of the BAMFile
-        SamReader samReader= SamReaderFactory.makeDefault().validationStringency(ValidationStringency.SILENT).
-                open(BAMFile);
+        SamReader samReader= SamReaderFactory.
+            makeDefault().validationStringency(ValidationStringency.STRICT).
+            open(BAMFile);
         try {
             // pass through all exons
             for (int i = 0; i < exons.size(); i++) {
                 // Start iterating from start to end of current chromosome.
-                SAMRecordIterator iter = samReader.query(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), exons.get(i).getEndPos(), true);
+                SAMRecordIterator iter = samReader.query(
+                    exons.get(i).getChromosomeName(),
+                    exons.get(i).getStartPos(),
+                    exons.get(i).getEndPos(),
+                    true
+                );
 
-
-                while(iter.hasNext()){
+                while(iter.hasNext()) {
                     // Iterate thorough each record and extract fragment size
                     SAMRecord rec = iter.next();
                     samRecords.add(rec);
@@ -159,7 +164,7 @@ public class BAMParser {
             }
 
         }
-        catch (NullPointerException | IllegalArgumentException  ex) {
+        catch (NullPointerException | IllegalArgumentException ex) {
             // If catch an exception then create our InvalidBEDFileException exception;
             InvalidBAMFileException ibfex = new InvalidBAMFileException(ex.getMessage());
             ibfex.initCause(ex);

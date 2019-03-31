@@ -3,6 +3,7 @@ package bam;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 import htsjdk.samtools.*;
@@ -11,7 +12,7 @@ import exception.InvalidBAMFileException;
 
 
 /**
- * Class for parsing of BAM files to ArrayList of SUMRecords.
+ * Class for parsing of BAM files to HashMap of ArrayLists of SAMRecords.
  * @author Vladislav Marchenko
  */
 public class BAMParser {
@@ -57,14 +58,9 @@ public class BAMParser {
     private ArrayList<BEDParser.BEDFeature> exons;
 
     /**
-     * Output ArrayList of SAMRecords.
+     * Output HashMap of starting positions of each region and ArrayLists of SAMRecords frorm each region.
      */
-    private ArrayList<SAMRecord> samRecords = new ArrayList<>();
-
-    /**
-     * Output ArrayList<String> of qualities of each output SAMRecord.
-     */
-    private ArrayList<String> qualities = new ArrayList<>();
+    private HashMap<Integer, ArrayList<SAMRecord>> samRecords = new HashMap<>();
 
     /**
      * Status of input BAM file
@@ -81,7 +77,7 @@ public class BAMParser {
         this.BAMFile = BAMFile;
         if (!isValid()) {
             throw new InvalidBAMFileException (
-                    "Error occurred during validation of file [" + this.BAMFile.getName() + "] " + this.status
+                    "Error occured during validation of file [" + this.BAMFile.getName() + "] " + this.status
             );
         }
         this.BAMFileName = BAMFile.getName();
@@ -89,7 +85,7 @@ public class BAMParser {
     }
 
     /**
-     * Default class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
+     * Deafult class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      * @param BAMFileName name of the BAM file.
      * @param exons ArrayList of exons from the BED file.
      * @throws InvalidBAMFileException if input BAM file is invalid.
@@ -99,7 +95,7 @@ public class BAMParser {
         this.BAMFile = new File(BAMFileName);
         if (!isValid()) {
             throw new InvalidBAMFileException (
-                    "Error occurred during validation of file [" + this.BAMFileName + "] " + this.status
+                    "Error occured during validation of file [" + this.BAMFileName + "] " + this.status
             );
         }
         this.exons = exons;
@@ -133,38 +129,35 @@ public class BAMParser {
 
 
     /**
-     * Parse BAM/SAM file on exons.
-     * Takes an ArrayList of SAMRecords and ArrayList of qualities of each SAMREcord( ArrayList of String).
+     * Parse BAM file on exons.
+     * Takes a HashMap of starting positions of each regions and ArrayLists of SAMRecords of these regions
      */
     public void parse() throws InvalidBAMFileException {
         // Opening of the BAMFile
-        SamReader samReader= SamReaderFactory.
-            makeDefault().validationStringency(ValidationStringency.STRICT).
-            open(BAMFile);
+        SamReader samReader= SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
         try {
             // pass through all exons
             for (int i = 0; i < exons.size(); i++) {
                 // Start iterating from start to end of current chromosome.
-                SAMRecordIterator iter = samReader.query(
-                    exons.get(i).getChromosomeName(),
-                    exons.get(i).getStartPos(),
-                    exons.get(i).getEndPos(),
-                    true
-                );
+                SAMRecordIterator iter = samReader.query(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), exons.get(i).getEndPos(), true);
 
-                while(iter.hasNext()) {
+                // SAMRecords from current region
+                ArrayList<SAMRecord> currentSamRecords = new ArrayList<>();
+                // while there are sam strings in this region
+                while(iter.hasNext()){
                     // Iterate thorough each record and extract fragment size
                     SAMRecord rec = iter.next();
-                    samRecords.add(rec);
-                    qualities.add(rec.getBaseQualityString());
+                    currentSamRecords.add(rec);
                 }
                 // stop iterator
                 iter.close();
+                // adding current SAMRecords to the HashMap
+                samRecords.put(exons.get(i).getStartPos(), currentSamRecords);
 
             }
 
         }
-        catch (NullPointerException | IllegalArgumentException ex) {
+        catch (NullPointerException | IllegalArgumentException | SAMException  ex) {
             // If catch an exception then create our InvalidBEDFileException exception;
             InvalidBAMFileException ibfex = new InvalidBAMFileException(ex.getMessage());
             ibfex.initCause(ex);
@@ -175,18 +168,11 @@ public class BAMParser {
 
     /**
      * Get the list of SAM records method.
-     * @return ArrayList of SAMRecords
+     * @return HashMap of starting positions of each regions and ArrayLists of SAMRecords of these regions.
      */
-    public ArrayList<SAMRecord> getSamRecords() {
+    public HashMap<Integer, ArrayList<SAMRecord>> getSamRecords() {
         return samRecords;
     }
 
-    /**
-     * Get the qualities of each region method.
-     * @return ArrayList of String with qualities of each region of genome(SAMRecord)
-     */
-    public ArrayList<String> getQualities() {
-        return qualities;
-    }
 
 }

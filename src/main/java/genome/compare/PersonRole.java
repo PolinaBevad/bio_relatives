@@ -1,4 +1,4 @@
-package genome;
+package genome.compare;
 
 /**
  * Defines the role of the person in the family.

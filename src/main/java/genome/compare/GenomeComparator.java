@@ -1,4 +1,4 @@
-package genome;
+package genome.compare;
 
 /**
  * Defines the class, that compares and analyses the genomes of two people,

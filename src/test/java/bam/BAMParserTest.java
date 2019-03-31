@@ -18,27 +18,27 @@ public class BAMParserTest {
     /**
      * Path to file with wrong extension.
      */
-    private static final String pathToFileWithWrongExt = "/home/vladmarch/Desktop/JavaProjects/bio_relatives/src/test/resources/bam/BAMParser/file.txt";
+    private static final String pathToFileWithWrongExt = "src/test/resources/bam/BAMParser/file.txt";
 
     /**
      * Path to incorrect BAM file .
      */
-    private static final String pathToIncorrectFile = "/home/vladmarch/Desktop/JavaProjects/bio_relatives/src/test/resources/bam/BAMParser/incorrect.bam";
+    private static final String pathToIncorrectFile = "src/test/resources/bam/BAMParser/incorrect.bam";
 
     /**
      * Path to correct BAM file.
      */
-    private static final String pathToCorrectFile = "/home/vladmarch/Desktop/JavaProjects/bio_relatives/src/test/resources/bam/BAMParser/cor.bam";
+    private static final String pathToCorrectFile = "src/test/resources/bam/BAMParser/cor.bam";
 
     /**
      * Path to directory.
      */
-    private static final String pathToNotAFile = "/home/vladmarch/Desktop/JavaProjects/bio_relatives/src/test/resources/bam/BAMParser";
+    private static final String pathToNotAFile = "src/test/resources/bam/BAMParser";
 
     /**
      * Path to the BED file.
      */
-    private static final String pathToBEDFile = "/home/vladmarch/Desktop/JavaProjects/bio_relatives/src/test/resources/bam/BAMParser/correct.bed";
+    private static final String pathToBEDFile = "src/test/resources/bam/BAMParser/correct.bed";
 
     /**
      * Array of SAMStrings for checking of correct work of method parse().
@@ -87,6 +87,7 @@ public class BAMParserTest {
         parser.parse();
         for (int i = 0; i < parser.getSamRecords().size(); i++) {
             assertEquals(parser.getSamRecords().get(i).getSAMString(), checkArray[i]);
+            assertEquals(parser.getSamRecords().get(i).getReadString().length(), 27);
         }
     }
 }

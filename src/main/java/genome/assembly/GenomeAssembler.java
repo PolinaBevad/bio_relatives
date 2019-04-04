@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface GenomeAssembler
 {
-    List<Nucleotide> assembly();
+    List<GenomeRegion> assembly();
 }

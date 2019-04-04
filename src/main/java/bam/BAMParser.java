@@ -12,7 +12,7 @@ import exception.InvalidBAMFileException;
 
 
 /**
- * Class for parsing of BAM files to HashMap of ArrayLists of SAMRecords.
+ * Class for parsing of BAM files to ArrayList of SAMRecords.
  * @author Vladislav Marchenko
  */
 public class BAMParser {
@@ -56,11 +56,6 @@ public class BAMParser {
      * ArrayList of exons (BEDFeatures) for which BAM file will be parsed.
      */
     private ArrayList<BEDParser.BEDFeature> exons;
-
-    /**
-     * Output HashMap of starting positions of each region and ArrayLists of SAMRecords frorm each region.
-     */
-    private HashMap<Integer, ArrayList<SAMRecord>> samRecords = new HashMap<>();
 
     /**
      * Status of input BAM file
@@ -130,32 +125,31 @@ public class BAMParser {
 
     /**
      * Parse BAM file on exons.
-     * Takes a HashMap of starting positions of each regions and ArrayLists of SAMRecords of these regions
+     * @return ArrayList of SAMRecords
      */
-    public void parse() throws InvalidBAMFileException {
-        // Opening of the BAMFile
-        SamReader samReader= SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
+    public ArrayList<SAMRecord> parse() throws InvalidBAMFileException {
+
         try {
+            // Opening of the BAMFile
+            SamReader samReader= SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
+            // ArrayLIst of Samrecords , which we will return
+            ArrayList<SAMRecord> samRecords = new ArrayList<>();
             // pass through all exons
             for (int i = 0; i < exons.size(); i++) {
                 // Start iterating from start to end of current chromosome.
                 SAMRecordIterator iter = samReader.query(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), exons.get(i).getEndPos(), true);
 
-                // SAMRecords from current region
-                ArrayList<SAMRecord> currentSamRecords = new ArrayList<>();
                 // while there are sam strings in this region
                 while(iter.hasNext()){
                     // Iterate thorough each record and extract fragment size
                     SAMRecord rec = iter.next();
-                    currentSamRecords.add(rec);
+                    samRecords.add(rec);
                 }
                 // stop iterator
                 iter.close();
-                // adding current SAMRecords to the HashMap
-                samRecords.put(exons.get(i).getStartPos(), currentSamRecords);
 
             }
-
+            return samRecords;
         }
         catch (NullPointerException | IllegalArgumentException | SAMException  ex) {
             // If catch an exception then create our InvalidBEDFileException exception;
@@ -165,14 +159,4 @@ public class BAMParser {
         }
 
     }
-
-    /**
-     * Get the list of SAM records method.
-     * @return HashMap of starting positions of each regions and ArrayLists of SAMRecords of these regions.
-     */
-    public HashMap<Integer, ArrayList<SAMRecord>> getSamRecords() {
-        return samRecords;
-    }
-
-
 }

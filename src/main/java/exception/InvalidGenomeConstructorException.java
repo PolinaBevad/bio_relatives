@@ -9,4 +9,8 @@ public class InvalidGenomeConstructorException extends Exception {
     public InvalidGenomeConstructorException(String method, String wrongField, String mes) {
         super("Error occurred in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
     }
+
+    public InvalidGenomeConstructorException(String message) {
+        super(message);
+    }
 }

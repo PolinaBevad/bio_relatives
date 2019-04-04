@@ -1,9 +1,8 @@
 package genome.assembly;
 
+import bam.BAMParser;
 import bam.BEDParser;
-import exception.InvalidGenomeAssemblyException;
-import exception.InvalidGenomeConstructorException;
-import exception.InvalidRegionException;
+import exception.*;
 import htsjdk.samtools.SAMRecord;
 
 import java.util.*;
@@ -24,41 +23,6 @@ public class GenomeConstructor implements GenomeAssembler
     private static final String NUCLEOTIDES = "agct";
 
     /**
-     * Enum of different nucleotides that may occur in the genome.
-     */
-    private enum Nucleotides
-    {
-        A {
-            @Override
-            public String toString()
-                {
-                    return "a";
-                }
-        }, // adenine
-        G {
-            @Override
-            public String toString()
-                {
-                    return "g";
-                }
-        }, // thymine
-        T {
-            @Override
-            public String toString()
-                {
-                    return "c";
-                }
-        }, // guanine
-        C {
-            @Override
-            public String toString()
-                {
-                    return "t";
-                }
-        } // cytosine
-    }
-
-    /**
      * input ArrayList of SamRecords from which we will construct a genome
      */
     public ArrayList<SAMRecord> samRecords;
@@ -69,7 +33,7 @@ public class GenomeConstructor implements GenomeAssembler
     public ArrayList<BEDParser.BEDFeature> exons;
 
     /**
-     * Default constructor of class GenomeConstructor
+     * Constructor of class GenomeConstructor from samRecords and exons
      * @param samRecords input ArrayList of SamRecords from which we will construct a genome
      * @param exons input ArrayList of genome regions from BED file
      * @throws InvalidGenomeConstructorException if input data is empty
@@ -83,6 +47,25 @@ public class GenomeConstructor implements GenomeAssembler
         this.exons = exons;
         if (exons.isEmpty()) {
             throw new InvalidGenomeConstructorException("GenomeConstructor", "exons", "empty");
+        }
+    }
+
+    /**
+     * Constructor of class GenomeConstructor from BAM and BED files
+     * @param BAMFileName name of input BAM file
+     * @param BEDFileName name of input BED file
+     * @throws InvalidGenomeConstructorException if input files are invalid
+     */
+    public GenomeConstructor(String BAMFileName, String BEDFileName) throws InvalidGenomeConstructorException {
+        try {
+            this.exons = new BEDParser(BEDFileName).parse();
+            this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
+        }
+        catch (InvalidBAMFileException | InvalidBEDFileException ex) {
+            // if catch an exception then create our InvalidGenomeAssemblyException exception,
+            InvalidGenomeConstructorException ibfex = new InvalidGenomeConstructorException(ex.getMessage());
+            ibfex.initCause(ex);
+            throw ibfex;
         }
     }
 
@@ -144,11 +127,9 @@ public class GenomeConstructor implements GenomeAssembler
                     qualities[j - exons.get(i).getStartPos()] = bestQuality;
                 }
 
-                // create an GenomeRegion object
-                GenomeRegion genomeRegion = new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(),
-                        nucleotides.toString().toUpperCase(), qualities);
-                // add this region into output List
-                genomeRegions.add(genomeRegion);
+                // add the current region into output List
+                genomeRegions.add(new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(),
+                        nucleotides.toString().toUpperCase(), qualities));
             }
             return genomeRegions;
         } catch (NullPointerException | InvalidRegionException | IllegalArgumentException ex ) {
@@ -190,7 +171,7 @@ public class GenomeConstructor implements GenomeAssembler
         // nucleotide and it's quality if it contains it
         samRecords.forEach(s ->
         {
-            if (!inRange(position, s.getStart(), s.getEnd()))
+            if (inRange(position, s.getStart(), s.getEnd()))
             {
                 int pos = position - s.getStart();
                 char n = s.getReadString().toLowerCase().charAt(pos);

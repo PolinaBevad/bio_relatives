@@ -83,7 +83,7 @@ public class GenomeConstructor implements GenomeAssembler
             for (int i = 0; i < exons.size(); i++) {
 
                 // array of qualities of nucleotides from the current region
-                byte [] qualities = new byte[exons.get(i).getEndPos() - exons.get(i).getStartPos() + 1];
+                byte [] qualities = new byte[exons.get(i).getEndPos() - exons.get(i).getStartPos()];
                 // String of nucleotides from the current region
                 StringBuilder nucleotides = new StringBuilder();
 
@@ -93,8 +93,8 @@ public class GenomeConstructor implements GenomeAssembler
                     // from current position
                     HashMap<Character, ArrayList<Byte>> currentNucleotides = getNucleotideDistribution(j);
 
-                    // the best nucleotide
-                    char bestNucleotide = NUCLEOTIDES.toCharArray()[0];
+                    // the best nucleotide(if there are not any nucleotides, we write a *)
+                    char bestNucleotide = '*';
                     // the best median quality of nucleotide
                     byte bestQuality = 0;
                     // the best count of nucleotides
@@ -197,8 +197,12 @@ public class GenomeConstructor implements GenomeAssembler
         }
 
         // else return half of the sum of the two middle elements of the array
+        else if (!qualities.isEmpty()){
+            return (byte) ((qualities.get(qualities.size() / 2) + qualities.get(qualities.size() / 2 - 1)) / 2);
+        }
+        // if there are not any nucleotides, return 0
         else {
-            return (byte) ((qualities.get(qualities.size() / 2) + qualities.get(qualities.size() - 1)) / 2);
+            return 0;
         }
     }
 }

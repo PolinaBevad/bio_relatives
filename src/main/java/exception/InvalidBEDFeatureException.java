@@ -5,10 +5,8 @@ package exception;
  *
  * @author Sergey Hvatov
  */
-public class InvalidBEDFeatureException extends Exception
-{
-    public InvalidBEDFeatureException(String message)
-    {
+public class InvalidBEDFeatureException extends Exception {
+    public InvalidBEDFeatureException(String message) {
         super(message);
     }
 }

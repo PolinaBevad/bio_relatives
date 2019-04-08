@@ -3,6 +3,7 @@ package exception;
 /**
  * Defines a basic exception that may occur during the initialization
  * of the {@link genome.assembly.GenomeConstructor} object.
+ *
  * @author Vladislav Marchenko
  */
 public class InvalidGenomeConstructorException extends Exception {

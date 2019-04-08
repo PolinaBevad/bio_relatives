@@ -15,8 +15,7 @@ import java.util.*;
  * @author Vladislav Marchenko
  * @author Sergey Khvatov
  */
-public class GenomeConstructor implements GenomeAssembler
-{
+public class GenomeConstructor implements GenomeAssembler {
     /**
      * String of the nucleotides.
      */
@@ -34,11 +33,13 @@ public class GenomeConstructor implements GenomeAssembler
 
     /**
      * Constructor of class GenomeConstructor from samRecords and exons
+     *
      * @param samRecords input ArrayList of SamRecords from which we will construct a genome
-     * @param exons input ArrayList of genome regions from BED file
+     * @param exons      input ArrayList of genome regions from BED file
      * @throws InvalidGenomeConstructorException if input data is empty
      */
-    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws InvalidGenomeConstructorException {
+    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws
+        InvalidGenomeConstructorException {
         this.samRecords = samRecords;
         if (samRecords.isEmpty()) {
             throw new InvalidGenomeConstructorException("GenomeConstructor", "samRecords", "empty");
@@ -52,6 +53,7 @@ public class GenomeConstructor implements GenomeAssembler
 
     /**
      * Constructor of class GenomeConstructor from BAM and BED files
+     *
      * @param BAMFileName name of input BAM file
      * @param BEDFileName name of input BED file
      * @throws InvalidGenomeConstructorException if input files are invalid
@@ -60,8 +62,7 @@ public class GenomeConstructor implements GenomeAssembler
         try {
             this.exons = new BEDParser(BEDFileName).parse();
             this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
-        }
-        catch (InvalidBAMFileException | InvalidBEDFileException ex) {
+        } catch (InvalidBAMFileException | InvalidBEDFileException ex) {
             // if catch an exception then create our InvalidGenomeAssemblyException exception,
             InvalidGenomeConstructorException ibfex = new InvalidGenomeConstructorException(ex.getMessage());
             ibfex.initCause(ex);
@@ -71,6 +72,7 @@ public class GenomeConstructor implements GenomeAssembler
 
     /**
      * Assembly a genome from SAMRecords
+     *
      * @return ArrayList of GenomeRegions(output genome)
      * @throws InvalidGenomeAssemblyException if errors occur
      */
@@ -83,7 +85,7 @@ public class GenomeConstructor implements GenomeAssembler
             for (int i = 0; i < exons.size(); i++) {
 
                 // array of qualities of nucleotides from the current region
-                byte [] qualities = new byte[exons.get(i).getEndPos() - exons.get(i).getStartPos()];
+                byte[] qualities = new byte[exons.get(i).getEndPos() - exons.get(i).getStartPos()];
                 // String of nucleotides from the current region
                 StringBuilder nucleotides = new StringBuilder();
 
@@ -128,11 +130,10 @@ public class GenomeConstructor implements GenomeAssembler
                 }
 
                 // add the current region into output List
-                genomeRegions.add(new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(),
-                        nucleotides.toString().toUpperCase(), qualities));
+                genomeRegions.add(new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), nucleotides.toString().toUpperCase(), qualities));
             }
             return genomeRegions;
-        } catch (NullPointerException | InvalidRegionException | IllegalArgumentException ex ) {
+        } catch (NullPointerException | InvalidRegionException | IllegalArgumentException ex) {
             // if catch an exception then create our InvalidGenomeAssemblyException exception,
             InvalidGenomeAssemblyException ibfex = new InvalidGenomeAssemblyException(ex.getMessage());
             ibfex.initCause(ex);
@@ -144,35 +145,32 @@ public class GenomeConstructor implements GenomeAssembler
      * Checks if the current position is in the range [start position of the
      * nucleotide; start position + nucleotide sequence len]. Using this method we
      * check, if the {@link SAMRecord} contains current processing nucleotide
+     *
      * @param position Position of the current nucleotide.
-     * @param start Start position of the nucleotide in the {@link SAMRecord}
-     * @param end End psoition of the nucleotide sequence.
+     * @param start    Start position of the nucleotide in the {@link SAMRecord}
+     * @param end      End psoition of the nucleotide sequence.
      * @return True, if position is in range [start, start + len]. False otherwise.
      */
-    private static boolean inRange(int position, int start, int end)
-    {
-        return position >= start  && position <= end;
+    private static boolean inRange(int position, int start, int end) {
+        return position >= start && position <= end;
     }
 
     /**
      * Generates a map with each nucleotide and it's quality for the further usage.
+     *
      * @param position Current position of the nucleotide we are analyzing.
      * @return HashMap with qualities for this nucleotide.
      */
-    private HashMap<Character, ArrayList<Byte>> getNucleotideDistribution(int position)
-    {
+    private HashMap<Character, ArrayList<Byte>> getNucleotideDistribution(int position) {
         // initialize the storing structure
         HashMap<Character, ArrayList<Byte>> dist = new HashMap<>();
-        for (char c : NUCLEOTIDES.toCharArray())
-        {
+        for (char c : NUCLEOTIDES.toCharArray()) {
             dist.put(c, new ArrayList<>());
         }
         // for each read get the
         // nucleotide and it's quality if it contains it
-        samRecords.forEach(s ->
-        {
-            if (inRange(position, s.getStart(), s.getEnd()))
-            {
+        samRecords.forEach(s -> {
+            if (inRange(position, s.getStart(), s.getEnd())) {
                 int pos = position - s.getStart();
                 char n = s.getReadString().toLowerCase().charAt(pos);
                 byte q = s.getBaseQualities()[pos];
@@ -184,10 +182,11 @@ public class GenomeConstructor implements GenomeAssembler
 
     /**
      * method for definition of median quality of the nucleotide
+     *
      * @param qualities input array of qualities of the nucleotide
      * @return median quality of the nucleotide
      */
-    private byte getMedianQuality (ArrayList<Byte> qualities) {
+    private byte getMedianQuality(ArrayList<Byte> qualities) {
         // sort ArrayList of qualities
         Collections.sort(qualities);
 
@@ -197,7 +196,7 @@ public class GenomeConstructor implements GenomeAssembler
         }
 
         // else return half of the sum of the two middle elements of the array
-        else if (!qualities.isEmpty()){
+        else if (!qualities.isEmpty()) {
             return (byte) ((qualities.get(qualities.size() / 2) + qualities.get(qualities.size() / 2 - 1)) / 2);
         }
         // if there are not any nucleotides, return 0

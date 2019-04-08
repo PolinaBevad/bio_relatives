@@ -2,6 +2,7 @@ package bam;
 
 import exception.InvalidBEDFileException;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -11,8 +12,7 @@ import java.util.ArrayList;
  *
  * @author Sergey Hvatov
  */
-public class BEDParserTest
-{
+public class BEDParserTest {
     /**
      * Path to non existent file.
      */
@@ -65,50 +65,42 @@ public class BEDParserTest
 
 
     @Test(expected = InvalidBEDFileException.class)
-    public void CreationFromPathToNonExistentFile() throws Exception
-    {
+    public void CreationFromPathToNonExistentFile() throws Exception {
         BEDParser parser = new BEDParser(pathToNonExistentFile);
     }
 
     @Test(expected = InvalidBEDFileException.class)
-    public void CreationFromPathToFileWithWrongExtension() throws Exception
-    {
+    public void CreationFromPathToFileWithWrongExtension() throws Exception {
         BEDParser parser = new BEDParser(pathToFileWithWrongExt);
     }
 
     @Test
-    public void CreationFromPathToCorrectFile() throws Exception
-    {
+    public void CreationFromPathToCorrectFile() throws Exception {
         BEDParser parser = new BEDParser(pathToCorrectFile);
     }
 
     @Test(expected = InvalidBEDFileException.class)
-    public void CreationFromPathToNotAFile() throws Exception
-    {
+    public void CreationFromPathToNotAFile() throws Exception {
         BEDParser parser = new BEDParser(pathToNotAFile);
     }
 
     @Test(expected = InvalidBEDFileException.class)
-    public void ParsingIncorrectFileWithWrongStartEnd() throws Exception
-    {
+    public void ParsingIncorrectFileWithWrongStartEnd() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile1);
         ArrayList<BEDParser.BEDFeature> result = parser.parse();
     }
 
     @Test(expected = InvalidBEDFileException.class)
-    public void ParsingIncorrectFileWithWrongGenome() throws Exception
-    {
+    public void ParsingIncorrectFileWithWrongGenome() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile2);
         ArrayList<BEDParser.BEDFeature> result = parser.parse();
     }
 
     @Test
-    public void ParsingCorrectFile() throws Exception
-    {
+    public void ParsingCorrectFile() throws Exception {
         BEDParser parser = new BEDParser(pathToCorrectFile);
         ArrayList<BEDParser.BEDFeature> result = parser.parse();
-        for (int i = 0; i < result.size(); i++)
-        {
+        for (int i = 0; i < result.size(); i++) {
             assertEquals(result.get(i).getStartPos(), correctStart[i]);
             assertEquals(result.get(i).getEndPos(), correctEnd[i]);
             assertEquals(result.get(i).getChromosomeName(), correctName);

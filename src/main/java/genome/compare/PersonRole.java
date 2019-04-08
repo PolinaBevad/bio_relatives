@@ -5,8 +5,7 @@ package genome.compare;
  *
  * @author Sergey Hvatov
  */
-public enum PersonRole
-{
+public enum PersonRole {
     /**
      * Probable mother.
      */

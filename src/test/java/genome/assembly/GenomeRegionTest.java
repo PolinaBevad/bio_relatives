@@ -31,7 +31,7 @@ public class GenomeRegionTest {
     /**
      * Array of qualities with invalid length
      */
-    private static final byte [] INVALID_QUALITIES = {10, 34, 35};
+    private static final byte[] INVALID_QUALITIES = {10, 34, 35};
 
     /**
      * Valid chromosome name
@@ -51,7 +51,7 @@ public class GenomeRegionTest {
     /**
      * Valid array of qualities
      */
-    private static final byte [] VALID_QUALITIES = {25, 70, 50, 60, 90, 20, 30, 55, 51, 57, 54, 58};
+    private static final byte[] VALID_QUALITIES = {25, 70, 50, 60, 90, 20, 30, 55, 51, 57, 54, 58};
 
     /**
      * Invalid position of nucleotide in the region

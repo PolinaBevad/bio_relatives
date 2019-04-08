@@ -13,6 +13,7 @@ import exception.InvalidBAMFileException;
 
 /**
  * Class for parsing of BAM files to ArrayList of SAMRecords.
+ *
  * @author Vladislav Marchenko
  */
 public class BAMParser {
@@ -64,40 +65,39 @@ public class BAMParser {
 
     /**
      * Default class constructor from BAM file and ArrayList of exons(class BEDFeature).
+     *
      * @param BAMFile BAM file.
-     * @param exons ArrayList of exons from the BED file.
+     * @param exons   ArrayList of exons from the BED file.
      * @throws InvalidBAMFileException if input BAM file is invalid.
      */
     public BAMParser(File BAMFile, ArrayList<BEDParser.BEDFeature> exons) throws InvalidBAMFileException {
         this.BAMFile = BAMFile;
         if (!isValid()) {
-            throw new InvalidBAMFileException (
-                    "Error occured during validation of file [" + this.BAMFile.getName() + "] " + this.status
-            );
+            throw new InvalidBAMFileException("Error occured during validation of file [" + this.BAMFile.getName() + "] " + this.status);
         }
         this.BAMFileName = BAMFile.getName();
-        this.exons =  exons;
+        this.exons = exons;
     }
 
     /**
      * Deafult class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
+     *
      * @param BAMFileName name of the BAM file.
-     * @param exons ArrayList of exons from the BED file.
+     * @param exons       ArrayList of exons from the BED file.
      * @throws InvalidBAMFileException if input BAM file is invalid.
      */
-    public BAMParser(String BAMFileName, ArrayList<BEDParser.BEDFeature> exons) throws InvalidBAMFileException  {
+    public BAMParser(String BAMFileName, ArrayList<BEDParser.BEDFeature> exons) throws InvalidBAMFileException {
         this.BAMFileName = BAMFileName;
         this.BAMFile = new File(BAMFileName);
         if (!isValid()) {
-            throw new InvalidBAMFileException (
-                    "Error occured during validation of file [" + this.BAMFileName + "] " + this.status
-            );
+            throw new InvalidBAMFileException("Error occured during validation of file [" + this.BAMFileName + "] " + this.status);
         }
         this.exons = exons;
     }
 
     /**
      * Validates the input BAM file.
+     *
      * @return false if BAM file is not valid, else return true.
      */
     private boolean isValid() {
@@ -125,13 +125,14 @@ public class BAMParser {
 
     /**
      * Parse BAM file on exons.
+     *
      * @return ArrayList of SAMRecords
      */
     public ArrayList<SAMRecord> parse() throws InvalidBAMFileException {
 
         try {
             // Opening of the BAMFile
-            SamReader samReader= SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
+            SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
             // ArrayLIst of Samrecords , which we will return
             ArrayList<SAMRecord> samRecords = new ArrayList<>();
             // pass through all exons
@@ -140,7 +141,7 @@ public class BAMParser {
                 SAMRecordIterator iter = samReader.query(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), exons.get(i).getEndPos(), true);
 
                 // while there are sam strings in this region
-                while(iter.hasNext()){
+                while (iter.hasNext()) {
                     // Iterate thorough each record and extract fragment size
                     SAMRecord rec = iter.next();
                     samRecords.add(rec);
@@ -150,8 +151,7 @@ public class BAMParser {
 
             }
             return samRecords;
-        }
-        catch (NullPointerException | IllegalArgumentException | SAMException  ex) {
+        } catch (NullPointerException | IllegalArgumentException | SAMException ex) {
             // If catch an exception then create our InvalidBEDFileException exception;
             InvalidBAMFileException ibfex = new InvalidBAMFileException(ex.getMessage());
             ibfex.initCause(ex);

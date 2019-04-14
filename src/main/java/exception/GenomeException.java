@@ -13,4 +13,9 @@ public class GenomeException extends Exception {
     public GenomeException(String method, String wrongField, String mes) {
         super("Error occurred in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
     }
+
+    public GenomeException(String cls, String method, String wrongField, String mes) {
+        super("Error occurred in class [" + cls + "] " +
+            "in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
+    }
 }

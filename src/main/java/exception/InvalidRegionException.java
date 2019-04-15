@@ -7,8 +7,7 @@ package exception;
  */
 public class InvalidRegionException extends Exception
 {
-    public InvalidRegionException(String method, String wrongField, String mes)
-    {
+    public InvalidRegionException(String method, String wrongField, String mes) {
         super("Error occurred in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
     }
 }

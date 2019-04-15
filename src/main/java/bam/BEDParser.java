@@ -16,21 +16,18 @@ import htsjdk.samtools.SAMFormatException;
  *
  * @author Sergey Hhatov
  */
-public class BEDParser
-{
+public class BEDParser {
     /**
      *
      */
-    public static class BEDFeature
-    {
+    public static class BEDFeature {
         /**
          * Set of characters that are allowed in genome symbol name.
          */
         private static HashSet<Character> ALLOWED_SYMBOLS = new HashSet<>();
-        static
-        {
-            for (char ch = 'a'; ch <= 'z'; ch++)
-            {
+
+        static {
+            for (char ch = 'a'; ch <= 'z'; ch++) {
                 ALLOWED_SYMBOLS.add(ch);
             }
         }
@@ -39,10 +36,9 @@ public class BEDParser
          * Set of numbers that are allowed in genome symbol name.
          */
         private static HashSet<Character> ALLOWED_NUMBERS = new HashSet<>();
-        static
-        {
-            for (char ch = '0'; ch <= '9'; ch++)
-            {
+
+        static {
+            for (char ch = '0'; ch <= '9'; ch++) {
                 ALLOWED_NUMBERS.add(ch);
             }
         }
@@ -76,41 +72,33 @@ public class BEDParser
          * @param genomeSymbol Name of the genome sequence.
          * @throws InvalidBEDFeatureException if start or end positions are incorrect.
          */
-        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws InvalidBEDFeatureException
-        {
-            if (chrom == null)
-            {
+        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws InvalidBEDFeatureException {
+            if (chrom == null) {
                 throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [chrom] argument is null.");
             }
             this.chrom_ = chrom;
 
-            if (genomeSymbol == null)
-            {
+            if (genomeSymbol == null) {
                 throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [genomeSymbol] argument is null.");
             }
             boolean containsChars = false;
-            for (char ch : genomeSymbol.toLowerCase().toCharArray())
-            {
+            for (char ch : genomeSymbol.toLowerCase().toCharArray()) {
                 // check if input string contains inappropriate symbols
-                if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch))
-                {
-                     throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
-                    "Incorrect parameter was passed: [" + genomeSymbol + "]");
+                if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch)) {
+                    throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                        "Incorrect parameter was passed: [" + genomeSymbol + "]");
                 }
-                if (ALLOWED_SYMBOLS.contains(ch))
-                {
+                if (ALLOWED_SYMBOLS.contains(ch)) {
                     containsChars = true;
                 }
             }
-            if (!containsChars)
-            {
+            if (!containsChars) {
                 throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
                     "Incorrect parameter was passed: [" + genomeSymbol + "]");
             }
             this.genomeSymbol_ = genomeSymbol;
 
-            if (start <= 0 || end <= 0 || start >= end)
-            {
+            if (start <= 0 || end <= 0 || start >= end) {
                 throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
                     "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + "]");
             }
@@ -124,8 +112,7 @@ public class BEDParser
          *
          * @return Name of the chromosome.
          */
-        public String getChromosomeName()
-        {
+        public String getChromosomeName() {
             return chrom_;
         }
 
@@ -134,8 +121,7 @@ public class BEDParser
          *
          * @return Start position of the feature in the chromosome.
          */
-        public int getStartPos()
-        {
+        public int getStartPos() {
             return start_;
         }
 
@@ -144,8 +130,7 @@ public class BEDParser
          *
          * @return End position of the feature in the chromosome.
          */
-        public int getEndPos()
-        {
+        public int getEndPos() {
             return end_;
         }
 
@@ -154,8 +139,7 @@ public class BEDParser
          *
          * @return Genome symbol filed value.
          */
-        public String getGenomeSymbol()
-        {
+        public String getGenomeSymbol() {
             return genomeSymbol_;
         }
     }
@@ -163,32 +147,25 @@ public class BEDParser
     /**
      * Describes the status of the input bed file.
      */
-    private enum BEDFileError
-    {
-        DOES_NOT_EXIST
-            {
-                @Override
-                public String toString()
-                {
-                    return "this BED file doesn't exist";
-                }
-            },
-        CAN_NOT_READ
-            {
-                @Override
-                public String toString()
-                {
-                    return "can not read from this BED file";
-                }
-            },
-        INCORRECT_EXTENSION
-            {
-                @Override
-                public String toString()
-                {
-                    return "incorrect extension for the BED file";
-                }
-            },
+    private enum BEDFileError {
+        DOES_NOT_EXIST {
+            @Override
+            public String toString() {
+                return "this BED file doesn't exist";
+            }
+        },
+        CAN_NOT_READ {
+            @Override
+            public String toString() {
+                return "can not read from this BED file";
+            }
+        },
+        INCORRECT_EXTENSION {
+            @Override
+            public String toString() {
+                return "incorrect extension for the BED file";
+            }
+        },
         OK
     }
 
@@ -220,15 +197,12 @@ public class BEDParser
      * @throws InvalidBEDFileException  if file is incorrect.
      * @throws IllegalArgumentException if parameter is null.
      */
-    public BEDParser(String BEDFileName) throws InvalidBEDFileException, IllegalArgumentException
-    {
-        if (BEDFileName == null)
-        {
+    public BEDParser(String BEDFileName) throws InvalidBEDFileException, IllegalArgumentException {
+        if (BEDFileName == null) {
             throw new IllegalArgumentException("Error occurred while creating BEDParser object: [BEDFileName] argument is null.");
         }
         this.bedFile = new File(BEDFileName);
-        if (validate())
-        {
+        if (validate()) {
             throw new InvalidBEDFileException("Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status);
         }
     }
@@ -238,16 +212,13 @@ public class BEDParser
      *
      * @return true if BED file is not valid, else return false.
      */
-    private boolean validate()
-    {
-        if (!this.bedFile.exists())
-        {
+    private boolean validate() {
+        if (!this.bedFile.exists()) {
             this.status = BEDFileError.DOES_NOT_EXIST;
             return true;
         }
 
-        if (!this.bedFile.isFile())
-        {
+        if (!this.bedFile.isFile()) {
             this.status = BEDFileError.CAN_NOT_READ;
             return true;
         }
@@ -255,8 +226,7 @@ public class BEDParser
         String[] filename = this.bedFile.getName().split("\\.");
         String extension = filename[filename.length - 1];
 
-        if (!extension.toLowerCase().equals(BED_EXTENSION))
-        {
+        if (!extension.toLowerCase().equals(BED_EXTENSION)) {
             this.status = BEDFileError.INCORRECT_EXTENSION;
             return true;
         }
@@ -269,11 +239,9 @@ public class BEDParser
      *
      * @return List of parsed from the BED file {@link BEDFeature} objects.
      */
-    public ArrayList<BEDFeature> parse() throws InvalidBEDFileException
-    {
+    public ArrayList<BEDFeature> parse() throws InvalidBEDFileException {
         // parse file line by line
-        try (FileReader input = new FileReader(this.bedFile))
-        {
+        try (FileReader input = new FileReader(this.bedFile)) {
             // result list of exons
             ArrayList<BEDFeature> exons = new ArrayList<>();
 
@@ -281,19 +249,16 @@ public class BEDParser
 
             // read from file
             String temp;
-            while ((temp = reader.readLine()) != null)
-            {
+            while ((temp = reader.readLine()) != null) {
                 // if not useful for us line appears
-                if (temp.startsWith(COMMENT_LINE))
-                {
+                if (temp.startsWith(COMMENT_LINE)) {
                     continue;
                 }
 
                 String[] rows = temp.split("\\s+");
 
                 // check the input row of the table
-                if (rows.length != 4)
-                {
+                if (rows.length != 4) {
                     // must be at 4 elements in the row
                     throw new InvalidBEDFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
                         "incorrect number of rows in the table. Expected 4 (chrom, start, end, genome name), got " + rows.length);
@@ -301,8 +266,7 @@ public class BEDParser
                 exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2]), rows[3]));
             }
             return exons;
-        } catch (SAMException | IOException | NumberFormatException | InvalidBEDFeatureException ex)
-        {
+        } catch (SAMException | IOException | NumberFormatException | InvalidBEDFeatureException ex) {
             // if catch an exception then create our InvalidBEDFileException exception,
             // set IOException as it's cause and throw it further
             InvalidBEDFileException ibfex = new InvalidBEDFileException(ex.getMessage());

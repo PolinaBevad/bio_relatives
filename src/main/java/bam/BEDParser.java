@@ -73,14 +73,7 @@ public class BEDParser {
          * @throws InvalidBEDFeatureException if start or end positions are incorrect.
          */
         public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws InvalidBEDFeatureException {
-            if (chrom == null) {
-                throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [chrom] argument is null.");
-            }
             this.chrom_ = chrom;
-
-            if (genomeSymbol == null) {
-                throw new IllegalArgumentException("Error occurred while creating BEDFeature object: [genomeSymbol] argument is null.");
-            }
             boolean containsChars = false;
             for (char ch : genomeSymbol.toLowerCase().toCharArray()) {
                 // check if input string contains inappropriate symbols
@@ -195,12 +188,8 @@ public class BEDParser {
      *
      * @param BEDFileName filename of the BED file to create object from.
      * @throws InvalidBEDFileException  if file is incorrect.
-     * @throws IllegalArgumentException if parameter is null.
      */
-    public BEDParser(String BEDFileName) throws InvalidBEDFileException, IllegalArgumentException {
-        if (BEDFileName == null) {
-            throw new IllegalArgumentException("Error occurred while creating BEDParser object: [BEDFileName] argument is null.");
-        }
+    public BEDParser(String BEDFileName) throws InvalidBEDFileException {
         this.bedFile = new File(BEDFileName);
         if (validate()) {
             throw new InvalidBEDFileException("Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status);

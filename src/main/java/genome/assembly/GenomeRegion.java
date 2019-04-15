@@ -1,6 +1,5 @@
 package genome.assembly;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import exception.InvalidRegionException;
 import javafx.util.Pair;
 
@@ -14,22 +13,22 @@ public class GenomeRegion {
      * Name of the chromosome
      * which contains this nucleotide sequence.
      */
-    private String chrom_ = "";
+    private String chrom_;
 
     /**
      * Nucleotide sequence in this chromosome.
      */
-    private String nucleotide_seq_ = "";
+    private String nucleotide_seq_;
 
     /**
      * Start position of the nucleotide sequence.
      */
-    private int start_pos_ = 0;
+    private int start_pos_;
 
     /**
      * Array of qualities for each nucleotide in the sequence.
      */
-    private byte nucleotide_quality_[] = null;
+    private byte nucleotide_quality_[];
 
     /**
      * Default class constructor from the base information about each region in the bam file.
@@ -38,28 +37,21 @@ public class GenomeRegion {
      * @param pos     Starting position.
      * @param seq     Nucleotide sequence.
      * @param quality Arrays of qualities for each nucleotide in the sequence.
-     * @throws InvalidRegionException if string parameters are null or if starting position
+     * @throws InvalidRegionException if starting position
      *                                of the nucleotide sequence is < 0.
      */
     public GenomeRegion(String chrom, int pos, String seq, byte[] quality) throws InvalidRegionException {
-        if (chrom == null) {
-            throw new InvalidRegionException("GenomeRegion", "chrom", "null");
-        }
-        if (chrom.replaceAll("[^0-9]", "").isEmpty()) {
-            throw new InvalidRegionException("GenomeRegion", "chrom", "wrong format of the chromosome's name");
-        }
+        // set the name of the chromosome
         this.chrom_ = chrom;
 
+        // check the start position
         if (pos < 0) {
             throw new InvalidRegionException("GenomeRegion", "pos", " < 0");
         }
         this.start_pos_ = pos;
-
-        if (seq == null) {
-            throw new InvalidRegionException("GenomeRegion", "seq", "null");
-        }
         this.nucleotide_seq_ = seq;
 
+        // check the quality array
         if (quality.length != seq.length()) {
             throw new InvalidRegionException("GenomeRegion", "seq", "not equals to the len of nucleotide sequence");
         }
@@ -104,9 +96,9 @@ public class GenomeRegion {
     }
 
     /**
-     * Get the start position of the chromosome.
+     * Get the start position of the gene.
      *
-     * @return Start position of the chromosome.
+     * @return Start position of the gene.
      */
     public int getStart() {
         return start_pos_;
@@ -122,11 +114,24 @@ public class GenomeRegion {
     }
 
     /**
-     * Return nucleotide sequence from this region.
-     *
-     * @return
+     * @return nucleotide sequence from this region.
      */
     public String getNucleotideSequence() {
         return nucleotide_seq_;
+    }
+
+    /**
+     * Basic implementation for comparing two genome regions.
+     *
+     * @param other Other {@link GenomeRegion} object.
+     * @return True, if both genome regions are from the same chromosome
+     * and start from the same position, false otherwise. If other is not an instance
+     * of {@link GenomeRegion}, than return false.
+     */
+    public boolean equals(Object other) {
+        if (other instanceof GenomeRegion)
+            return this.chrom_.equals(((GenomeRegion) other).chrom_)
+                && this.start_pos_ == ((GenomeRegion) other).start_pos_;
+        return false;
     }
 }

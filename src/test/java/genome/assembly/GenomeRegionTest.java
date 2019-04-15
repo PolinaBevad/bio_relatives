@@ -13,20 +13,11 @@ import static org.junit.Assert.*;
  */
 
 public class GenomeRegionTest {
-    /**
-     * Null input chromosome name
-     */
-    private static final String NULL_CHROM_NAME = null;
 
     /**
      * Invalid starting position of region
      */
     private static final int INVALID_START_POSITION = -1;
-
-    /**
-     * Null input nucleotide sequence
-     */
-    private static final String NULL_SEQ = null;
 
     /**
      * Array of qualities with invalid length
@@ -69,18 +60,8 @@ public class GenomeRegionTest {
     private static final int VALID_POSITION_IN_GENOME = 168903;
 
     @Test(expected = InvalidRegionException.class)
-    public void CreationFromNullChrom() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(NULL_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
-    }
-
-    @Test(expected = InvalidRegionException.class)
     public void CreationFromInvalidPosition() throws Exception {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, INVALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
-    }
-
-    @Test(expected = InvalidRegionException.class)
-    public void CreationFromNullSequence() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, NULL_SEQ, VALID_QUALITIES);
     }
 
     @Test(expected = InvalidRegionException.class)

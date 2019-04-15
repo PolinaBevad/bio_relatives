@@ -10,12 +10,18 @@ import exception.GenomeException;
  *
  * @author Sergey Khvatov
  */
-public class GenomeComparisonResult {
+public class GeneComparisonResult {
+
     /**
-     * Distance that was used to compare
-     * two nucleotide sequences.
+     * Name of the chromosome
+     * which contains this nucleotide sequence.
      */
-    private GenomeComparator.DistanceType distance_type_;
+    private String chrom_ = "";
+
+    /**
+     * Start position of the nucleotide sequence.
+     */
+    private int start_pos_ = 0;
 
     /**
      * The distance value that was calculated
@@ -36,32 +42,32 @@ public class GenomeComparisonResult {
      * the distance value and the length of the longest nucleotide sequence
      * between compared ones.
      *
-     * @param type       Name of the distance.
+     * @param chrom      Name of the chromosome.
+     * @param pos        It's start position in the chrom.
      * @param difference Difference value.
      * @param len        Length of the nucl. seq.
-     * @throws GenomeException if input values are lesser than 0.
+     * @throws GenomeException if input values are lesser than 0 or the chromosome name is invalid.
      */
-    public GenomeComparisonResult(GenomeComparator.DistanceType type, int difference, int len) throws
-        GenomeException {
-        this.distance_type_ = type;
+    public GeneComparisonResult(String chrom, int pos, int difference, int len) throws GenomeException {
+        this.chrom_ = chrom;
 
+        // check the position
+        if (pos < 0) {
+            throw new GenomeException("GenomeRegion", "pos", " < 0");
+        }
+        this.start_pos_ = pos;
+
+        // check the diff value
         if (difference < 0) {
-            throw new GenomeException(this.getClass().getName(), "GenomeComparisonResult", "difference", "is lesser than 0");
+            throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "difference", "is lesser than 0");
         }
         difference_ = difference;
 
+        // check the len value
         if (len < 0) {
-            throw new GenomeException(this.getClass().getName(), "GenomeComparisonResult", "len", "is lesser than 0");
+            throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "len", "is lesser than 0");
         }
         sequence_len_ = len;
-    }
-
-    /**
-     * @return The type of distance used to calculate
-     * the differences between genomes.
-     */
-    public GenomeComparator.DistanceType getDistanceType() {
-        return distance_type_;
     }
 
     /**
@@ -76,5 +82,23 @@ public class GenomeComparisonResult {
      */
     public int getSequenceLen() {
         return sequence_len_;
+    }
+
+    /**
+     * Get the name of the chromosome.
+     *
+     * @return Name of the chromosome.
+     */
+    public String getChromName() {
+        return chrom_;
+    }
+
+    /**
+     * Get the start position of the gene.
+     *
+     * @return Start position of the gene.
+     */
+    public int getStart() {
+        return start_pos_;
     }
 }

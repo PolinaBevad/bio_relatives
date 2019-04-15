@@ -38,8 +38,7 @@ public class GenomeConstructor implements GenomeAssembler {
      * @param exons      input ArrayList of genome regions from BED file
      * @throws InvalidGenomeConstructorException if input data is empty
      */
-    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws
-        InvalidGenomeConstructorException {
+    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws InvalidGenomeConstructorException {
         this.samRecords = samRecords;
         if (samRecords.isEmpty()) {
             throw new InvalidGenomeConstructorException("GenomeConstructor", "samRecords", "empty");

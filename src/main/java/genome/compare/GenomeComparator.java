@@ -257,10 +257,9 @@ public class GenomeComparator {
      * @return value according to {@link Comparable} rules.
      */
     private static int compareRegions(GenomeRegion lhs, GenomeRegion rhs) {
-        Integer lhsChrom = chromToInt(lhs.getChromName());
-        Integer rhsChrom = chromToInt(rhs.getChromName());
-        if (lhsChrom.compareTo(rhsChrom) != 0) {
-            return lhsChrom.compareTo(rhsChrom);
+        int strCmpRes = lhs.getChromName().compareToIgnoreCase(rhs.getChromName());
+        if (strCmpRes != 0) {
+            return strCmpRes;
         } else {
             return ((Integer) lhs.getStart()).compareTo(rhs.getStart());
         }

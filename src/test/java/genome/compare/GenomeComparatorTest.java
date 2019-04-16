@@ -35,6 +35,18 @@ public class GenomeComparatorTest {
     private static final String SSEQ = "CTTGTAAGTATGCAGGGTCACGCGGGCAGATCGGGAGACATTAGATTGGACAAGCTTTAAACCGACGCGCACCCG";
 
     /**
+     * First sequence alignment.
+     */
+    private static final String FIRST_SEQ = "GATATTTCTTTGG-AGATT-C-AAC-GCTTGACGGGACCTAGTGTTCT-CGCGCCTCATAATTGCAACACCTTATCAGTA";
+
+    /**
+     * First sequence alignment.
+     */
+    private static final String SECOND_SEQ = "GCCCACGCGCAGCCAAATTTCGAACAGGTT-AGATTACAGAGGGCTAGACGGGCG-CAC--TGGGA-CGTATGAATGTTC";
+
+
+
+    /**
      * Test array of genome REGIONS.
      */
     private static final GenomeRegion[] REGIONS = new GenomeRegion[4];
@@ -171,8 +183,8 @@ public class GenomeComparatorTest {
                 j -= 1;
             }
 
-            System.out.println(alignmentA);
-            System.out.println(alignmentB);
+            assertEquals(FIRST_SEQ, alignmentA.toString());
+            assertEquals(SECOND_SEQ, alignmentB.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

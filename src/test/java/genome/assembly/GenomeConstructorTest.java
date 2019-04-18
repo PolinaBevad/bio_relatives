@@ -4,7 +4,7 @@ import bam.BAMParser;
 import bam.BEDParser;
 import exception.InvalidGenomeConstructorException;
 import htsjdk.samtools.SAMRecord;
-import javafx.util.Pair;
+import util.Pair;
 import org.junit.Test;
 
 import java.util.ArrayList;

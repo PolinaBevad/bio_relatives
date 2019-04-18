@@ -1,9 +1,10 @@
 package genome.compare;
 
 import exception.GenomeException;
-import javafx.util.Pair;
+
 import org.junit.Before;
 import org.junit.Test;
+import util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Check object with the best value of similarity
      */
-    private final static Double CHECK_OBJ_1 = 98d;
+    private final static Pair<String, Double> CHECK_OBJ_1 = new Pair<>("MT_CHROMOSOME", 98d);
 
     /**
      * Check String with results of analysis
@@ -121,7 +122,7 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Check object with the best value of similarity
      */
-    private final static Double CHECK_OBJ_2 = 80d;
+    private final static Pair<String, Double> CHECK_OBJ_2 = new Pair<>("X_CHROMOSOME", 80d);
 
     /**
      * Check String with results of analysis
@@ -133,7 +134,7 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Check object with the best value of similarity
      */
-    private final static Double CHECK_OBJ_3 = 90d;
+    private final static Pair<String, Double> CHECK_OBJ_3 = new Pair<>("AUTOSOMAL_CHROMOSOME", 90d);
 
     /**
      * Check String with results of analysis
@@ -148,7 +149,7 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Check object with the best value of similarity
      */
-    private final static Double CHECK_OBJ_4 = 1d;
+    private final static Pair<String, Double> CHECK_OBJ_4 = new Pair<>("MT_CHROMOSOME", 1d);
 
     @Before
     public void setUp() {
@@ -194,28 +195,32 @@ public class GeneComparisonResultAnalyzerTest {
     public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestMTChromosome() throws Exception{
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_1);
         assertEquals(CHECK_STRING_1, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_1, geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(CHECK_OBJ_1.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
+        assertEquals(CHECK_OBJ_1.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
     }
 
     @Test
     public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestXChromosome() throws Exception{
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_2);
         assertEquals(CHECK_STRING_2, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_2, geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(CHECK_OBJ_2.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
+        assertEquals(CHECK_OBJ_2.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
     }
 
     @Test
     public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestAutosomalChromosome() throws Exception{
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_3);
         assertEquals(CHECK_STRING_3, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_3, geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(CHECK_OBJ_3.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
+        assertEquals(CHECK_OBJ_3.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
     }
 
     @Test
     public void GeneComparisonResultAnalyzerTestOfResultsWithoutTheBestChromosome() throws Exception{
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_4);
         assertEquals(CHECK_STRING_4, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_4, geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(CHECK_OBJ_4.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
+        assertEquals(CHECK_OBJ_4.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
     }
 
 

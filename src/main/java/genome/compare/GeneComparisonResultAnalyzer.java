@@ -1,7 +1,7 @@
 package genome.compare;
 
 import exception.GenomeException;
-import javafx.util.Pair;
+import util.Pair;
 
 import java.util.*;
 
@@ -127,17 +127,17 @@ public class GeneComparisonResultAnalyzer {
      * If the persons are not child and parent, return maximum average similarity and type of chromosome which have this value
      * @return Pair<ChromosomeType, Double> - type of chromosome and average similarity value
      */
-    public Pair<ChromosomeType, Double> getAverageSimilarity() {
+    public Pair<String, Double> getAverageSimilarity() {
         if ((averageSimilarityValues.get(0) != null) && (averageSimilarityValues.get(0).getValue())) {
-            return new Pair<>(ChromosomeType.MT_CHROMOSOME, averageSimilarityValues.get(0).getKey());
+            return new Pair<>(ChromosomeType.MT_CHROMOSOME.toString(), averageSimilarityValues.get(0).getKey());
         }
 
         else if ((averageSimilarityValues.get(1) != null) && (averageSimilarityValues.get(1).getValue())) {
-            return new Pair<>(ChromosomeType.X_CHROMOSOME, averageSimilarityValues.get(1).getKey());
+            return new Pair<>(ChromosomeType.X_CHROMOSOME.toString(), averageSimilarityValues.get(1).getKey());
         }
 
         else if ((averageSimilarityValues.get(2) != null) && (averageSimilarityValues.get(2).getValue())) {
-            return new Pair<>(ChromosomeType.AUTOSOMAL_CHROMOSOME, averageSimilarityValues.get(2).getKey());
+            return new Pair<>(ChromosomeType.AUTOSOMAL_CHROMOSOME.toString(), averageSimilarityValues.get(2).getKey());
         }
 
         else {
@@ -150,7 +150,7 @@ public class GeneComparisonResultAnalyzer {
                     maxAverageValue = averageSimilarityValues.get(i).getKey();
                 }
             }
-            return new Pair<>(maxType, maxAverageValue);
+            return new Pair<>(maxType.toString(), maxAverageValue);
         }
     }
 

@@ -1,7 +1,7 @@
 package genome.assembly;
 
 import exception.InvalidRegionException;
-import javafx.util.Pair;
+import util.Pair;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

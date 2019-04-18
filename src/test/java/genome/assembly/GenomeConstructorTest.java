@@ -32,22 +32,22 @@ public class GenomeConstructorTest {
     /**
      * Path to correct BED file
      */
-    public static final String PATH_TO_CORRECT_BED = "src\\test\\resources\\bam\\BAMParser\\correct.bed";
+    public static final String PATH_TO_CORRECT_BED = "src\\test\\resources\\genome\\assembly\\correct.bed";
 
     /**
      * Path to correct BAM file
      */
-    public static final String PATH_TO_CORRECT_BAM = "src\\test\\resources\\bam\\BAMParser\\correct.bam";
+    public static final String PATH_TO_CORRECT_BAM = "src\\test\\resources\\genome\\assembly\\correct.bam";
 
     /**
      * Path to incorrect BAM file
      */
-    public static final String PATH_TO_INCORRECT_BAM = "src\\test\\resources\\bam\\BAMParser\\incorrect.bam";
+    public static final String PATH_TO_INCORRECT_BAM = "src\\test\\resources\\genome\\assembly\\incorrect.bam";
 
     /**
      * Path to incorrect BED file
      */
-    public static final String PATH_TO_INCORRECT_BED = "src\\test\\resources\\bam\\BEDParser\\incorrect1.bed";
+    public static final String PATH_TO_INCORRECT_BED = "src\\test\\resources\\genome\\assembly\\incorrect1.bed";
 
     /**
      * Path to test BED file

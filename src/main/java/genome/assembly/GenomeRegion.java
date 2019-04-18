@@ -1,7 +1,7 @@
 package genome.assembly;
 
 import exception.InvalidRegionException;
-import javafx.util.Pair;
+import util.Pair;
 
 /**
  * This class stores genome information and data for each region in BED file.

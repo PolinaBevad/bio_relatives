@@ -2,7 +2,7 @@ package genome.compare;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import javafx.util.Pair;
+import util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 

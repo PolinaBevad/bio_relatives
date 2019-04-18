@@ -1,6 +1,6 @@
 package genome.assembly;
 
-import exception.InvalidGenomeAssemblyException;
+import exception.GenomeException;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ import java.util.List;
  * @author Sergey Khvatov
  */
 public interface GenomeAssembler {
-    List<GenomeRegion> assembly() throws InvalidGenomeAssemblyException;
+    List<GenomeRegion> assembly() throws GenomeException;
 }

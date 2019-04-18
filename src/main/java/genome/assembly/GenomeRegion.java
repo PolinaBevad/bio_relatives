@@ -1,6 +1,6 @@
 package genome.assembly;
 
-import exception.InvalidRegionException;
+import exception.GenomeException;
 import util.Pair;
 
 /**
@@ -28,7 +28,7 @@ public class GenomeRegion {
     /**
      * Array of qualities for each nucleotide in the sequence.
      */
-    private byte nucleotide_quality_[];
+    private byte[] nucleotide_quality_;
 
     /**
      * Default class constructor from the base information about each region in the bam file.
@@ -37,23 +37,23 @@ public class GenomeRegion {
      * @param pos     Starting position.
      * @param seq     Nucleotide sequence.
      * @param quality Arrays of qualities for each nucleotide in the sequence.
-     * @throws InvalidRegionException if starting position
+     * @throws GenomeException if starting position
      *                                of the nucleotide sequence is < 0.
      */
-    public GenomeRegion(String chrom, int pos, String seq, byte[] quality) throws InvalidRegionException {
+    public GenomeRegion(String chrom, int pos, String seq, byte[] quality) throws GenomeException {
         // set the name of the chromosome
         this.chrom_ = chrom;
 
         // check the start position
         if (pos < 0) {
-            throw new InvalidRegionException("GenomeRegion", "pos", " < 0");
+            throw new GenomeException(this.getClass().getName(), "GenomeRegion", "pos", " < 0");
         }
         this.start_pos_ = pos;
         this.nucleotide_seq_ = seq;
 
         // check the quality array
         if (quality.length != seq.length()) {
-            throw new InvalidRegionException("GenomeRegion", "seq", "not equals to the len of nucleotide sequence");
+            throw new GenomeException(this.getClass().getName(), "GenomeRegion", "seq", "not equals to the len of nucleotide sequence");
         }
         this.nucleotide_quality_ = quality;
     }
@@ -63,11 +63,11 @@ public class GenomeRegion {
      *
      * @param pos Position of the nucleotide in the sequence.
      * @return Pair of nucleotide and it's quality.
-     * @throws InvalidRegionException if pos is < 0 or len < pos.
+     * @throws GenomeException if pos is < 0 or len < pos.
      */
-    public Pair<Character, Byte> getNucleotide(int pos) throws InvalidRegionException {
+    public Pair<Character, Byte> getNucleotide(int pos) throws GenomeException {
         if (pos < 0 || pos >= nucleotide_seq_.length()) {
-            throw new InvalidRegionException("getNucleotide", "pos", "is not in range(0, len)");
+            throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(0, len)");
         }
         return new Pair<>(nucleotide_seq_.charAt(pos), nucleotide_quality_[pos]);
     }
@@ -77,11 +77,11 @@ public class GenomeRegion {
      *
      * @param position Position of the nucleotide in the whole genome.
      * @return Transformed position into position in the range [0, len).
-     * @throws InvalidRegionException if nucleotide is not in the range of this nucleotide sequence.
+     * @throws GenomeException if nucleotide is not in the range of this nucleotide sequence.
      */
-    public int normalize(int position) throws InvalidRegionException {
+    public int normalize(int position) throws GenomeException {
         if (position < start_pos_ || position > start_pos_ + nucleotide_seq_.length()) {
-            throw new InvalidRegionException("getNucleotide", "pos", "is not in range(start_pos, start_pos + len)");
+            throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(start_pos, start_pos + len)");
         }
         return position - start_pos_;
     }

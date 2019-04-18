@@ -74,7 +74,7 @@ public class GeneComparisonResultAnalyzer {
     public GeneComparisonResultAnalyzer(List<GeneComparisonResult> geneComparisonResults) throws GenomeException {
         this.geneComparisonResults = geneComparisonResults;
         if (geneComparisonResults.isEmpty()) {
-            throw new GenomeException("GeneComparisonResultAnalyzer", "geneComparisonResults", "is empty");
+            throw new GenomeException(this.getClass().getName(), "GeneComparisonResultAnalyzer", "geneComparisonResults", "is empty");
         }
         analyze();
     }
@@ -259,7 +259,6 @@ public class GeneComparisonResultAnalyzer {
      * @return Pair<Double, Boolean> - percentage of similarity; true - if they are parent and child , else false
      */
     private Pair<Double, Boolean> analyzeChromosome(GeneComparisonResult geneComparisonResult, double percentage) {
-
         Double similarityPercentage = 100d - ((double)geneComparisonResult.getDifference()
                 / (double)geneComparisonResult.getSequenceLen()) *100d;
         return new Pair<>(similarityPercentage, (similarityPercentage >= percentage));
@@ -274,7 +273,6 @@ public class GeneComparisonResultAnalyzer {
      */
     private Pair<Double, Boolean> analyzeAverageValues(ArrayList<Pair<Double, Boolean>> analysedChromosomes,
                                                        ChromosomeType chromosomeType ) {
-
         Double averagePercentage = 0d;
 
         for (int i =0; i < analysedChromosomes.size(); i++) {

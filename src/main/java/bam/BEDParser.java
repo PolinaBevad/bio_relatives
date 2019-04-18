@@ -1,15 +1,15 @@
 package bam;
 
+import exception.GenomeException;
+import exception.GenomeFileException;
+import htsjdk.samtools.SAMException;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-
-import exception.InvalidBEDFeatureException;
-import exception.InvalidBEDFileException;
-import htsjdk.samtools.SAMException;
-import htsjdk.samtools.SAMFormatException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class that parses BED file.
@@ -18,7 +18,9 @@ import htsjdk.samtools.SAMFormatException;
  */
 public class BEDParser {
     /**
+     * BED file record class.
      *
+     * @author Sergey Khvatov
      */
     public static class BEDFeature {
         /**
@@ -70,15 +72,15 @@ public class BEDParser {
          * @param start        Start position.
          * @param end          End position.
          * @param genomeSymbol Name of the genome sequence.
-         * @throws InvalidBEDFeatureException if start or end positions are incorrect.
+         * @throws GenomeException if start or end positions are incorrect.
          */
-        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws InvalidBEDFeatureException {
+        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws GenomeException {
             this.chrom_ = chrom;
             boolean containsChars = false;
             for (char ch : genomeSymbol.toLowerCase().toCharArray()) {
                 // check if input string contains inappropriate symbols
                 if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch)) {
-                    throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                    throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
                         "Incorrect parameter was passed: [" + genomeSymbol + "]");
                 }
                 if (ALLOWED_SYMBOLS.contains(ch)) {
@@ -86,13 +88,13 @@ public class BEDParser {
                 }
             }
             if (!containsChars) {
-                throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
                     "Incorrect parameter was passed: [" + genomeSymbol + "]");
             }
             this.genomeSymbol_ = genomeSymbol;
 
             if (start <= 0 || end <= 0 || start >= end) {
-                throw new InvalidBEDFeatureException("Error occurred during initialization of BEDFeature object: " +
+                throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
                     "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + "]");
             }
 
@@ -187,12 +189,16 @@ public class BEDParser {
      * Default class constructor from BED file.
      *
      * @param BEDFileName filename of the BED file to create object from.
-     * @throws InvalidBEDFileException  if file is incorrect.
+     * @throws GenomeFileException  if file is incorrect.
      */
-    public BEDParser(String BEDFileName) throws InvalidBEDFileException {
+    public BEDParser(String BEDFileName) throws GenomeFileException {
         this.bedFile = new File(BEDFileName);
-        if (validate()) {
-            throw new InvalidBEDFileException("Error occurred during validation of the file [" + this.bedFile.getName() + "]: " + this.status);
+        if (isInvalid()) {
+            throw new GenomeFileException(this.getClass().getName(),
+                "BEDParser",
+                this.bedFile.getName(),
+                this.status.toString()
+            );
         }
     }
 
@@ -201,7 +207,7 @@ public class BEDParser {
      *
      * @return true if BED file is not valid, else return false.
      */
-    private boolean validate() {
+    private boolean isInvalid() {
         if (!this.bedFile.exists()) {
             this.status = BEDFileError.DOES_NOT_EXIST;
             return true;
@@ -227,8 +233,9 @@ public class BEDParser {
      * Parse BED file line by line and create list of {@link BEDFeature} objects.
      *
      * @return List of parsed from the BED file {@link BEDFeature} objects.
+     * @throws GenomeException if any kind of exception occurs in the method.
      */
-    public ArrayList<BEDFeature> parse() throws InvalidBEDFileException {
+    public ArrayList<BEDFeature> parse() throws GenomeException {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result list of exons
@@ -249,16 +256,17 @@ public class BEDParser {
                 // check the input row of the table
                 if (rows.length != 4) {
                     // must be at 4 elements in the row
-                    throw new InvalidBEDFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
+                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
                         "incorrect number of rows in the table. Expected 4 (chrom, start, end, genome name), got " + rows.length);
                 }
                 exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2]), rows[3]));
             }
             return exons;
-        } catch (SAMException | IOException | NumberFormatException | InvalidBEDFeatureException ex) {
-            // if catch an exception then create our InvalidBEDFileException exception,
-            // set IOException as it's cause and throw it further
-            InvalidBEDFileException ibfex = new InvalidBEDFileException(ex.getMessage());
+        } catch (SAMException | IOException | NumberFormatException ex) {
+            // if catch an exception then create our GenomeException exception,
+            // set it as it's cause and throw it further
+            GenomeException ibfex =
+                new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }

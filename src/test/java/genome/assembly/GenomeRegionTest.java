@@ -1,10 +1,10 @@
 package genome.assembly;
 
-import exception.InvalidRegionException;
-import util.Pair;
+import exception.GenomeException;
 import org.junit.Test;
+import util.Pair;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link GenomeRegion} class.
@@ -59,12 +59,12 @@ public class GenomeRegionTest {
      */
     private static final int VALID_POSITION_IN_GENOME = 168903;
 
-    @Test(expected = InvalidRegionException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromInvalidPosition() throws Exception {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, INVALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
     }
 
-    @Test(expected = InvalidRegionException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromInvalidQualities() throws Exception {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, INVALID_QUALITIES);
     }
@@ -74,13 +74,13 @@ public class GenomeRegionTest {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
     }
 
-    @Test(expected = InvalidRegionException.class)
+    @Test(expected = GenomeException.class)
     public void GettingNucleotideFromInvalidPosition() throws Exception {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
         genomeRegion.getNucleotide(INVALID_POSITION);
     }
 
-    @Test(expected = InvalidRegionException.class)
+    @Test(expected = GenomeException.class)
     public void NormalizationOfInvalidPosition() throws Exception {
         GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
         genomeRegion.normalize(INVALID_POSITION);

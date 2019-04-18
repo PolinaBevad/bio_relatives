@@ -51,22 +51,6 @@ public class GenomeComparator {
     }
 
     /**
-     * Compares two genomes. Calculates Hemming length.
-     *
-     * @return The list of {@link GeneComparisonResult} that contain
-     * the information about differences between all {@link GenomeRegion}.
-     * @throws GenomeException if sizes of strings from GenomeRegions are not equal.
-     */
-    @Deprecated
-    public List<GeneComparisonResult> HemmingDistance() throws GenomeException {
-        ArrayList<GeneComparisonResult> result = new ArrayList<>();
-        for (int i = 0; i < firstPersonGenome_.size(); i++) {
-            result.add(hDistance(firstPersonGenome_.get(i), secondPersonGenome_.get(i)));
-        }
-        return result;
-    }
-
-    /**
      * Optimized version of Needleman–Wunsch algorithm using only two rows of the matrix.
      * It's algorithmic complexity is O(min(N, M)).
      *
@@ -78,6 +62,22 @@ public class GenomeComparator {
         ArrayList<GeneComparisonResult> result = new ArrayList<>();
         for (int i = 0; i < firstPersonGenome_.size(); i++) {
             result.add(lDistance(firstPersonGenome_.get(i), secondPersonGenome_.get(i)));
+        }
+        return result;
+    }
+
+    /**
+     * Compares two genomes. Calculates Hemming length.
+     *
+     * @return The list of {@link GeneComparisonResult} that contain
+     * the information about differences between all {@link GenomeRegion}.
+     * @throws GenomeException if sizes of strings from GenomeRegions are not equal.
+     */
+    @Deprecated
+    public List<GeneComparisonResult> HemmingDistance() throws GenomeException {
+        ArrayList<GeneComparisonResult> result = new ArrayList<>();
+        for (int i = 0; i < firstPersonGenome_.size(); i++) {
+            result.add(hDistance(firstPersonGenome_.get(i), secondPersonGenome_.get(i)));
         }
         return result;
     }
@@ -99,7 +99,7 @@ public class GenomeComparator {
             String s = secondPersonGenome_.get(i).getNucleotideSequence();
 
             // table for the further usage
-            Integer table[][] = new Integer[f.length() + 1][s.length() + 1];
+            Integer[][] table = new Integer[f.length() + 1][s.length() + 1];
 
             // initialize table
             for (int j = 0; j < f.length() + 1; j++)
@@ -175,7 +175,7 @@ public class GenomeComparator {
         // check the sizes because Hemming distance is calculated only
         // for equal strings
         if (s.length() != f.length()) {
-            throw new GenomeException("HemmingDistance", "", "sizes of strings from GenomeRegions are not equal");
+            throw new GenomeException(this.getClass().getName(), "HemmingDistance", "sizes of strings from GenomeRegions are not equal");
         }
 
         for (int j = 0; j < first.getNucleotideLength(); j++) {
@@ -201,13 +201,13 @@ public class GenomeComparator {
         String s = second.getNucleotideSequence();
 
         // table for the further usage
-        int table[] = new int[s.length() + 1];
+        int[] table = new int[s.length() + 1];
         // fill the table
         for (int l = 0; l < s.length() + 1; l++) {
             table[l] = l;
         }
 
-        int current[] = new int[s.length() + 1];
+        int[] current = new int[s.length() + 1];
         for (int l = 1; l < f.length() + 1; l++) {
             current[0] = l;
             for (int k = 1; k < s.length() + 1; k++) {
@@ -261,23 +261,7 @@ public class GenomeComparator {
         if (strCmpRes != 0) {
             return strCmpRes;
         } else {
-            return ((Integer) lhs.getStart()).compareTo(rhs.getStart());
+            return Integer.compare(lhs.getStart(), rhs.getStart());
         }
-    }
-
-    /**
-     * Converts chromosome name to some integer representation.
-     *
-     * @param chrom Name of the chromosome.
-     * @return Sum of multiplication of all chars from the string
-     * and 10 ^ (position of the char in the string).
-     */
-    private static int chromToInt(String chrom) {
-        int result = 0;
-        char temp[] = (new StringBuilder(chrom)).reverse().toString().toCharArray();
-        for (int i = 0; i < temp.length; i++) {
-            result += Character.getNumericValue(temp[i]) * Math.pow(10, i);
-        }
-        return result;
     }
 }

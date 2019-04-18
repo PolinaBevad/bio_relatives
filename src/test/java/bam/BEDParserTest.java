@@ -1,11 +1,12 @@
 package bam;
 
-import exception.InvalidBEDFileException;
+import exception.GenomeException;
+import exception.GenomeFileException;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link BEDParser} class methods.
@@ -64,12 +65,12 @@ public class BEDParserTest {
     private static final String[] correctGenome = {"SCYL3", "C1orf112", "FGR", "CFH", "STPG1", "NIPAL3", "AK2", "KDM1A", "TTC22"};
 
 
-    @Test(expected = InvalidBEDFileException.class)
+    @Test(expected = GenomeFileException.class)
     public void CreationFromPathToNonExistentFile() throws Exception {
         BEDParser parser = new BEDParser(pathToNonExistentFile);
     }
 
-    @Test(expected = InvalidBEDFileException.class)
+    @Test(expected = GenomeFileException.class)
     public void CreationFromPathToFileWithWrongExtension() throws Exception {
         BEDParser parser = new BEDParser(pathToFileWithWrongExt);
     }
@@ -79,18 +80,18 @@ public class BEDParserTest {
         BEDParser parser = new BEDParser(pathToCorrectFile);
     }
 
-    @Test(expected = InvalidBEDFileException.class)
+    @Test(expected = GenomeFileException.class)
     public void CreationFromPathToNotAFile() throws Exception {
         BEDParser parser = new BEDParser(pathToNotAFile);
     }
 
-    @Test(expected = InvalidBEDFileException.class)
+    @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithWrongStartEnd() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile1);
         ArrayList<BEDParser.BEDFeature> result = parser.parse();
     }
 
-    @Test(expected = InvalidBEDFileException.class)
+    @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithWrongGenome() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile2);
         ArrayList<BEDParser.BEDFeature> result = parser.parse();

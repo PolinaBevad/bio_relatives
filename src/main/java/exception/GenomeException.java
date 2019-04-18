@@ -6,16 +6,18 @@ package exception;
  * @author Sergey Khvatov
  */
 public class GenomeException extends Exception {
+
     public GenomeException(String message) {
         super(message);
     }
 
-    public GenomeException(String method, String wrongField, String mes) {
-        super("Error occurred in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
+    public GenomeException(String cls, String method, String wrongField, String message) {
+        super("Error occurred in class [" + cls + "] " +
+            "in method [" + method + "]: field [" + wrongField + "] is [" + message + "].");
     }
 
-    public GenomeException(String cls, String method, String wrongField, String mes) {
+    public GenomeException(String cls, String method, String message) {
         super("Error occurred in class [" + cls + "] " +
-            "in method [" + method + "]: field [" + wrongField + "] is [" + mes + "].");
+            "in method [" + method + "]: message is [" + message + "].");
     }
 }

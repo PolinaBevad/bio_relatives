@@ -24,29 +24,29 @@ public class GenomeConstructor implements GenomeAssembler {
     /**
      * input ArrayList of SamRecords from which we will construct a genome
      */
-    public ArrayList<SAMRecord> samRecords;
+    private ArrayList<SAMRecord> samRecords;
 
     /**
      * input ArrayList of genome regions from BED file
      */
-    public ArrayList<BEDParser.BEDFeature> exons;
+    private ArrayList<BEDParser.BEDFeature> exons;
 
     /**
      * Constructor of class GenomeConstructor from samRecords and exons
      *
      * @param samRecords input ArrayList of SamRecords from which we will construct a genome
      * @param exons      input ArrayList of genome regions from BED file
-     * @throws InvalidGenomeConstructorException if input data is empty
+     * @throws GenomeException if input data is empty
      */
-    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws InvalidGenomeConstructorException {
+    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws GenomeException {
         this.samRecords = samRecords;
         if (samRecords.isEmpty()) {
-            throw new InvalidGenomeConstructorException("GenomeConstructor", "samRecords", "empty");
+            throw new GenomeException(this.getClass().getName(), "GenomeConstructor", "samRecords", "empty");
         }
 
         this.exons = exons;
         if (exons.isEmpty()) {
-            throw new InvalidGenomeConstructorException("GenomeConstructor", "exons", "empty");
+            throw new GenomeException(this.getClass().getName(), "GenomeConstructor", "exons", "empty");
         }
     }
 
@@ -55,15 +55,15 @@ public class GenomeConstructor implements GenomeAssembler {
      *
      * @param BAMFileName name of input BAM file
      * @param BEDFileName name of input BED file
-     * @throws InvalidGenomeConstructorException if input files are invalid
+     * @throws GenomeException if input files are invalid
      */
-    public GenomeConstructor(String BAMFileName, String BEDFileName) throws InvalidGenomeConstructorException {
+    public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
         try {
             this.exons = new BEDParser(BEDFileName).parse();
             this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
-        } catch (InvalidBAMFileException | InvalidBEDFileException ex) {
+        } catch (GenomeFileException ex) {
             // if catch an exception then create our InvalidGenomeAssemblyException exception,
-            InvalidGenomeConstructorException ibfex = new InvalidGenomeConstructorException(ex.getMessage());
+            GenomeException ibfex = new GenomeException(this.getClass().getName(), "GenomeConstructor", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }
@@ -73,10 +73,10 @@ public class GenomeConstructor implements GenomeAssembler {
      * Assembly a genome from SAMRecords
      *
      * @return ArrayList of GenomeRegions(output genome)
-     * @throws InvalidGenomeAssemblyException if errors occur
+     * @throws GenomeException if errors occur
      */
     @Override
-    public List<GenomeRegion> assembly() throws InvalidGenomeAssemblyException {
+    public List<GenomeRegion> assembly() throws GenomeException {
         try {
             // output genome
             List<GenomeRegion> genomeRegions = new ArrayList<>();
@@ -132,9 +132,9 @@ public class GenomeConstructor implements GenomeAssembler {
                 genomeRegions.add(new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), nucleotides.toString().toUpperCase(), qualities));
             }
             return genomeRegions;
-        } catch (NullPointerException | InvalidRegionException | IllegalArgumentException ex) {
+        } catch (NullPointerException | IllegalArgumentException ex) {
             // if catch an exception then create our InvalidGenomeAssemblyException exception,
-            InvalidGenomeAssemblyException ibfex = new InvalidGenomeAssemblyException(ex.getMessage());
+            GenomeException ibfex = new GenomeException(this.getClass().getName(), "assembly", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }

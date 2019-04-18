@@ -1,9 +1,9 @@
 /**
- * Main class of the program.
+ * BioRelatives class of the program.
  *
  * @author Sergey Hvatov
  */
-public class Main {
+public class BioRelatives {
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }

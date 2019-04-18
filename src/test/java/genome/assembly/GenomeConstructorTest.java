@@ -2,15 +2,15 @@ package genome.assembly;
 
 import bam.BAMParser;
 import bam.BEDParser;
-import exception.InvalidGenomeConstructorException;
+import exception.GenomeException;
 import htsjdk.samtools.SAMRecord;
-import util.Pair;
 import org.junit.Test;
+import util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the {@link GenomeConstructor} class.
@@ -80,22 +80,22 @@ public class GenomeConstructorTest {
     public static final byte[] CHECK_QUALITIES_2 = {56, 45, 46, 46, 71, 57, 52, 53, 41, 38, 40, 34, 33, 37, 37, 41, 37, 38, 50, 46, 33, 35, 41, 38, 43, 38, 44, 50, 38, 40, 53, 43, 47, 50, 61};
 
 
-    @Test(expected = InvalidGenomeConstructorException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromEmptySAMRecords() throws Exception {
         GenomeConstructor genomeConstructor = new GenomeConstructor(EMPTY_SAMRECORDS, new BEDParser(PATH_TO_CORRECT_BED).parse());
     }
 
-    @Test(expected = InvalidGenomeConstructorException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromEmptyExons() throws Exception {
         GenomeConstructor genomeConstructor = new GenomeConstructor(new BAMParser(PATH_TO_CORRECT_BAM, new BEDParser(PATH_TO_CORRECT_BED).parse()).parse(), EMPTY_EXONS);
     }
 
-    @Test(expected = InvalidGenomeConstructorException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromInvalidBAMFile() throws Exception {
         GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_INCORRECT_BAM, PATH_TO_CORRECT_BED);
     }
 
-    @Test(expected = InvalidGenomeConstructorException.class)
+    @Test(expected = GenomeException.class)
     public void CreationFromInvalidBEDFile() throws Exception {
         GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_CORRECT_BAM, PATH_TO_INCORRECT_BED);
     }

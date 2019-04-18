@@ -16,12 +16,12 @@ public class GeneComparisonResult {
      * Name of the chromosome
      * which contains this nucleotide sequence.
      */
-    private String chrom_ = "";
+    private String chrom_;
 
     /**
      * Start position of the nucleotide sequence.
      */
-    private int start_pos_ = 0;
+    private int start_pos_;
 
     /**
      * The distance value that was calculated

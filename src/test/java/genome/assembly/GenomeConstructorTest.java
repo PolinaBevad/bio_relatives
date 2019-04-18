@@ -32,32 +32,32 @@ public class GenomeConstructorTest {
     /**
      * Path to correct BED file
      */
-    public static final String PATH_TO_CORRECT_BED = "src\\test\\resources\\genome\\assembly\\correct.bed";
+    public static final String PATH_TO_CORRECT_BED = "src/test/resources/genome/assembly/correct.bed";
 
     /**
      * Path to correct BAM file
      */
-    public static final String PATH_TO_CORRECT_BAM = "src\\test\\resources\\genome\\assembly\\correct.bam";
+    public static final String PATH_TO_CORRECT_BAM = "src/test/resources/genome/assembly/correct.bam";
 
     /**
      * Path to incorrect BAM file
      */
-    public static final String PATH_TO_INCORRECT_BAM = "src\\test\\resources\\genome\\assembly\\incorrect.bam";
+    public static final String PATH_TO_INCORRECT_BAM = "src/test/resources/genome/assembly/incorrect.bam";
 
     /**
      * Path to incorrect BED file
      */
-    public static final String PATH_TO_INCORRECT_BED = "src\\test\\resources\\genome\\assembly\\incorrect1.bed";
+    public static final String PATH_TO_INCORRECT_BED = "src/test/resources/genome/assembly/incorrect1.bed";
 
     /**
      * Path to test BED file
      */
-    public static final String PATH_TO_BED_FILE_1 = "src\\test\\resources\\genome\\assembly\\file1.bed";
+    public static final String PATH_TO_BED_FILE_1 = "src/test/resources/genome/assembly/file1.bed";
 
     /**
      * Path to test BED file
      */
-    public static final String PATH_TO_BED_FILE_2 = "src\\test\\resources\\genome\\assembly\\file2.bed";
+    public static final String PATH_TO_BED_FILE_2 = "src/test/resources/genome/assembly/file2.bed";
 
     /**
      * The first checking nucleotide sequence

@@ -92,7 +92,7 @@ public class GenomeConstructor implements GenomeAssembler {
                 for (int j = exons.get(i).getStartPos(); j < exons.get(i).getEndPos(); j++) {
                     // HashMap in which there are nucleotides(with their qualities; see description of the method)
                     // from current position
-                    HashMap<Character, ArrayList<Byte>> currentNucleotides = getNucleotideDistribution(j);
+                    HashMap<Character, ArrayList<Byte>> currentNucleotides = getNucleotideDistribution(j, exons.get(i).getChromosomeName());
 
                     // the best nucleotide(if there are not any nucleotides, we write a *)
                     char bestNucleotide = '*';
@@ -156,11 +156,11 @@ public class GenomeConstructor implements GenomeAssembler {
 
     /**
      * Generates a map with each nucleotide and it's quality for the further usage.
-     *
+     * @param chromName - name of chromosome
      * @param position Current position of the nucleotide we are analyzing.
      * @return HashMap with qualities for this nucleotide.
      */
-    private HashMap<Character, ArrayList<Byte>> getNucleotideDistribution(int position) {
+    private HashMap<Character, ArrayList<Byte>> getNucleotideDistribution(int position, String chromName ) throws GenomeException{
         // initialize the storing structure
         HashMap<Character, ArrayList<Byte>> dist = new HashMap<>();
         for (char c : NUCLEOTIDES.toCharArray()) {
@@ -168,14 +168,22 @@ public class GenomeConstructor implements GenomeAssembler {
         }
         // for each read get the
         // nucleotide and it's quality if it contains it
-        samRecords.forEach(s -> {
-            if (inRange(position, s.getStart(), s.getEnd())) {
+        int ni = 0; // debug
+        for (SAMRecord s: samRecords) {
+            ni++; // debug
+            if ((inRange(position, s.getStart(), s.getEnd())) && (chromName.equals(s.getReferenceName()))) {
                 int pos = position - s.getStart();
+                if (pos >= s.getReadLength()) {
+                    throw new GenomeException("GenomeConstructor", "getNucleotideDistribution", "invalid position occured");
+                }
+
                 char n = s.getReadString().toLowerCase().charAt(pos);
                 byte q = s.getBaseQualities()[pos];
-                dist.get(n).add(q);
+                if (NUCLEOTIDES.contains(String.valueOf(n))){
+                    dist.get(n).add(q);
+                }
             }
-        });
+        }
         return dist;
     }
 

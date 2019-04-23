@@ -114,7 +114,7 @@ public class GeneComparisonResultAnalyzer {
 
         if (averageSimilarityValues.get(2) != null) {
             result += "The average percentage of similarity of autosomal chromosomes - "
-                    + averageSimilarityValues.get(2).getKey() +"\n";
+                    + averageSimilarityValues.get(2).getKey();
 
         }
 
@@ -193,105 +193,71 @@ public class GeneComparisonResultAnalyzer {
         for (int i =0 ; i < 3; i++) {
             averageSimilarityValues.add(null);
         }
-        // HashMap which contains a key - Type of chromosome; value - ArrayList of similarity percentage of chromosomes
-        // and a flag (true - if if they are parent and child , else false)
-        HashMap<ChromosomeType, ArrayList<Pair<Double, Boolean>>> analysedGeneComparisonResults = new HashMap<>();
 
-        for (ChromosomeType chromosomeType : ChromosomeType.values() ) {
-            analysedGeneComparisonResults.put(chromosomeType, new ArrayList<>());
-        }
+        // average similarity and count of mitochondrial chromosomes
+        Double MTChrAverageSimilarity = 0.0;
+        int MTChrCount = 0;
 
-        // we pass on input ArrayList of gene comparison results
-        // build our HashMap
-        // record in the type of chromosome results of analysis of gene comparison results
-        for (int i = 0; i < geneComparisonResults.size(); i++) {
+        // average similarity and count of X chromosomes
+        Double XChrAverageSimilarity = 0.0;
+        int XChrCount = 0;
 
-            if ((geneComparisonResults.get(i).getChromName().equals(MT_CHR_NAME_1))
-                    || (geneComparisonResults.get(i).getChromName().equals(MT_CHR_NAME_2))) {
-                analysedGeneComparisonResults.get(ChromosomeType.MT_CHROMOSOME)
-                        .add(analyzeChromosome(geneComparisonResults.get(i), MT_PERCENTAGE));
+        // average similarity and count of autosomal chromosomes
+        Double autosomalChrAverageSimilarity = 0.0;
+        int autosomalChrCount = 0;
+
+        // for each gene comparison result
+        for (GeneComparisonResult geneComparisonResult : geneComparisonResults) {
+            if (geneComparisonResult.getChromName().equals(MT_CHR_NAME_1)
+                    || geneComparisonResult.getChromName().equals(MT_CHR_NAME_2)) {
+                MTChrAverageSimilarity += analyzeChromosome(geneComparisonResult);
+                MTChrCount++;
             }
-
-            else if ((geneComparisonResults.get(i).getChromName().equals(X_CHR_NAME_1))
-                    || (geneComparisonResults.get(i).getChromName().equals(X_CHR_NAME_2))) {
-                analysedGeneComparisonResults.get(ChromosomeType.X_CHROMOSOME)
-                        .add(analyzeChromosome(geneComparisonResults.get(i), X_PERCENTAGE));
+            else if (geneComparisonResult.getChromName().equals(X_CHR_NAME_1)
+                    || geneComparisonResult.getChromName().equals(X_CHR_NAME_2)) {
+                XChrAverageSimilarity += analyzeChromosome(geneComparisonResult);
+                XChrCount++;
             }
-
             else {
-                analysedGeneComparisonResults.get(ChromosomeType.AUTOSOMAL_CHROMOSOME)
-                        .add(analyzeChromosome(geneComparisonResults.get(i), AUTOSOMAL_PERCENTAGE));
+                autosomalChrAverageSimilarity +=analyzeChromosome(geneComparisonResult);
+                autosomalChrCount++;
             }
         }
 
-        // we pass on HashMap on different types of chromosomes
-        Set<Map.Entry<ChromosomeType, ArrayList<Pair<Double, Boolean>>>> set = analysedGeneComparisonResults.entrySet();
-        for (Map.Entry<ChromosomeType, ArrayList<Pair<Double, Boolean>>> s : set) {
-            // if we have mitochondrial chromosomes , then analyze them
-            if ((s.getKey() == ChromosomeType.MT_CHROMOSOME) && (!s.getValue().isEmpty())) {
-                // find an average value of mitochondrial chromosomes similarity
-                Pair<Double, Boolean> allMTChromosomesAnalyzed = analyzeAverageValues(s.getValue(), s.getKey());
+        // adding of analysis results into ArrayList(field of class)
+        if (MTChrCount > 0) {
+            averageSimilarityValues.set(
+                    0,
+                    new Pair<>(MTChrAverageSimilarity / MTChrCount,
+                            ((MTChrAverageSimilarity / MTChrCount) >= MT_PERCENTAGE))
+            );
+        }
 
-                // add this value into ArrayList
-                averageSimilarityValues.set(0, allMTChromosomesAnalyzed);
-            }
-            // if we have X chromosomes , then analyze them
-            else if ((s.getKey() == ChromosomeType.X_CHROMOSOME) && (!s.getValue().isEmpty())) {
+        if (XChrCount > 0) {
+            averageSimilarityValues.set(
+                    1,
+                    new Pair<>(XChrAverageSimilarity / XChrCount,
+                            ((XChrAverageSimilarity / XChrCount) >= X_PERCENTAGE))
+            );
+        }
 
-                Pair<Double, Boolean> allXChromosomesAnalyzed = analyzeAverageValues(s.getValue(), s.getKey());
-
-                averageSimilarityValues.set(1, allXChromosomesAnalyzed);
-            }
-
-            // if we have autosomal chromosomes , then analyze them
-            else if ((s.getKey() == ChromosomeType.AUTOSOMAL_CHROMOSOME) && (!s.getValue().isEmpty())) {
-                Pair<Double, Boolean> allAutosomalChromosomesAnalyzed = analyzeAverageValues(s.getValue(), s.getKey());
-
-                averageSimilarityValues.set(2, allAutosomalChromosomesAnalyzed);
-            }
+        if (autosomalChrCount > 0) {
+            averageSimilarityValues.set(
+                    2,
+                    new Pair<>(autosomalChrAverageSimilarity / autosomalChrCount,
+                            ((autosomalChrAverageSimilarity / autosomalChrCount) >= AUTOSOMAL_PERCENTAGE))
+            );
         }
     }
 
     /**
      * Method which analyze results of comparison for one chromosome
      * @param geneComparisonResult result of comparison of two chromosomes
-     * @param percentage minimal percentage which confirms the kinship of people at parent-child level
-     * @return Pair<Double, Boolean> - percentage of similarity; true - if they are parent and child , else false
+     * @return double - percentage of similarity;
      */
-    private Pair<Double, Boolean> analyzeChromosome(GeneComparisonResult geneComparisonResult, double percentage) {
-        Double similarityPercentage = 100d - ((double)geneComparisonResult.getDifference()
-                / (double)geneComparisonResult.getSequenceLen()) *100d;
-        return new Pair<>(similarityPercentage, (similarityPercentage >= percentage));
-    }
-
-
-    /**
-     * Method which analyze average results of comparison for the type of chromosome
-     * @param analysedChromosomes chromosomes which we should analyze
-     * @param chromosomeType type of these chromosomes
-     * @return Pair<Double, Boolean> - percentage of average similarity; true - if they are parent and child , else false
-     */
-    private Pair<Double, Boolean> analyzeAverageValues(ArrayList<Pair<Double, Boolean>> analysedChromosomes,
-                                                       ChromosomeType chromosomeType ) {
-        Double averagePercentage = 0d;
-
-        for (int i =0; i < analysedChromosomes.size(); i++) {
-            averagePercentage += analysedChromosomes.get(i).getKey();
-        }
-
-        averagePercentage /= analysedChromosomes.size();
-
-        if (chromosomeType == ChromosomeType.MT_CHROMOSOME) {
-            return new Pair<>(averagePercentage, (averagePercentage >= MT_PERCENTAGE));
-        }
-
-        else if (chromosomeType == ChromosomeType.X_CHROMOSOME) {
-            return new Pair<>(averagePercentage, (averagePercentage >= X_PERCENTAGE));
-        }
-
-        else {
-            return new Pair<>(averagePercentage, (averagePercentage >= AUTOSOMAL_PERCENTAGE));
-        }
+    private Double analyzeChromosome(GeneComparisonResult geneComparisonResult) {
+        return (100d - ((double)geneComparisonResult.getDifference()
+                / (double)geneComparisonResult.getSequenceLen()) *100d);
     }
 
 }

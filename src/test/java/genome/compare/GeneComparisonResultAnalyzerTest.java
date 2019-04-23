@@ -145,7 +145,7 @@ public class GeneComparisonResultAnalyzerTest {
             + "The average percentage of similarity of X chromosomes - "
             + 1d +"\n"
             + "The average percentage of similarity of autosomal chromosomes - "
-            + 1d +"\n";
+            + 1d;
     /**
      * Check object with the best value of similarity
      */

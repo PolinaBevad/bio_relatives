@@ -6,6 +6,7 @@ import htsjdk.samtools.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -111,34 +112,40 @@ public class BAMParser {
     /**
      * Parse BAM file on exons.
      *
-     * @return ArrayList of SAMRecords
+     * @return HashMap with keys-names of chromosomes and values - ArrayLists of SAMRecords from the key chromosome
      */
-    public ArrayList<SAMRecord> parse() throws GenomeException {
+    public HashMap<String, ArrayList<SAMRecord>> parse() throws GenomeException {
         try {
             // Opening of the BAMFile
             SamReader samReader = SamReaderFactory.makeDefault()
                 .validationStringency(ValidationStringency.STRICT)
                 .open(BAMFile);
-            // ArrayLIst of Samrecords, which we will return
-            ArrayList<SAMRecord> samRecords = new ArrayList<>();
+            // output HashMap
+            HashMap<String, ArrayList<SAMRecord>> samRecords = new HashMap<>();
             // pass through all exons
-            for (int i = 0; i < exons.size(); i++) {
+            for (BEDParser.BEDFeature exon : exons) {
                 // Start iterating from start to end of current chromosome.
-                SAMRecordIterator iter = samReader.query(
-                    exons.get(i).getChromosomeName(),
-                    exons.get(i).getStartPos(),
-                    exons.get(i).getEndPos(),
-                    true
-                );
+                SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), true);
 
+                // SAMRecords from current region
+                ArrayList<SAMRecord> currentSamRecords = new ArrayList<>();
                 // while there are sam strings in this region
-                while (iter.hasNext()) {
+                while(iter.hasNext()){
                     // Iterate thorough each record and extract fragment size
                     SAMRecord rec = iter.next();
-                    samRecords.add(rec);
+                    currentSamRecords.add(rec);
                 }
                 // stop iterator
                 iter.close();
+                // adding current SAMRecords to the HashMap
+                if (samRecords.containsKey(exon.getChromosomeName())) {
+                    for (SAMRecord samRecord :  currentSamRecords) {
+                        samRecords.get(exon.getChromosomeName()).add(samRecord);
+                    }
+                }
+                else {
+                    samRecords.put(exon.getChromosomeName(), currentSamRecords);
+                }
             }
             return samRecords;
         } catch (NullPointerException | IllegalArgumentException | SAMException ex) {

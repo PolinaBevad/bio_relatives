@@ -1,7 +1,7 @@
 package util;
 
 /**
- * Structure for storage a data of two Clases in one object
+ * Structure for storage 2 objects
  * @param <K> key
  * @param <V> value
  * @author Vladiislav Marchenko
@@ -37,5 +37,4 @@ public class Pair<K,V>  {
      * @return value for this pair
      */
     public V getValue() { return value; }
-
 }

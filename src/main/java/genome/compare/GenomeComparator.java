@@ -216,7 +216,8 @@ public class GenomeComparator {
                 // and table[l - 1][k - 1] + (f.charAt(l) == s.charAt(k)
                 current[k] = Math.min(
                     Math.min(current[k - 1] + 1, table[k] + 1),
-                    Math.min(table[k] + 1, table[k - 1] + (f.charAt(l - 1) == s.charAt(k - 1) ? 0 : 1)));
+                    Math.min(table[k] + 1, table[k - 1] + ((f.charAt(l - 1) == s.charAt(k - 1)
+                            && (f.charAt(l - 1) != '*') && (s.charAt(k - 1) != '*')) ? 0 : 1)));
             }
             table = Arrays.copyOf(current, current.length);
         }

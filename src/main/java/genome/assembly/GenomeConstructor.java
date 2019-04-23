@@ -22,9 +22,9 @@ public class GenomeConstructor implements GenomeAssembler {
     private static final String NUCLEOTIDES = "agct";
 
     /**
-     * input ArrayList of SamRecords from which we will construct a genome
+     * input HashMap of SamRecords from which we will construct a genome
      */
-    private ArrayList<SAMRecord> samRecords;
+    private HashMap<String, ArrayList<SAMRecord>> samRecords;
 
     /**
      * input ArrayList of genome regions from BED file
@@ -34,11 +34,11 @@ public class GenomeConstructor implements GenomeAssembler {
     /**
      * Constructor of class GenomeConstructor from samRecords and exons
      *
-     * @param samRecords input ArrayList of SamRecords from which we will construct a genome
+     * @param samRecords input HashMap of SamRecords from which we will construct a genome
      * @param exons      input ArrayList of genome regions from BED file
      * @throws GenomeException if input data is empty
      */
-    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws GenomeException {
+    public GenomeConstructor(HashMap<String, ArrayList<SAMRecord>> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws GenomeException {
         this.samRecords = samRecords;
         if (samRecords.isEmpty()) {
             throw new GenomeException(this.getClass().getName(), "GenomeConstructor", "samRecords", "empty");
@@ -57,7 +57,7 @@ public class GenomeConstructor implements GenomeAssembler {
      * @param BEDFileName name of input BED file
      * @throws GenomeException if input files are invalid
      */
-    public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
+   public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
         try {
             this.exons = new BEDParser(BEDFileName).parse();
             this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
@@ -67,7 +67,7 @@ public class GenomeConstructor implements GenomeAssembler {
             ibfex.initCause(ex);
             throw ibfex;
         }
-    }
+   }
 
     /**
      * Assembly a genome from SAMRecords
@@ -168,17 +168,15 @@ public class GenomeConstructor implements GenomeAssembler {
         }
         // for each read get the
         // nucleotide and it's quality if it contains it
-        int ni = 0; // debug
-        for (SAMRecord s: samRecords) {
-            ni++; // debug
-            if ((inRange(position, s.getStart(), s.getEnd())) && (chromName.equals(s.getReferenceName()))) {
+        for (SAMRecord s: samRecords.get(chromName)) {
+            if ((inRange(position, s.getStart(), s.getEnd()))) {
                 int pos = position - s.getStart();
-                if (pos >= s.getReadLength()) {
-                    throw new GenomeException("GenomeConstructor", "getNucleotideDistribution", "invalid position occured");
+                char n = ' ';
+                byte q = 0;
+                if (pos < s.getReadLength()) {
+                    n = s.getReadString().toLowerCase().charAt(pos);
+                    q =  s.getBaseQualities()[pos];
                 }
-
-                char n = s.getReadString().toLowerCase().charAt(pos);
-                byte q = s.getBaseQualities()[pos];
                 if (NUCLEOTIDES.contains(String.valueOf(n))){
                     dist.get(n).add(q);
                 }

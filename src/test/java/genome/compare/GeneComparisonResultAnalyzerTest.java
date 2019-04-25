@@ -50,25 +50,25 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Count of differences between two sequences
      */
-    private final static int DIFF_1 = 2;
+    private final static int DIFF_2 = 2;
 
     /**
      * Count of differences between two sequences
      */
-    private final static int DIFF_2 = 10;
+    private final static int DIFF_10 = 10;
 
     /**
      * Count of differences between two sequences
      */
-    private final static int DIFF_3 = 20;
+    private final static int DIFF_80 = 80;
     /**
      * Count of differences between two sequences
      */
-    private final static int DIFF_4 = 65;
+    private final static int DIFF_55 = 55;
     /**
      * Count of differences between two sequences
      */
-    private final static int DIFF_5 = 99;
+    private final static int DIFF_99 = 99;
 
     /**
      * Position in the chromosome
@@ -84,17 +84,6 @@ public class GeneComparisonResultAnalyzerTest {
      * Test List of results
      */
     private List<GeneComparisonResult> RESULTS_2 = new ArrayList<>();
-
-    /**
-     * Test List of results
-     */
-    private List<GeneComparisonResult> RESULTS_3 = new ArrayList<>();
-
-    /**
-     * Test List of results
-     */
-    private List<GeneComparisonResult> RESULTS_4 = new ArrayList<>();
-
     /**
      * Test empty input data
      */
@@ -103,84 +92,51 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Check String with results of analysis
      */
-    private final static String CHECK_STRING_1 = "Criterion of comparison of mitochondrial chromosomes.\n"
-            +"Persons under study are parent and child.\n"
-            +"The average percentage of similarity - "
-            + 98d;
-    /**
-     * Check object with the best value of similarity
-     */
-    private final static Pair<String, Double> CHECK_OBJ_1 = new Pair<>("MT_CHROMOSOME", 98d);
-
-    /**
-     * Check String with results of analysis
-     */
-    private final static String CHECK_STRING_2 = "Criterion of comparison of X chromosomes.\n"
-            +"Persons under study are parent and child.\n"
-            +"The average percentage of similarity - "
-            + 80d;
-    /**
-     * Check object with the best value of similarity
-     */
-    private final static Pair<String, Double> CHECK_OBJ_2 = new Pair<>("X_CHROMOSOME", 80d);
-
-    /**
-     * Check String with results of analysis
-     */
-    private final static String CHECK_STRING_3 = "Criterion of comparison of autosomal chromosomes.\n"
-            +"Persons under study are parent and child.\n"
-            +"The average percentage of similarity - "
-            + 90d;
-    /**
-     * Check object with the best value of similarity
-     */
-    private final static Pair<String, Double> CHECK_OBJ_3 = new Pair<>("AUTOSOMAL_CHROMOSOME", 90d);
-
-    /**
-     * Check String with results of analysis
-     */
-    private final static String CHECK_STRING_4 = "Persons under study are not parent and child.\n"
-            + "The average percentage of similarity of mitochondrial chromosomes - "
+    private final static String CHECK_STRING_1 = "Similarity percentage for each chromosome:\n"
+            +"Name of chromosome: chr3. Similarity percentage: "
+            + 98d + "\n"
+            +"Name of chromosome: chr1. Similarity percentage: "
+            + 20d + "\n"
+            +"Name of chromosome: chrM. Similarity percentage: "
             + 1d + "\n"
-            + "The average percentage of similarity of X chromosomes - "
-            + 1d +"\n"
-            + "The average percentage of similarity of autosomal chromosomes - "
-            + 1d;
+            +"Count of chromosomes with 98% similarity: 1\n"
+            +"Count of chromosomes with 45% similarity: 0\n"
+            +"Count of dissimilar chromosomes: 2\n"
+            +"These persons are not child and parent.";
+
+
     /**
-     * Check object with the best value of similarity
+     * Check String with results of analysis
      */
-    private final static Pair<String, Double> CHECK_OBJ_4 = new Pair<>("MT_CHROMOSOME", 1d);
+    private final static String CHECK_STRING_2 = "Similarity percentage for each chromosome:\n"
+            +"Name of chromosome: chrX. Similarity percentage: "
+            + 98d + "\n"
+            +"Name of chromosome: chr3. Similarity percentage: "
+            + 90d + "\n"
+            +"Name of chromosome: chr2. Similarity percentage: "
+            + 44.99999999999999d + "\n"
+            +"Count of chromosomes with 98% similarity: 1\n"
+            +"Count of chromosomes with 45% similarity: 2\n"
+            +"Count of dissimilar chromosomes: 0\n"
+            +"These persons are child and parent.";
 
     @Before
     public void setUp() {
         try {
-            GeneComparisonResult geneComparisonResult1 = new GeneComparisonResult(MT_CHR_NAME, POS, DIFF_1, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult2 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1, POS, DIFF_3, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult3 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_4, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult1 = new GeneComparisonResult(MT_CHR_NAME, POS, DIFF_99, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult2 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1, POS, DIFF_80, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult3 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_2, SEQUENCE_LENGTH);
             RESULTS_1.add(geneComparisonResult1);
             RESULTS_1.add(geneComparisonResult2);
             RESULTS_1.add(geneComparisonResult3);
 
-            GeneComparisonResult geneComparisonResult4 = new GeneComparisonResult(X_CHR_NAME, POS, DIFF_3, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult5 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_5, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult6 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_2, POS, DIFF_3, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult4 = new GeneComparisonResult(X_CHR_NAME, POS, DIFF_2, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult5 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_10, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult6 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_2, POS, DIFF_55, SEQUENCE_LENGTH);
             RESULTS_2.add(geneComparisonResult4);
             RESULTS_2.add(geneComparisonResult5);
             RESULTS_2.add(geneComparisonResult6);
 
-            GeneComparisonResult geneComparisonResult7 = new GeneComparisonResult(MT_CHR_NAME, POS, DIFF_3, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult8 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1, POS, DIFF_2, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult9 = new GeneComparisonResult(X_CHR_NAME, POS, DIFF_5, SEQUENCE_LENGTH);
-            RESULTS_3.add(geneComparisonResult7);
-            RESULTS_3.add(geneComparisonResult8);
-            RESULTS_3.add(geneComparisonResult9);
-
-            GeneComparisonResult geneComparisonResult10 = new GeneComparisonResult(MT_CHR_NAME, POS, DIFF_5, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult11 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1, POS, DIFF_5, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult12 = new GeneComparisonResult(X_CHR_NAME, POS, DIFF_5, SEQUENCE_LENGTH);
-            RESULTS_4.add(geneComparisonResult10);
-            RESULTS_4.add(geneComparisonResult11);
-            RESULTS_4.add(geneComparisonResult12);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -192,37 +148,17 @@ public class GeneComparisonResultAnalyzerTest {
     }
 
     @Test
-    public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestMTChromosome() throws Exception{
+    public void AnalyzeOfNotParentAndChild() throws Exception {
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_1);
-        assertEquals(CHECK_STRING_1, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_1.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
-        assertEquals(CHECK_OBJ_1.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(geneComparisonResultAnalyzer.toString(), CHECK_STRING_1);
+        assertEquals(geneComparisonResultAnalyzer.areParentAndChild(), false);
     }
 
     @Test
-    public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestXChromosome() throws Exception{
+    public void AnalyzeOfParentAndChild() throws Exception {
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_2);
-        assertEquals(CHECK_STRING_2, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_2.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
-        assertEquals(CHECK_OBJ_2.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
+        assertEquals(geneComparisonResultAnalyzer.toString(), CHECK_STRING_2);
+        assertEquals(geneComparisonResultAnalyzer.areParentAndChild(), true);
     }
-
-    @Test
-    public void GeneComparisonResultAnalyzerTestOfResultsWithTheBestAutosomalChromosome() throws Exception{
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_3);
-        assertEquals(CHECK_STRING_3, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_3.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
-        assertEquals(CHECK_OBJ_3.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
-    }
-
-    @Test
-    public void GeneComparisonResultAnalyzerTestOfResultsWithoutTheBestChromosome() throws Exception{
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_4);
-        assertEquals(CHECK_STRING_4, geneComparisonResultAnalyzer.toString());
-        assertEquals(CHECK_OBJ_4.getKey(), geneComparisonResultAnalyzer.getAverageSimilarity().getKey());
-        assertEquals(CHECK_OBJ_4.getValue(), geneComparisonResultAnalyzer.getAverageSimilarity().getValue());
-    }
-
-
 
 }

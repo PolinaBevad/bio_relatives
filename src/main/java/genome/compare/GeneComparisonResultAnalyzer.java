@@ -13,48 +13,14 @@ import java.util.*;
 public class GeneComparisonResultAnalyzer {
 
     /**
-     * Name of X chromosomes which we can find in BAM file
+     * High percentage of chromosome similarity for the parent and child.
      */
-    private static final String X_CHR_NAME_1 = "chrX";
+    private static final Double HIGH_PERCENTAGE = 98d;
 
     /**
-     * Another name of X chromosomes which we can find in BAM file
+     * Middle percentage of chromosome similarity for the parent and child.
      */
-    private static final String X_CHR_NAME_2 = "X";
-
-    /**
-     * Name of mitochondrial chromosomes which we can find in BAM file
-     */
-    private static final String MT_CHR_NAME_1 = "chrM";
-
-    /**
-     * Another name of mitochondrial chromosomes which we can find in BAM file
-     */
-    private static final String MT_CHR_NAME_2 = "MT";
-
-    /**
-     * The minimum percentage of similarity in mitochondrial chromosomes for the parent and child.
-     */
-    private static final Double MT_PERCENTAGE = 98d;
-
-    /**
-     * The minimum percentage of similarity in X chromosomes for the parent and child.
-     */
-    private static final Double X_PERCENTAGE = 45d;
-
-    /**
-     * The minimum percentage of similarity in autosomal chromosomes for the parent and child.
-     */
-    private static final Double AUTOSOMAL_PERCENTAGE = 45d;
-
-    /**
-     * Types of chromosomes
-     */
-    private enum ChromosomeType {
-        MT_CHROMOSOME,
-        X_CHROMOSOME,
-        AUTOSOMAL_CHROMOSOME
-    }
+    private static final Double MIDDLE_PERCENTAGE = 44.9d;
 
     /**
      * Input List of gene comparison results
@@ -62,9 +28,24 @@ public class GeneComparisonResultAnalyzer {
     private List<GeneComparisonResult> geneComparisonResults;
 
     /**
-     * ArrayList which contains average similarity values of all types chromosomes
+     * ArrayList which contains median similarity values of all types chromosomes
      */
-    private ArrayList<Pair<Double, Boolean>> averageSimilarityValues = new ArrayList<>();
+    private ArrayList<Pair<String, Double>> medianSimilarityValues = new ArrayList<>();
+
+    /**
+     * Count of chromosomes which have minimum 98% of similarity
+     */
+    private int highSimilarityChromosomeCount = 0;
+
+    /**
+     * Count of chromosomes which have minimum 45% but not less than 98% of similarity
+     */
+    private int middleSimilarityChromosomeCount = 0;
+
+    /**
+     * Count of chromosomes which have less than 45% of similarity
+     */
+    private int nonSimilarityChromosomeCount = 0;
 
     /**
      * Constructor of this class from List of gene comparison results
@@ -85,168 +66,75 @@ public class GeneComparisonResultAnalyzer {
      */
     @Override
     public String toString() {
+        StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
 
-        // pass through the array with average values of chromosome similarity
-        for (int i = 0; i < averageSimilarityValues.size(); i++) {
-            if (averageSimilarityValues.get(i) != null) {
-                // if these persons are parent and child, then return String with name of method and percentage of similarity
-                if (averageSimilarityValues.get(i).getValue()) {
-                    return getString(i);
-                }
-            }
+        for (Pair<String, Double> medianSimilarityValue : medianSimilarityValues) {
+            result.append("Name of chromosome: "
+                    + medianSimilarityValue.getKey()
+                    +". "
+                    + "Similarity percentage: "
+                    + medianSimilarityValue.getValue() + "\n");
         }
 
-        // if these persons are not parent and child, then build a String with a message of it
-        // and data of average similarity percentages for each type of chromosome
-        String result ="Persons under study are not parent and child.\n";
+        result.append("Count of chromosomes with 98% similarity: "
+                + highSimilarityChromosomeCount + "\n"
+                + "Count of chromosomes with 45% similarity: "
+                + middleSimilarityChromosomeCount + "\n"
+                +"Count of dissimilar chromosomes: "
+                + nonSimilarityChromosomeCount + "\n"
+        );
 
-        if (averageSimilarityValues.get(0) != null) {
-            result += "The average percentage of similarity of mitochondrial chromosomes - "
-                    + averageSimilarityValues.get(0).getKey() +"\n";
-
+        if ((highSimilarityChromosomeCount + middleSimilarityChromosomeCount) > nonSimilarityChromosomeCount ) {
+            result.append("These persons are child and parent.");
         }
-
-        if (averageSimilarityValues.get(1) != null) {
-            result += "The average percentage of similarity of X chromosomes - "
-                    + averageSimilarityValues.get(1).getKey() +"\n";
-
-        }
-
-        if (averageSimilarityValues.get(2) != null) {
-            result += "The average percentage of similarity of autosomal chromosomes - "
-                    + averageSimilarityValues.get(2).getKey();
-
-        }
-
-        return result;
-    }
-
-
-    /**
-     * Method which returns average similarity of the type of chromosome and this type.
-     * If the persons are not child and parent, return maximum average similarity and type of chromosome which have this value
-     * @return Pair<ChromosomeType, Double> - type of chromosome and average similarity value
-     */
-    public Pair<String, Double> getAverageSimilarity() {
-        if ((averageSimilarityValues.get(0) != null) && (averageSimilarityValues.get(0).getValue())) {
-            return new Pair<>(ChromosomeType.MT_CHROMOSOME.toString(), averageSimilarityValues.get(0).getKey());
-        }
-
-        else if ((averageSimilarityValues.get(1) != null) && (averageSimilarityValues.get(1).getValue())) {
-            return new Pair<>(ChromosomeType.X_CHROMOSOME.toString(), averageSimilarityValues.get(1).getKey());
-        }
-
-        else if ((averageSimilarityValues.get(2) != null) && (averageSimilarityValues.get(2).getValue())) {
-            return new Pair<>(ChromosomeType.AUTOSOMAL_CHROMOSOME.toString(), averageSimilarityValues.get(2).getKey());
-        }
-
         else {
-            ChromosomeType maxType = ChromosomeType.MT_CHROMOSOME;
-            Double maxAverageValue = -1d;
-            for (int i = 0; i < averageSimilarityValues.size(); i++) {
-                if ((averageSimilarityValues.get(i) != null)
-                        && (Double.compare(averageSimilarityValues.get(i).getKey(), maxAverageValue) > 0)) {
-                    maxType = ChromosomeType.values()[i];
-                    maxAverageValue = averageSimilarityValues.get(i).getKey();
-                }
-            }
-            return new Pair<>(maxType.toString(), maxAverageValue);
+            result.append("These persons are not child and parent.");
         }
+
+        return result.toString();
     }
 
 
     /**
-     * This method return a string with results of our analysis
-     * @param i - number of the number of the required sample results
-     * @return required string with results of analysis
+     * Method that answers the question of whether the people studied are a parent and child
+     * @return true if they are parent and child, else return false
      */
-    private String getString(int i) {
-        switch (i) {
-            case 0:
-                return "Criterion of comparison of mitochondrial chromosomes.\n"
-                        +"Persons under study are parent and child.\n"
-                        +"The average percentage of similarity - "
-                        + averageSimilarityValues.get(i).getKey();
-
-            case 1:
-                return "Criterion of comparison of X chromosomes.\n"
-                        +"Persons under study are parent and child.\n"
-                        +"The average percentage of similarity - "
-                        + averageSimilarityValues.get(i).getKey();
-
-            case 2:
-                return "Criterion of comparison of autosomal chromosomes.\n"
-                        +"Persons under study are parent and child.\n"
-                        +"The average percentage of similarity - "
-                        + averageSimilarityValues.get(i).getKey();
-
-            default :
-                return "";
-        }
+    public boolean areParentAndChild() {
+        return ((highSimilarityChromosomeCount + middleSimilarityChromosomeCount) > nonSimilarityChromosomeCount);
     }
 
     /**
      * Method which analyze results of comparison of two gene
      */
     private void analyze() {
+        // similarity percentages of each chromosome
+        HashMap<String, ArrayList<Double>> chromosomeSimilarities = new HashMap<>();
 
-        for (int i =0 ; i < 3; i++) {
-            averageSimilarityValues.add(null);
-        }
-
-        // average similarity and count of mitochondrial chromosomes
-        Double MTChrAverageSimilarity = 0.0;
-        int MTChrCount = 0;
-
-        // average similarity and count of X chromosomes
-        Double XChrAverageSimilarity = 0.0;
-        int XChrCount = 0;
-
-        // average similarity and count of autosomal chromosomes
-        Double autosomalChrAverageSimilarity = 0.0;
-        int autosomalChrCount = 0;
-
-        // for each gene comparison result
+        //find it
         for (GeneComparisonResult geneComparisonResult : geneComparisonResults) {
-            if (geneComparisonResult.getChromName().equals(MT_CHR_NAME_1)
-                    || geneComparisonResult.getChromName().equals(MT_CHR_NAME_2)) {
-                MTChrAverageSimilarity += analyzeChromosome(geneComparisonResult);
-                MTChrCount++;
-            }
-            else if (geneComparisonResult.getChromName().equals(X_CHR_NAME_1)
-                    || geneComparisonResult.getChromName().equals(X_CHR_NAME_2)) {
-                XChrAverageSimilarity += analyzeChromosome(geneComparisonResult);
-                XChrCount++;
+            if (chromosomeSimilarities.containsKey(geneComparisonResult.getChromName())) {
+                chromosomeSimilarities.get(geneComparisonResult.getChromName()).add(analyzeChromosome(geneComparisonResult));
             }
             else {
-                autosomalChrAverageSimilarity +=analyzeChromosome(geneComparisonResult);
-                autosomalChrCount++;
+                chromosomeSimilarities.put(geneComparisonResult.getChromName(), new ArrayList<>());
+                chromosomeSimilarities.get(geneComparisonResult.getChromName()).add(analyzeChromosome(geneComparisonResult));
             }
         }
 
-        // adding of analysis results into ArrayList(field of class)
-        if (MTChrCount > 0) {
-            averageSimilarityValues.set(
-                    0,
-                    new Pair<>(MTChrAverageSimilarity / MTChrCount,
-                            ((MTChrAverageSimilarity / MTChrCount) >= MT_PERCENTAGE))
-            );
-        }
-
-        if (XChrCount > 0) {
-            averageSimilarityValues.set(
-                    1,
-                    new Pair<>(XChrAverageSimilarity / XChrCount,
-                            ((XChrAverageSimilarity / XChrCount) >= X_PERCENTAGE))
-            );
-        }
-
-        if (autosomalChrCount > 0) {
-            averageSimilarityValues.set(
-                    2,
-                    new Pair<>(autosomalChrAverageSimilarity / autosomalChrCount,
-                            ((autosomalChrAverageSimilarity / autosomalChrCount) >= AUTOSOMAL_PERCENTAGE))
-            );
+        // finding median similarity and assessment of each chromosome
+        Set<Map.Entry<String, ArrayList<Double>>> set = chromosomeSimilarities.entrySet();
+        for (Map.Entry<String, ArrayList<Double>> s : set) {
+            Pair<String, Double> chromosomeSimilarity = new Pair(s.getKey(), getMedianSimilarity(s.getValue()));
+            medianSimilarityValues.add(chromosomeSimilarity);
+            if (chromosomeSimilarity.getValue() >= HIGH_PERCENTAGE) {
+                highSimilarityChromosomeCount++;
+            }
+            else if (chromosomeSimilarity.getValue() > MIDDLE_PERCENTAGE) {
+                middleSimilarityChromosomeCount++;
+            }
+            else {
+                nonSimilarityChromosomeCount++;
+            }
         }
     }
 
@@ -258,6 +146,27 @@ public class GeneComparisonResultAnalyzer {
     private Double analyzeChromosome(GeneComparisonResult geneComparisonResult) {
         return (100d - ((double)geneComparisonResult.getDifference()
                 / (double)geneComparisonResult.getSequenceLen()) *100d);
+    }
+
+    /**
+     * Method which find a median value of similarities
+     * @param similarities ArrayList of similarities of the chromosome
+     * @return median value of similarities
+     */
+    private Double getMedianSimilarity(ArrayList<Double> similarities) {
+        // sort ArrayList of similarities
+        Collections.sort(similarities);
+
+        // if the number of elements is odd, then we take the middle element
+        if (similarities.size() % 2 != 0) {
+            return similarities.get(similarities.size() / 2);
+        }
+
+        // else return half of the sum of the two middle elements of the array
+        else {
+            return ((similarities.get(similarities.size() / 2) + similarities.get(similarities.size() / 2 - 1)) / 2d);
+        }
+
     }
 
 }

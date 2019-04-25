@@ -18,6 +18,11 @@ import java.util.List;
 public class GenomeComparator {
 
     /**
+     * Unknown nucleotide symbol.
+     */
+    private static final char UNKNOWN_NUCLEOTIDE = '*';
+
+    /**
      * Genome of the first person.
      */
     private List<GenomeRegion> firstPersonGenome_;
@@ -128,7 +133,7 @@ public class GenomeComparator {
                     firstPersonGenome_.get(i).getChromName(),
                     firstPersonGenome_.get(i).getStart(),
                     table[f.length()][s.length()],
-                    Math.max(f.length(), s.length())), table)
+                    Math.min(f.length(), s.length())), table)
             );
         }
         return result;
@@ -197,8 +202,41 @@ public class GenomeComparator {
      *                         is thrown in {@link GeneComparisonResult}.
      */
     private GeneComparisonResult lDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
-        String f = first.getNucleotideSequence();
-        String s = second.getNucleotideSequence();
+        String fseq = first.getNucleotideSequence();
+        String sseq = second.getNucleotideSequence();
+
+        // delete unknown nucleotides from both genome strings
+        StringBuilder firstGenome = new StringBuilder();
+        StringBuilder secondGenome = new StringBuilder();
+        for (int i = 0; i < Math.min(fseq.length(), sseq.length()); i++) {
+            // add nucleotide to the result sequence if
+            // both nucleotides were correctly processed by the
+            // sequencer
+            if (!isUnknownNucleotide(fseq.charAt(i))
+                && !isUnknownNucleotide(sseq.charAt(i))) {
+                firstGenome.append(fseq.charAt(i));
+                secondGenome.append(sseq.charAt(i));
+            }
+        }
+
+        // for the longest sequence check thee ending
+        if (firstGenome.length() < secondGenome.length()) {
+            for (int i = fseq.length(); i < sseq.length(); i++) {
+                if (!isUnknownNucleotide(sseq.charAt(i))) {
+                    secondGenome.append(i);
+                }
+            }
+        } else {
+            for (int i = sseq.length(); i < fseq.length(); i++) {
+                if (!isUnknownNucleotide(fseq.charAt(i))) {
+                    firstGenome.append(i);
+                }
+            }
+        }
+
+        // save new genome sequences
+        String f = firstGenome.toString(),
+            s = secondGenome.toString();
 
         // table for the further usage
         int[] table = new int[s.length() + 1];
@@ -216,8 +254,7 @@ public class GenomeComparator {
                 // and table[l - 1][k - 1] + (f.charAt(l) == s.charAt(k)
                 current[k] = Math.min(
                     Math.min(current[k - 1] + 1, table[k] + 1),
-                    Math.min(table[k] + 1, table[k - 1] + ((f.charAt(l - 1) == s.charAt(k - 1)
-                            && (f.charAt(l - 1) != '*') && (s.charAt(k - 1) != '*')) ? 0 : 1)));
+                    Math.min(table[k] + 1, table[k - 1] + ((f.charAt(l - 1) == s.charAt(k - 1)) ? 0 : 1)));
             }
             table = Arrays.copyOf(current, current.length);
         }
@@ -225,7 +262,7 @@ public class GenomeComparator {
             first.getChromName(),
             first.getStart(),
             current[s.length()],
-            Math.max(f.length(), s.length())
+            Math.min(f.length(), s.length())
         );
     }
 
@@ -248,6 +285,15 @@ public class GenomeComparator {
             default:
                 return '*';
         }
+    }
+
+    /**
+     * Check if nucleotide wasn't processed by sequencer.
+     * @param nucleotide Nucleotide to check
+     * @return True, if nucleotide wasn't processed by sequencer, false otherwise.
+     */
+    private static boolean isUnknownNucleotide(char nucleotide) {
+        return nucleotide == UNKNOWN_NUCLEOTIDE;
     }
 
     /**

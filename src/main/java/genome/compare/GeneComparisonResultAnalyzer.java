@@ -28,9 +28,9 @@ public class GeneComparisonResultAnalyzer {
     private List<GeneComparisonResult> geneComparisonResults;
 
     /**
-     * ArrayList which contains median similarity values of all types chromosomes
+     * ArrayList which contains average similarity values of all types chromosomes
      */
-    private ArrayList<Pair<String, Double>> medianSimilarityValues = new ArrayList<>();
+    private ArrayList<Pair<String, Double>> averageSimilarityValues = new ArrayList<>();
 
     /**
      * Count of chromosomes which have minimum 98% of similarity
@@ -68,7 +68,7 @@ public class GeneComparisonResultAnalyzer {
     public String toString() {
         StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
 
-        for (Pair<String, Double> medianSimilarityValue : medianSimilarityValues) {
+        for (Pair<String, Double> medianSimilarityValue : averageSimilarityValues) {
             result.append("Name of chromosome: "
                     + medianSimilarityValue.getKey()
                     +". "
@@ -124,8 +124,8 @@ public class GeneComparisonResultAnalyzer {
         // finding median similarity and assessment of each chromosome
         Set<Map.Entry<String, ArrayList<Double>>> set = chromosomeSimilarities.entrySet();
         for (Map.Entry<String, ArrayList<Double>> s : set) {
-            Pair<String, Double> chromosomeSimilarity = new Pair(s.getKey(), getMedianSimilarity(s.getValue()));
-            medianSimilarityValues.add(chromosomeSimilarity);
+            Pair<String, Double> chromosomeSimilarity = new Pair(s.getKey(), getAverageSimilarity(s.getValue()));
+            averageSimilarityValues.add(chromosomeSimilarity);
             if (chromosomeSimilarity.getValue() >= HIGH_PERCENTAGE) {
                 highSimilarityChromosomeCount++;
             }
@@ -149,24 +149,16 @@ public class GeneComparisonResultAnalyzer {
     }
 
     /**
-     * Method which find a median value of similarities
+     * Method which find an average value of similarities
      * @param similarities ArrayList of similarities of the chromosome
-     * @return median value of similarities
+     * @return average value of similarities
      */
-    private Double getMedianSimilarity(ArrayList<Double> similarities) {
-        // sort ArrayList of similarities
-        Collections.sort(similarities);
-
-        // if the number of elements is odd, then we take the middle element
-        if (similarities.size() % 2 != 0) {
-            return similarities.get(similarities.size() / 2);
+    private Double getAverageSimilarity(ArrayList<Double> similarities) {
+        double sum = 0.0;
+        for (Double similarity : similarities) {
+            sum += similarity;
         }
-
-        // else return half of the sum of the two middle elements of the array
-        else {
-            return ((similarities.get(similarities.size() / 2) + similarities.get(similarities.size() / 2 - 1)) / 2d);
-        }
-
+        return sum / similarities.size();
     }
 
 }

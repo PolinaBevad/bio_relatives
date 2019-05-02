@@ -22,6 +22,17 @@ public class GenomeConstructor implements GenomeAssembler {
     private static final String NUCLEOTIDES = "agct";
 
     /**
+     * Unknown nucleotide symbol.
+     */
+    private static final char UNKNOWN_NUCLEOTIDE = '*';
+
+    /**
+     * Maximum length of the nucleotide sequence to be stored
+     * in the genome region.
+     */
+    private static final int MAX_NUCLEOTIDE_SEQ_LEN = 256;
+
+    /**
      * input HashMap of SamRecords from which we will construct a genome
      */
     private HashMap<String, ArrayList<SAMRecord>> samRecords;
@@ -57,7 +68,7 @@ public class GenomeConstructor implements GenomeAssembler {
      * @param BEDFileName name of input BED file
      * @throws GenomeException if input files are invalid
      */
-   public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
+    public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
         try {
             this.exons = new BEDParser(BEDFileName).parse();
             this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
@@ -67,7 +78,7 @@ public class GenomeConstructor implements GenomeAssembler {
             ibfex.initCause(ex);
             throw ibfex;
         }
-   }
+    }
 
     /**
      * Assembly a genome from SAMRecords
@@ -82,11 +93,12 @@ public class GenomeConstructor implements GenomeAssembler {
             List<GenomeRegion> genomeRegions = new ArrayList<>();
             // we pass through each region from the BED file(each exon)
             for (int i = 0; i < exons.size(); i++) {
-
                 // array of qualities of nucleotides from the current region
-                byte[] qualities = new byte[exons.get(i).getEndPos() - exons.get(i).getStartPos()];
+                byte[] qualities = new byte[MAX_NUCLEOTIDE_SEQ_LEN];
                 // String of nucleotides from the current region
                 StringBuilder nucleotides = new StringBuilder();
+                // start position for each new smaller genome region
+                int currentStartPos = exons.get(i).getStartPos();
 
                 // we pass from start position to end position of current region
                 for (int j = exons.get(i).getStartPos(); j < exons.get(i).getEndPos(); j++) {
@@ -122,14 +134,39 @@ public class GenomeConstructor implements GenomeAssembler {
                         }
                     }
 
-                    // add the best nucleotide into the nucleotide siquence from the current region
-                    nucleotides.append(bestNucleotide);
-                    // add the quality of this nucleotide
-                    qualities[j - exons.get(i).getStartPos()] = bestQuality;
+                    if (nucleotides.length() < MAX_NUCLEOTIDE_SEQ_LEN) {
+                        // add the best nucleotide into the nucleotide sequence from the current region
+                        nucleotides.append(bestNucleotide);
+                        // add the quality of this nucleotide
+                        qualities[j - currentStartPos] = bestQuality;
+                    } else {
+                        // check if current nucleotide sequence is not empty
+                       // if (isNotEmptyNucleotideSequence(nucleotides.toString())) {
+                            // add the current region into output List
+                            genomeRegions.add(new GenomeRegion(
+                                    exons.get(i).getChromosomeName(),
+                                    currentStartPos,
+                                    nucleotides.toString().toUpperCase(),
+                                    qualities
+                            ));
+                        //} // otherwise don't add it to the array of genome regions.
+                        // re-set th values of the variables
+                        nucleotides.setLength(0);
+                        Arrays.fill(qualities, (byte)0);
+                        currentStartPos = j + 1;
+                    }
                 }
 
-                // add the current region into output List
-                genomeRegions.add(new GenomeRegion(exons.get(i).getChromosomeName(), exons.get(i).getStartPos(), nucleotides.toString().toUpperCase(), qualities));
+                // check if current nucleotide sequence is not empty
+                //if (isNotEmptyNucleotideSequence(nucleotides.toString())) {
+                    // add the current region into output List
+                    genomeRegions.add(new GenomeRegion(
+                            exons.get(i).getChromosomeName(),
+                            currentStartPos,
+                            nucleotides.toString().toUpperCase(),
+                            Arrays.copyOf(qualities, nucleotides.length()))
+                    );
+                //}
             }
             return genomeRegions;
         } catch (NullPointerException | IllegalArgumentException ex) {
@@ -208,5 +245,19 @@ public class GenomeConstructor implements GenomeAssembler {
         else {
             return 0;
         }
+    }
+
+    /**
+     * Checks if the input nucleotide sequence is empty (consists only of *) or not.
+     * @param sequence Nucleotide sequence.
+     * @return True, if other than '*' symbols appear, false otherwise.
+     */
+    private static boolean isNotEmptyNucleotideSequence(String sequence) {
+        for (char ch: sequence.toCharArray()) {
+            if (ch != UNKNOWN_NUCLEOTIDE) {
+                return true;
+            }
+        }
+        return false;
     }
 }

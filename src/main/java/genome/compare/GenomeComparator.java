@@ -2,6 +2,7 @@ package genome.compare;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
+import org.apache.commons.lang3.StringUtils;
 import util.Pair;
 
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ import java.util.List;
  * @author Vladislav Marchenko
  */
 public class GenomeComparator {
+
+    /**
+     * Unknown nucleotide symbol.
+     */
+    private static final char UNKNOWN_NUCLEOTIDE = '*';
 
     /**
      * Genome of the first person.
@@ -44,9 +50,9 @@ public class GenomeComparator {
         // validate the regions
         if (validateRegions()) {
             throw new GenomeException(this.getClass().getName(),
-                "GenomeComparator",
-                "first, second",
-                "failed the validation");
+                    "GenomeComparator",
+                    "first, second",
+                    "failed the validation");
         }
     }
 
@@ -60,7 +66,13 @@ public class GenomeComparator {
      */
     public List<GeneComparisonResult> LevenshteinDistance() throws GenomeException {
         ArrayList<GeneComparisonResult> result = new ArrayList<>();
-        for (int i = 0; i < firstPersonGenome_.size(); i++) {
+        for (int i = 0; i < Math.min(firstPersonGenome_.size(), secondPersonGenome_.size()); i++) {
+            // skip only * sequences
+            if (StringUtils.containsOnly(firstPersonGenome_.get(i).getNucleotideSequence(), UNKNOWN_NUCLEOTIDE)
+                    || StringUtils.containsOnly(secondPersonGenome_.get(i).getNucleotideSequence(), UNKNOWN_NUCLEOTIDE)) {
+                continue;
+            }
+            // compare two genomes
             result.add(lDistance(firstPersonGenome_.get(i), secondPersonGenome_.get(i)));
         }
         return result;
@@ -73,10 +85,9 @@ public class GenomeComparator {
      * the information about differences between all {@link GenomeRegion}.
      * @throws GenomeException if sizes of strings from GenomeRegions are not equal.
      */
-    @Deprecated
     public List<GeneComparisonResult> HemmingDistance() throws GenomeException {
         ArrayList<GeneComparisonResult> result = new ArrayList<>();
-        for (int i = 0; i < firstPersonGenome_.size(); i++) {
+        for (int i = 0; i < Math.min(firstPersonGenome_.size(), secondPersonGenome_.size()); i++) {
             result.add(hDistance(firstPersonGenome_.get(i), secondPersonGenome_.get(i)));
         }
         return result;
@@ -119,16 +130,16 @@ public class GenomeComparator {
                     // table[l][k-1] + 1, table[l-1][k] + 1
                     // and table[l - 1][k - 1] + (f.charAt(l) == s.charAt(k)
                     table[l][k] = Math.min(
-                        Math.min(table[l][k - 1] + 1, table[l - 1][k] + 1),
-                        Math.min(table[l][k - 1] + 1, table[l - 1][k - 1] + (f.charAt(l - 1) == s.charAt(k - 1) ? 0 : 1)));
+                            Math.min(table[l][k - 1] + 1, table[l - 1][k] + 1),
+                            Math.min(table[l][k - 1] + 1, table[l - 1][k - 1] + (f.charAt(l - 1) == s.charAt(k - 1) ? 0 : 1)));
                 }
             }
             result.add(new Pair<>(
-                new GeneComparisonResult(
-                    firstPersonGenome_.get(i).getChromName(),
-                    firstPersonGenome_.get(i).getStart(),
-                    table[f.length()][s.length()],
-                    Math.max(f.length(), s.length())), table)
+                    new GeneComparisonResult(
+                            firstPersonGenome_.get(i).getChromName(),
+                            firstPersonGenome_.get(i).getStart(),
+                            table[f.length()][s.length()],
+                            Math.min(f.length(), s.length())), table)
             );
         }
         return result;
@@ -197,8 +208,48 @@ public class GenomeComparator {
      *                         is thrown in {@link GeneComparisonResult}.
      */
     private GeneComparisonResult lDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
-        String f = first.getNucleotideSequence();
-        String s = second.getNucleotideSequence();
+        String fseq = first.getNucleotideSequence();
+        String sseq = second.getNucleotideSequence();
+
+        // delete unknown nucleotides from both genome strings
+        int deletedNucleotidesNum = 0;
+        StringBuilder firstGenome = new StringBuilder();
+        StringBuilder secondGenome = new StringBuilder();
+        for (int i = 0; i < Math.min(fseq.length(), sseq.length()); i++) {
+            // add nucleotide to the result sequence if
+            // both nucleotides were correctly processed by the
+            // sequencer
+            if (!isUnknownNucleotide(fseq.charAt(i))
+                    && !isUnknownNucleotide(sseq.charAt(i))) {
+                firstGenome.append(fseq.charAt(i));
+                secondGenome.append(sseq.charAt(i));
+            } else {
+                deletedNucleotidesNum++;
+            }
+        }
+
+        // for the longest sequence check thee ending
+        if (firstGenome.length() < secondGenome.length()) {
+            for (int i = fseq.length(); i < sseq.length(); i++) {
+                if (!isUnknownNucleotide(sseq.charAt(i))) {
+                    secondGenome.append(i);
+                } else {
+                    deletedNucleotidesNum++;
+                }
+            }
+        } else {
+            for (int i = sseq.length(); i < fseq.length(); i++) {
+                if (!isUnknownNucleotide(fseq.charAt(i))) {
+                    firstGenome.append(i);
+                } else {
+                    deletedNucleotidesNum++;
+                }
+            }
+        }
+
+        // save new genome sequences
+        String f = firstGenome.toString(),
+                s = secondGenome.toString();
 
         // table for the further usage
         int[] table = new int[s.length() + 1];
@@ -215,18 +266,31 @@ public class GenomeComparator {
                 // table[l][k-1] + 1, table[l-1][k] + 1
                 // and table[l - 1][k - 1] + (f.charAt(l) == s.charAt(k)
                 current[k] = Math.min(
-                    Math.min(current[k - 1] + 1, table[k] + 1),
-                    Math.min(table[k] + 1, table[k - 1] + ((f.charAt(l - 1) == s.charAt(k - 1)
-                            && (f.charAt(l - 1) != '*') && (s.charAt(k - 1) != '*')) ? 0 : 1)));
+                        Math.min(current[k - 1] + 1, table[k] + 1),
+                        Math.min(table[k] + 1, table[k - 1] + ((f.charAt(l - 1) == s.charAt(k - 1)) ? 0 : 1)));
             }
             table = Arrays.copyOf(current, current.length);
         }
+        /*
+         * diff = (diff_leventshtein + num_of_*) / len
+         */
         return new GeneComparisonResult(
+                first.getChromName(),
+                first.getStart(),
+                current[s.length()]
+                        + deletedNucleotidesNum,
+                Math.max(fseq.length(), sseq.length())
+        );
+
+        /*
+         * diff = (diff_leventshtein) / len
+         */
+        /*return new GeneComparisonResult(
             first.getChromName(),
             first.getStart(),
             current[s.length()],
-            Math.max(f.length(), s.length())
-        );
+            Math.max(fseq.length(), sseq.length())
+        );*/
     }
 
     /**
@@ -248,6 +312,15 @@ public class GenomeComparator {
             default:
                 return '*';
         }
+    }
+
+    /**
+     * Check if nucleotide wasn't processed by sequencer.
+     * @param nucleotide Nucleotide to check
+     * @return True, if nucleotide wasn't processed by sequencer, false otherwise.
+     */
+    private static boolean isUnknownNucleotide(char nucleotide) {
+        return nucleotide == UNKNOWN_NUCLEOTIDE;
     }
 
     /**

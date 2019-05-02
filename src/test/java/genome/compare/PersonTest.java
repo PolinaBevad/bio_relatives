@@ -58,6 +58,11 @@ public class PersonTest {
     private final static  String PATH_TO_MOM_BAM_3 = "src/test/resources/genome/compare/testMother4.bam";
 
     /**
+     * Path to the first test BAM file
+     */
+    private final static  String PATH_TO_SON_BAM_3 = "src/test/resources/genome/compare/testSon4.bam";
+
+    /**
      * Path to the first test BED file
      */
     private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct2.bed";
@@ -66,10 +71,10 @@ public class PersonTest {
     @Test
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         BEDParser bedParser = new BEDParser(PATH_TO_BED);
-        BAMParser bamParser = new BAMParser(PATH_TO_SON_BAM_1, bedParser.parse());
+        BAMParser bamParser = new BAMParser(PATH_TO_SON_BAM_3, bedParser.parse());
         HashMap<String, ArrayList<SAMRecord>> bam1 = bamParser.parse();
         ArrayList<BEDParser.BEDFeature> bed = bedParser.parse();
-        HashMap<String, ArrayList<SAMRecord>> bam2 = new BAMParser(PATH_TO_MOM_BAM_1, bedParser.parse()).parse();
+        HashMap<String, ArrayList<SAMRecord>> bam2 = new BAMParser(PATH_TO_MOM_BAM_3, bedParser.parse()).parse();
         GenomeConstructor c = new GenomeConstructor(bam1, bed);
         Person son = new Person(
                 c.assembly()

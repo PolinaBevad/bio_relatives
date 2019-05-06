@@ -67,7 +67,7 @@ public class PersonTest {
      */
     private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct2.bed";
 
-    @Ignore
+   /* @Ignore
     @Test
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         BEDParser bedParser = new BEDParser(PATH_TO_BED);
@@ -84,5 +84,5 @@ public class PersonTest {
 
         );
         System.out.println(son.compareGenomes(mother).toString());
-    }
+    }*/
 }

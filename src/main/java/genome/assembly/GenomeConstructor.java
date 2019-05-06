@@ -33,9 +33,9 @@ public class GenomeConstructor implements GenomeAssembler {
     private static final int MAX_NUCLEOTIDE_SEQ_LEN = 256;
 
     /**
-     * input HashMap of SamRecords from which we will construct a genome
+     * input ArrayList of SamRecords from which we will construct a genome
      */
-    private HashMap<String, ArrayList<SAMRecord>> samRecords;
+    private ArrayList<SAMRecord> samRecords;
 
     /**
      * input ArrayList of genome regions from BED file
@@ -45,11 +45,11 @@ public class GenomeConstructor implements GenomeAssembler {
     /**
      * Constructor of class GenomeConstructor from samRecords and exons
      *
-     * @param samRecords input HashMap of SamRecords from which we will construct a genome
-     * @param exons      input ArrayList of genome regions from BED file
+     * @param samRecords input ArrayList of SamRecords from which we will construct a genome
+     * @param exons      input ArrayList of genome regions of the gene
      * @throws GenomeException if input data is empty
      */
-    public GenomeConstructor(HashMap<String, ArrayList<SAMRecord>> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws GenomeException {
+    public GenomeConstructor(ArrayList<SAMRecord> samRecords, ArrayList<BEDParser.BEDFeature> exons) throws GenomeException {
         this.samRecords = samRecords;
         if (samRecords.isEmpty()) {
             throw new GenomeException(this.getClass().getName(), "GenomeConstructor", "samRecords", "empty");
@@ -58,25 +58,6 @@ public class GenomeConstructor implements GenomeAssembler {
         this.exons = exons;
         if (exons.isEmpty()) {
             throw new GenomeException(this.getClass().getName(), "GenomeConstructor", "exons", "empty");
-        }
-    }
-
-    /**
-     * Constructor of class GenomeConstructor from BAM and BED files
-     *
-     * @param BAMFileName name of input BAM file
-     * @param BEDFileName name of input BED file
-     * @throws GenomeException if input files are invalid
-     */
-    public GenomeConstructor(String BAMFileName, String BEDFileName) throws GenomeException {
-        try {
-            this.exons = new BEDParser(BEDFileName).parse();
-            this.samRecords = new BAMParser(BAMFileName, new BEDParser(BEDFileName).parse()).parse();
-        } catch (GenomeFileException ex) {
-            // if catch an exception then create our InvalidGenomeAssemblyException exception,
-            GenomeException ibfex = new GenomeException(this.getClass().getName(), "GenomeConstructor", ex.getMessage());
-            ibfex.initCause(ex);
-            throw ibfex;
         }
     }
 
@@ -205,7 +186,7 @@ public class GenomeConstructor implements GenomeAssembler {
         }
         // for each read get the
         // nucleotide and it's quality if it contains it
-        for (SAMRecord s: samRecords.get(chromName)) {
+        for (SAMRecord s: samRecords) {
             if ((inRange(position, s.getStart(), s.getEnd()))) {
                 int pos = position - s.getStart();
                 char n = ' ';

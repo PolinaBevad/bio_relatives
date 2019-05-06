@@ -42,7 +42,7 @@ public class Person {
      * @throws GenomeException if exception occurs while working with the BED and BAM files.
      */
     public Person(String bamFileName, String bedFileName) throws GenomeException {
-        this.genome_ = new GenomeConstructor(bamFileName, bedFileName).assembly();
+        //this.genome_ = new GenomeConstructor(bamFileName, bedFileName).assembly();
     }
 
     /**

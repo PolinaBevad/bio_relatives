@@ -44,7 +44,10 @@ public class GenomeComparatorTest {
      */
     private static final String SECOND_SEQ = "GCCCACGCGCAGCCAAATTTCGAACAGGTT-AGATTACAGAGGGCTAGACGGGCG-CAC--TGGGA-CGTATGAATGTTC";
 
-
+    /**
+     * name of gene
+     **/
+    private static final String GENE_NAME ="GENE";
 
     /**
      * Test array of genome REGIONS.
@@ -63,10 +66,10 @@ public class GenomeComparatorTest {
                 squal[i] = 100;
             }
 
-            REGIONS[0] = new GenomeRegion("chr1", 0, FSEQ, fqual);
-            REGIONS[1] = new GenomeRegion("chr2", 0, SSEQ, squal);
-            REGIONS[2] = new GenomeRegion("chr2", 0, SSEQ, squal);
-            REGIONS[3] = new GenomeRegion("chr1", 0, SSEQ, squal);
+            REGIONS[0] = new GenomeRegion("chr1", 0, FSEQ, fqual, GENE_NAME);
+            REGIONS[1] = new GenomeRegion("chr2", 0, SSEQ, squal, GENE_NAME);
+            REGIONS[2] = new GenomeRegion("chr2", 0, SSEQ, squal, GENE_NAME);
+            REGIONS[3] = new GenomeRegion("chr1", 0, SSEQ, squal, GENE_NAME);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

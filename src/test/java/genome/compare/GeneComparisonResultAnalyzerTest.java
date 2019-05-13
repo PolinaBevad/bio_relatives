@@ -2,22 +2,48 @@ package genome.compare;
 
 import exception.GenomeException;
 
+import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
+import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;
 import util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for the {@link GeneComparisonResultAnalyzer} class.
+ * Tests for the {@link genome.compare.analyzis.GeneComparisonResultAnalyzer} class.
  *
  * @author Vladislav Marchenko
  */
 public class GeneComparisonResultAnalyzerTest {
     /**
+     * Name of gene
+     */
+    private final static String GENE_NAME_1 ="gene1";
+    /**
+     * Name of gene
+     */
+    private final static String GENE_NAME_2 ="gene2";
+    /**
+     * Name of gene
+     */
+    private final static String GENE_NAME_3 ="gene3";
+    /**
+     * Name of gene
+     */
+    private final static String GENE_NAME_4 ="gene4";
+    /**
+     * Name of gene
+     */
+    private final static String GENE_NAME_5 ="gene5";
+
+    /**
+     *
      * Name of X chromosome
      */
     private final static String X_CHR_NAME ="chrX";
@@ -76,18 +102,18 @@ public class GeneComparisonResultAnalyzerTest {
     private final static int POS = 138000;
 
     /**
-     * Test List of results
+     * Test HashMap of results
      */
-    private List<GeneComparisonResult> RESULTS_1 = new ArrayList<>();
+    private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_1 = new HashMap<>();
 
     /**
-     * Test List of results
+     * Test HashMap of results
      */
-    private List<GeneComparisonResult> RESULTS_2 = new ArrayList<>();
+    private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_2 = new HashMap<>();
     /**
      * Test empty input data
      */
-    private List<GeneComparisonResult> EMPTY_DATA = new ArrayList<>();
+    private HashMap<String, ArrayList<GeneComparisonResult>> EMPTY_DATA = new HashMap<>();
 
     /**
      * Check String with results of analysis
@@ -105,37 +131,23 @@ public class GeneComparisonResultAnalyzerTest {
             +"These persons are not child and parent.";
 
 
-    /**
-     * Check String with results of analysis
-     */
-    private final static String CHECK_STRING_2 = "Similarity percentage for each chromosome:\n"
-            +"Name of chromosome: chrX. Similarity percentage: "
-            + 98d + "\n"
-            +"Name of chromosome: chr3. Similarity percentage: "
-            + 90d + "\n"
-            +"Name of chromosome: chr2. Similarity percentage: "
-            + 44.99999999999999d + "\n"
-            +"Count of chromosomes with 98% similarity: 1\n"
-            +"Count of chromosomes with 45% similarity: 2\n"
-            +"Count of dissimilar chromosomes: 0\n"
-            +"These persons are child and parent.";
 
     @Before
     public void setUp() {
         try {
-            GeneComparisonResult geneComparisonResult1 = new GeneComparisonResult(MT_CHR_NAME, POS, DIFF_99, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult2 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1, POS, DIFF_80, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult3 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_2, SEQUENCE_LENGTH);
-            RESULTS_1.add(geneComparisonResult1);
-            RESULTS_1.add(geneComparisonResult2);
-            RESULTS_1.add(geneComparisonResult3);
+            GeneComparisonResult geneComparisonResult1 = new GeneComparisonResult(MT_CHR_NAME,GENE_NAME_1, POS, DIFF_99, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult2 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_1,GENE_NAME_2, POS, DIFF_80, SEQUENCE_LENGTH);
+            GeneComparisonResult geneComparisonResult3 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3,GENE_NAME_3, POS, DIFF_2, SEQUENCE_LENGTH);
+            ArrayList<GeneComparisonResult> arrayList = new ArrayList<>();
+            arrayList.add(geneComparisonResult1);
+            RESULTS_1.put(GENE_NAME_1, arrayList);
+            ArrayList<GeneComparisonResult> arrayList1 = new ArrayList<>();
+            arrayList1.add(geneComparisonResult2);
+            RESULTS_1.put(GENE_NAME_2, arrayList1);
+            ArrayList<GeneComparisonResult> arrayList2 = new ArrayList<>();
+            arrayList2.add(geneComparisonResult3);
+            RESULTS_1.put(GENE_NAME_3, arrayList2);
 
-            GeneComparisonResult geneComparisonResult4 = new GeneComparisonResult(X_CHR_NAME, POS, DIFF_2, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult5 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_3, POS, DIFF_10, SEQUENCE_LENGTH);
-            GeneComparisonResult geneComparisonResult6 = new GeneComparisonResult(AUTOSOMAL_CHR_NAME_2, POS, DIFF_55, SEQUENCE_LENGTH);
-            RESULTS_2.add(geneComparisonResult4);
-            RESULTS_2.add(geneComparisonResult5);
-            RESULTS_2.add(geneComparisonResult6);
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -154,11 +166,5 @@ public class GeneComparisonResultAnalyzerTest {
         assertEquals(geneComparisonResultAnalyzer.areParentAndChild(), false);
     }
 
-    @Test
-    public void AnalyzeOfParentAndChild() throws Exception {
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_2);
-        assertEquals(geneComparisonResultAnalyzer.toString(), CHECK_STRING_2);
-        assertEquals(geneComparisonResultAnalyzer.areParentAndChild(), true);
-    }
 
 }

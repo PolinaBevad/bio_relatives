@@ -20,7 +20,7 @@ public class BEDParserTest {
     /**
      * Path to non existent file.
      */
-    private final String pathToNonExistentFile = "/wrong/path/file.bed";
+    private static final String pathToNonExistentFile = "/wrong/path/file.bed";
 
     /**
      * Path to file with wrong extension.
@@ -96,28 +96,28 @@ public class BEDParserTest {
     @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithWrongStartEnd() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile1);
-        HashMap<String,ArrayList<BEDParser.BEDFeature>> result = parser.parse();
+        HashMap<String,ArrayList<BEDFeature>> result = parser.parse();
     }
 
     @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithWrongGenome() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile2);
-        HashMap<String, ArrayList<BEDParser.BEDFeature>> result = parser.parse();
+        HashMap<String, ArrayList<BEDFeature>> result = parser.parse();
     }
 
     @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithGeneContainsInTwoChromosomes() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile3);
-        HashMap<String, ArrayList<BEDParser.BEDFeature>> result = parser.parse();
+        HashMap<String, ArrayList<BEDFeature>> result = parser.parse();
     }
 
     @Test
     public void ParsingCorrectFile() throws Exception {
         BEDParser parser = new BEDParser(pathToCorrectFile);
-        HashMap<String,ArrayList<BEDParser.BEDFeature>> result = parser.parse();
-        Set<Map.Entry<String, ArrayList<BEDParser.BEDFeature>>> set = result.entrySet();
+        HashMap<String,ArrayList<BEDFeature>> result = parser.parse();
+        Set<Map.Entry<String, ArrayList<BEDFeature>>> set = result.entrySet();
         int i = 0;
-        for (Map.Entry<String, ArrayList<BEDParser.BEDFeature>> s : set) {
+        for (Map.Entry<String, ArrayList<BEDFeature>> s : set) {
             assertEquals(s.getKey(), correctGenome[i]);
             assertEquals(s.getValue().get(0).getChromosomeName(), correctName);
             assertEquals(s.getValue().get(0).getStartPos(), correctStart[i]);

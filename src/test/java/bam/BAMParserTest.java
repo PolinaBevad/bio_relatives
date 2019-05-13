@@ -72,7 +72,7 @@ public class BAMParserTest {
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDParser.BEDFeature>> exons;
+    private static HashMap<String, ArrayList<BEDFeature>> exons;
 
     @Before
     public void setUp() throws Exception {
@@ -81,34 +81,34 @@ public class BAMParserTest {
 
     @Test(expected = GenomeFileException.class)
     public void CreationFromPathToNonExistentFile() throws Exception {
-        BAMParser parser = new BAMParser(pathToNonExistentFile, exons.get(geneName1));
+        BAMParser parser = new BAMParser(pathToNonExistentFile);
     }
 
     @Test(expected = GenomeFileException.class)
     public void CreationFromPathToFileWithWrongExtension() throws Exception {
-        BAMParser parser = new BAMParser(pathToFileWithWrongExt, exons.get(geneName1));
+        BAMParser parser = new BAMParser(pathToFileWithWrongExt);
     }
 
     @Test
     public void CreationFromPathToCorrectFile() throws Exception {
-        BAMParser parser = new BAMParser(pathToCorrectFile, exons.get(geneName1));
+        BAMParser parser = new BAMParser(pathToCorrectFile);
     }
 
     @Test(expected = GenomeFileException.class)
     public void CreationFromPathToNotAFile() throws Exception {
-        BAMParser parser = new BAMParser(pathToNotAFile,exons.get(geneName1));
+        BAMParser parser = new BAMParser(pathToNotAFile);
     }
 
     @Test(expected = GenomeException.class)
     public void ParsingIncorrectFile() throws Exception {
-        BAMParser parser = new BAMParser(pathToIncorrectFile, exons.get(geneName1));
-        parser.parse();
+        BAMParser parser = new BAMParser(pathToIncorrectFile);
+        parser.parse(exons.get(geneName1));
     }
 
     @Test
     public void ParsingCorrectFile() throws Exception {
-        BAMParser parser = new BAMParser(pathToCorrectFile, exons.get(geneName2));
-        ArrayList<SAMRecord> samRecords = parser.parse();
+        BAMParser parser = new BAMParser(pathToCorrectFile);
+        ArrayList<SAMRecord> samRecords = parser.parse(exons.get(geneName2).get(0));
         for (int i = 0; i < samRecords.size(); i++) {
             assertEquals(samRecords.get(i).getSAMString(), checkArray[i]);
         }

@@ -12,12 +12,10 @@ public class GenomeException extends Exception {
     }
 
     public GenomeException(String cls, String method, String wrongField, String message) {
-        super("Error occurred in class [" + cls + "] " +
-            "in method [" + method + "]: field [" + wrongField + "] is [" + message + "].");
+        super("Error occurred in class [" + cls + "] " + "in method [" + method + "]: field [" + wrongField + "] is [" + message + "].");
     }
 
     public GenomeException(String cls, String method, String message) {
-        super("Error occurred in class [" + cls + "] " +
-            "in method [" + method + "]: message is [" + message + "].");
+        super("Error occurred in class [" + cls + "] " + "in method [" + method + "]: message is [" + message + "].");
     }
 }

@@ -1,12 +1,13 @@
-package genome.compare;
+package genome.compare.analyzis;
 
 import exception.GenomeException;
+import genome.compare.comparator.GenomeRegionComparator;
 
 /**
  * This class contains the results of the comparison of
  * two nucleotide sequences. Object of this class is a result
  * of comparison of two {@link genome.assembly.GenomeRegion}
- * made by {@link GenomeComparator}.
+ * made by {@link GenomeRegionComparator}.
  *
  * @author Sergey Khvatov
  */
@@ -16,25 +17,32 @@ public class GeneComparisonResult {
      * Name of the chromosome
      * which contains this nucleotide sequence.
      */
-    private String chrom_;
+    private String chrom;
 
     /**
      * Start position of the nucleotide sequence.
      */
-    private int start_pos_;
+    private int startPos;
 
     /**
      * The distance value that was calculated
-     * by the {@link GenomeComparator} methods.
+     * by the {@link GenomeRegionComparator} methods.
      */
-    private int difference_;
+    private int difference;
 
     /**
      * Contains the length of the
      * longest nucleotide sequence
      * among the compared.
      */
-    private int sequence_len_;
+    private int sequenceLen;
+
+    /**
+     * Contains the name of the gene,
+     * that is located in the chromosome
+     * in this region.
+     */
+    private String gene;
 
     /**
      * Default class constructor from name of the distance,
@@ -48,40 +56,41 @@ public class GeneComparisonResult {
      * @param len        Length of the nucl. seq.
      * @throws GenomeException if input values are lesser than 0 or the chromosome name is invalid.
      */
-    public GeneComparisonResult(String chrom, int pos, int difference, int len) throws GenomeException {
-        this.chrom_ = chrom;
+    public GeneComparisonResult(String chrom, String gene, int pos, int difference, int len) throws GenomeException {
+        this.chrom = chrom;
+        this.gene = gene;
 
         // check the position
         if (pos < 0) {
             throw new GenomeException("GenomeRegion", "pos", " < 0");
         }
-        this.start_pos_ = pos;
+        this.startPos = pos;
 
         // check the diff value
         if (difference < 0) {
             throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "difference", "is lesser than 0");
         }
-        difference_ = difference;
+        this.difference = difference;
 
         // check the len value
         if (len < 0) {
             throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "len", "is lesser than 0");
         }
-        sequence_len_ = len;
+        sequenceLen = len;
     }
 
     /**
      * @return The difference distance between two genomes.
      */
     public int getDifference() {
-        return difference_;
+        return difference;
     }
 
     /**
      * @return The length of the compared sequences.
      */
     public int getSequenceLen() {
-        return sequence_len_;
+        return sequenceLen;
     }
 
     /**
@@ -90,7 +99,7 @@ public class GeneComparisonResult {
      * @return Name of the chromosome.
      */
     public String getChromName() {
-        return chrom_;
+        return chrom;
     }
 
     /**
@@ -99,6 +108,13 @@ public class GeneComparisonResult {
      * @return Start position of the gene.
      */
     public int getStart() {
-        return start_pos_;
+        return startPos;
+    }
+
+    /**
+     * @return name of the gene that is stored in this region.
+     */
+    public String getGene() {
+        return gene;
     }
 }

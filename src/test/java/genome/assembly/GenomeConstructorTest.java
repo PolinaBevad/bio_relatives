@@ -1,15 +1,18 @@
 package genome.assembly;
 
 import bam.BAMParser;
+import bam.BEDFeature;
 import bam.BEDParser;
 import exception.GenomeException;
 import htsjdk.samtools.SAMRecord;
+import org.junit.Before;
 import org.junit.Test;
 import util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,14 +24,23 @@ import static org.junit.Assert.assertEquals;
 
 public class GenomeConstructorTest {
     /**
+     * name of gene from bed file
+     */
+    private static final String geneName1 = "SCYL3";
+
+    /**
+     * name of gene from bed file
+     */
+    private static final String geneName2 = "C1orf112";
+    /**
      * Empty ArrayList of SAMRecords
      */
-    private static final HashMap<String, ArrayList<SAMRecord>> EMPTY_SAMRECORDS = new HashMap<>();
+    private static final ArrayList<SAMRecord> EMPTY_SAMRECORDS = new ArrayList<>();
 
     /**
      * Empty ArrayLIst of exons
      */
-    private static final ArrayList<BEDParser.BEDFeature> EMPTY_EXONS = new ArrayList<>();
+    private static final ArrayList<BEDFeature> EMPTY_EXONS = new ArrayList<>();
 
     /**
      * Path to correct BED file
@@ -80,36 +92,39 @@ public class GenomeConstructorTest {
      */
     private static final byte[] CHECK_QUALITIES_2 = {56, 45, 46, 46, 71, 57, 52, 53, 41, 38, 40, 34, 33, 37, 37, 41, 37, 38, 50, 46, 33, 35, 41, 38, 43, 38, 44, 50, 38, 40, 53, 43, 47, 50, 61};
 
+    /**
+     * exons from bed file
+     */
+    private static Map<String, List<BEDFeature>> exons1;
 
-    @Test(expected = GenomeException.class)
-    public void CreationFromEmptySAMRecords() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(EMPTY_SAMRECORDS, new BEDParser(PATH_TO_CORRECT_BED).parse());
+    /**
+     * exons from bed file
+     */
+    private static Map<String, List<BEDFeature>> exons2;
+
+    /**
+     * exons from bed file
+     */
+    private static Map<String, List<BEDFeature>> exons3;
+
+    /**
+     * exons from bed file
+     */
+    private static Map<String, List<BEDFeature>> exons4;
+
+    @Before
+    public void setUp() throws Exception {
+        exons1 = new BEDParser(PATH_TO_BED_FILE_1).parse();
+        exons2 = new BEDParser(PATH_TO_BED_FILE_2).parse();
+        exons3 = new BEDParser(PATH_TO_CORRECT_BED).parse();
     }
 
-    @Test(expected = GenomeException.class)
-    public void CreationFromEmptyExons() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(new BAMParser(PATH_TO_CORRECT_BAM, new BEDParser(PATH_TO_CORRECT_BED).parse()).parse(), EMPTY_EXONS);
-    }
-
-    @Test(expected = GenomeException.class)
-    public void CreationFromInvalidBAMFile() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_INCORRECT_BAM, PATH_TO_CORRECT_BED);
-    }
-
-    @Test(expected = GenomeException.class)
-    public void CreationFromInvalidBEDFile() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_CORRECT_BAM, PATH_TO_INCORRECT_BED);
-    }
-
-    @Test
-    public void CreationFromValidData() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(new BAMParser(PATH_TO_CORRECT_BAM, new BEDParser(PATH_TO_CORRECT_BED).parse()).parse(), new BEDParser(PATH_TO_CORRECT_BED).parse());
-    }
 
     @Test
     public void AssemblyFromValidFilesWithOneSAMRecord() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_CORRECT_BAM, PATH_TO_BED_FILE_1);
-        List<GenomeRegion> genomeRegions = genomeConstructor.assembly();
+        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1) ),
+                new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1)
+        );
         for (int i = 0; i < 27; i++) {
             Pair<Character, Byte> nucleotide = genomeRegions.get(0).getNucleotide(i);
             assertEquals(nucleotide.getKey(), (Character) CHECK_SEQ_1.charAt(i));
@@ -119,10 +134,12 @@ public class GenomeConstructorTest {
 
     @Test
     public void AssemblyFromValidFilesWithSomeSAMRecord() throws Exception {
-        GenomeConstructor genomeConstructor = new GenomeConstructor(PATH_TO_CORRECT_BAM, PATH_TO_BED_FILE_2);
-        List<GenomeRegion> regions = genomeConstructor.assembly();
+        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_2).parse().get(geneName1) ),
+                new BEDParser(PATH_TO_BED_FILE_2).parse().get(geneName1)
+        );
+
         for (int i = 0; i < 35; i++) {
-            Pair<Character, Byte> nucleotide = regions.get(0).getNucleotide(i);
+            Pair<Character, Byte> nucleotide = genomeRegions.get(0).getNucleotide(i);
             assertEquals(nucleotide.getKey(), (Character) CHECK_SEQ_2.charAt(i));
             assertEquals(nucleotide.getValue(), (Byte) CHECK_QUALITIES_2[i]);
         }

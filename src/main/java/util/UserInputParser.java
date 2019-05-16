@@ -1,8 +1,6 @@
 package util;
 
 import exception.CommandLineException;
-import exception.GenomeException;
-import exception.GenomeFileException;
 import org.apache.commons.cli.*;
 
 /**
@@ -49,33 +47,33 @@ public class UserInputParser {
     }
 
     /**
-     * Array of options_.
+     * Array of options.
      */
-    private static Options options_ = new Options();
+    private static Options options = new Options();
 
     // initialization of available operations and keys
     static {
         // set help option
-        options_.addOption(Operation.getOption(Operation.HELP));
+        options.addOption(Operation.getOption(Operation.HELP));
 
         // set compare two genomes option
         Option compareTwoOption = Operation.getOption(Operation.COMPARE_TWO_GENOMES);
         compareTwoOption.setArgs(2);
         compareTwoOption.setArgName("first> <second");
-        options_.addOption(compareTwoOption);
+        options.addOption(compareTwoOption);
 
         // set compare two genomes option
         Option compareThreeOption = Operation.getOption(Operation.COMPARE_THREE_GENOMES);
         compareThreeOption.setArgs(3);
         compareThreeOption.setArgName("father> <mother> <son");
-        options_.addOption(compareThreeOption);
+        options.addOption(compareThreeOption);
     }
 
     public static String parseInput(String... input) throws CommandLineException {
         try {
             // parse the input arguments
             CommandLineParser parser = new DefaultParser();
-            CommandLine cmd = parser.parse(options_, input);
+            CommandLine cmd = parser.parse(options, input);
 
             if (cmd.hasOption(HELP_TOKENS[0])) {
                 return showHelpMessage();
@@ -101,10 +99,7 @@ public class UserInputParser {
                 return showHelpMessage();
             }
         } catch (ParseException ex) {
-            CommandLineException cmdex =
-                new CommandLineException(
-                    "exception occurred [" + ex.getClass().getName() + "]: [" + ex.getMessage() + "]"
-            );
+            CommandLineException cmdex = new CommandLineException("exception occurred [" + ex.getClass().getName() + "]: [" + ex.getMessage() + "]");
             cmdex.initCause(ex);
             throw cmdex;
         }

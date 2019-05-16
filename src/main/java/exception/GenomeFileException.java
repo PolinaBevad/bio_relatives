@@ -14,7 +14,6 @@ public class GenomeFileException extends IOException {
     }
 
     public GenomeFileException(String cls, String method, String filename, String message) {
-        super("Error occurred in class [" + cls + "] " +
-            "in method [" + method + "]: file [" + filename + "] is [" + message + "].");
+        super("Error occurred in class [" + cls + "] " + "in method [" + method + "]: file [" + filename + "] is [" + message + "].");
     }
 }

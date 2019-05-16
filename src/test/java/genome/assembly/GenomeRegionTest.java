@@ -59,43 +59,52 @@ public class GenomeRegionTest {
      */
     private static final int VALID_POSITION_IN_GENOME = 168903;
 
+    private final static String VALID_GENE_NAME = "klkjlk1";
+
+    private final static String INVALID_GENE_NAME = "@---";
+
     @Test(expected = GenomeException.class)
     public void CreationFromInvalidPosition() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, INVALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, INVALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, VALID_GENE_NAME);
+    }
+
+    @Test(expected = GenomeException.class)
+    public void CreationFromInvalidGene() throws Exception {
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, INVALID_GENE_NAME);
     }
 
     @Test(expected = GenomeException.class)
     public void CreationFromInvalidQualities() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, INVALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, INVALID_QUALITIES, VALID_GENE_NAME);
     }
 
     @Test
     public void CreationFromValidData() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, VALID_GENE_NAME);
     }
 
     @Test(expected = GenomeException.class)
     public void GettingNucleotideFromInvalidPosition() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES,VALID_GENE_NAME);
         genomeRegion.getNucleotide(INVALID_POSITION);
     }
 
     @Test(expected = GenomeException.class)
     public void NormalizationOfInvalidPosition() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, VALID_GENE_NAME);
         genomeRegion.normalize(INVALID_POSITION);
     }
 
     @Test
     public void GettingNucleotideFromValidePosition() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, VALID_GENE_NAME);
         Pair<Character, Byte> nucleotide = genomeRegion.getNucleotide(VALID_POSITION);
         assertEquals(nucleotide.getKey(), (Character) VALID_SEQ.charAt(VALID_POSITION));
     }
 
     @Test
     public void NormalizationOfValidPosition() throws Exception {
-        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES);
+        GenomeRegion genomeRegion = new GenomeRegion(VALID_CHROM_NAME, VALID_START_POSITION, VALID_SEQ, VALID_QUALITIES, VALID_GENE_NAME);
         int position = genomeRegion.normalize(VALID_POSITION_IN_GENOME);
         assertEquals(position, VALID_POSITION);
     }

@@ -1,202 +1,112 @@
 package genome.compare;
 
-import exception.GenomeException;
-import genome.assembly.GenomeRegion;
-import util.Pair;
-import org.junit.Before;
+
+import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.comparator.GenomeComparator;
+import genome.compare.comparator.threads.GenomeComparatorThread;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import java.util.Map;
 
 /**
  * Tests for the {@link GenomeComparator} class.
  *
- * @author Sergey Khvatov
+ * @author Vladislav Marchenko
  */
 public class GenomeComparatorTest {
     /**
-     * Test object of GenomeComparator class.
+     * Path to the first test BAM file
      */
-    private GenomeComparator testObj;
+    private final static  String PATH_TO_MOM_BAM_1 = "src/test/resources/genome/compare/testMotherX.bam";
 
     /**
-     * Test sequence of nucleotides with
-     * len = 75.
+     * Path to the second test BAM file
      */
-    private static final String FSEQ = "ATGACTATTCCACAACGTTAATACTCCGCGCTCTTGTGATCCAGGGCAGTTCGCAACTTAGAGGTTTCTTTATAG";
+    private final static  String PATH_TO_SON_BAM_1 = "src/test/resources/genome/compare/testSonX.bam";
 
     /**
-     * Test sequence of nucleotides with
-     * len = 75.
+     * Path to the first test BAM file
      */
-    private static final String SSEQ = "CTTGTAAGTATGCAGGGTCACGCGGGCAGATCGGGAGACATTAGATTGGACAAGCTTTAAACCGACGCGCACCCG";
+    private final static  String PATH_TO_MOM_BAM_2 = "src/test/resources/genome/compare/testMotherMT.bam";
 
     /**
-     * Test sequence of nucleotides with
-     * len = 9.
+     * Path to the second test BAM file
      */
-    private static final String SSEQ_DISTURBED = "A*GTCA**G";
+    private final static  String PATH_TO_SON_BAM_2 = "src/test/resources/genome/compare/testSonMT.bam";
 
     /**
-     * Test sequence of nucleotides with
-     * len = 9.
+     * Path to the second test BAM file
      */
-    private static final String FSEQ_DISTURBED = "AGGT*AAAG";
+    private final static  String PATH_TO_DAD_BAM_2 = "src/test/resources/genome/compare/testDadMT.bam";
 
     /**
-     * First sequence alignment.
+     * Path to the second test BAM file
      */
-    private static final String FIRST_SEQ = "GATATTTCTTTGG-AGATT-C-AAC-GCTTGACGGGACCTAGTGTTCT-CGCGCCTCATAATTGCAACACCTTATCAGTA";
+    private final static  String PATH_TO_DAD_BAM_1 = "src/test/resources/genome/compare/testDadX.bam";
 
     /**
-     * First sequence alignment.
+     * Path to the second test BAM file
      */
-    private static final String SECOND_SEQ = "GCCCACGCGCAGCCAAATTTCGAACAGGTT-AGATTACAGAGGGCTAGACGGGCG-CAC--TGGGA-CGTATGAATGTTC";
-
-
+    private final static  String PATH_TO_DAD_BAM_3 = "src/test/resources/genome/compare/china/chinaFatherTest1000.bam";
 
     /**
-     * Test array of genome REGIONS.
+     * Path to the first test BAM file
      */
-    private static final GenomeRegion[] REGIONS = new GenomeRegion[6];
+    private final static  String PATH_TO_MOM_BAM_3 = "src/test/resources/genome/compare/testMother4.bam";
 
-    @Before
-    public void setUp() throws Exception {
-        byte fqual[] = new byte[FSEQ.length()];
-        for (int i = 0; i < fqual.length; i++) {
-            fqual[i] = 100;
-        }
-        byte squal[] = new byte[SSEQ.length()];
-        for (int i = 0; i < squal.length; i++) {
-            squal[i] = 100;
-        }
+    /**
+     * Path to the first test BAM file
+     */
+    private final static  String PATH_TO_SON_BAM_3 = "src/test/resources/genome/compare/china/chinaSonTest1000.bam";
 
-        byte[] qual = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    /**
+     * Path to the first test BED file
+     */
+    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct2.bed";
 
-        REGIONS[0] = new GenomeRegion("chr1", 0, FSEQ, fqual);
-        REGIONS[1] = new GenomeRegion("chr2", 0, SSEQ, squal);
-        REGIONS[2] = new GenomeRegion("chr2", 0, SSEQ, squal);
-        REGIONS[3] = new GenomeRegion("chr1", 0, SSEQ, squal);
-        REGIONS[4] = new GenomeRegion("chr3", 0, SSEQ_DISTURBED, qual);
-        REGIONS[5] = new GenomeRegion("chr3", 0, FSEQ_DISTURBED, qual);
-    }
-
-    @Test(expected = GenomeException.class)
-    public void GenomeComparatorConstructorTestWithDiffSizeArrays() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[0]);
-        fl.add(REGIONS[1]);
-        fl.add(REGIONS[2]);
-        sl.add(REGIONS[1]);
-        sl.add(REGIONS[2]);
-        testObj = new GenomeComparator(fl, sl);
-    }
-
+    @Ignore
     @Test
-    public void GenomeComparatorConstructorTestWithSameSizeArrays() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[0]);
-        fl.add(REGIONS[1]);
-        sl.add(REGIONS[2]);
-        sl.add(REGIONS[3]);
-        testObj = new GenomeComparator(fl, sl);
-    }
-
-    @Test
-    public void HemmingDistTest() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[0]);
-        fl.add(REGIONS[1]);
-        sl.add(REGIONS[2]);
-        sl.add(REGIONS[3]);
-        testObj = new GenomeComparator(fl, sl);
-        assertEquals(testObj.HemmingDistance().get(0).getDifference(), new GeneComparisonResult("chr1", 0, 58, 75).getDifference());
-        assertEquals(testObj.HemmingDistance().get(1).getDifference(), new GeneComparisonResult("chr2", 0, 0, 75).getDifference());
-    }
-
-    @Test
-    public void LevenshteinDistTest() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[0]);
-        fl.add(REGIONS[1]);
-        sl.add(REGIONS[2]);
-        sl.add(REGIONS[3]);
-        testObj = new GenomeComparator(fl, sl);
-        assertEquals(testObj.LevenshteinDistance().get(0).getDifference(), new GeneComparisonResult("chr1", 0, 46, 75).getDifference());
-        assertEquals(testObj.LevenshteinDistance().get(1).getDifference(), new GeneComparisonResult("chr2", 0, 0, 75).getDifference());
-    }
-
-    @Test
-    public void LevenshteinDisturbedTest() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[4]);
-        sl.add(REGIONS[5]);
-        testObj = new GenomeComparator(fl, sl);
-        assertEquals(testObj.LevenshteinDistance().get(0).getDifference(), new GeneComparisonResult("chr2", 0, 0, 9).getDifference());
-    }
-
-    @Test
-    public void NeedlemanWunschAlgorithmTest() throws Exception {
-        ArrayList<GenomeRegion> fl = new ArrayList<>();
-        ArrayList<GenomeRegion> sl = new ArrayList<>();
-        fl.add(REGIONS[0]);
-        fl.add(REGIONS[1]);
-        sl.add(REGIONS[2]);
-        sl.add(REGIONS[3]);
-
-        testObj = new GenomeComparator(fl, sl);
-        List<Pair<GeneComparisonResult, Integer[][]>> res = testObj.LevenshteinDistanceCanonical();
-        Integer table[][] = res.get(0).getValue();
-
-        StringBuilder alignmentA = new StringBuilder();
-        StringBuilder alignmentB = new StringBuilder();
-
-        int i = FSEQ.length();
-        int j = SSEQ.length();
-
-        while (i > 0 && j > 0) {
-            int score = table[i][j];
-            int diag = table[i - 1][j - 1];
-            int up = table[i][j - 1];
-            int left = table[i - 1][j];
-
-            if (score == diag + (FSEQ.charAt(i - 1) == SSEQ.charAt(j - 1) ? 0 : 1)) {
-                alignmentA.append(FSEQ.charAt(i - 1));
-                alignmentB.append(SSEQ.charAt(j - 1));
-                i -= 1;
-                j -= 1;
-            } else if (score == left + 1) {
-                alignmentA.append(FSEQ.charAt(i - 1));
-                alignmentB.append('-');
-                i -= 1;
-            } else if (score == up + 1) {
-                alignmentB.append(SSEQ.charAt(j - 1));
-                alignmentA.append('-');
-                j -= 1;
+    public void GenomeComparisonOfNotParentAndChild() throws Exception {
+        long startTime = System.currentTimeMillis();
+        GenomeComparator comparator = new GenomeComparator(PATH_TO_DAD_BAM_3, PATH_TO_SON_BAM_3, PATH_TO_BED);
+        Map<String, List<GenomeRegionComparisonResult>> result = comparator.compareGenomes();
+        for (String gene: result.keySet()) {
+            List<GenomeRegionComparisonResult> result1 = result.get(gene);
+            int total_diff = 0;
+            int total_len = 0;
+            for (GenomeRegionComparisonResult res: result1) {
+                System.out.println("Gene: " + gene + " Chrom: " + res.getChromName() + " - (diff; len) = (" + res.getDifference() + ", " + res.getSequenceLen() + ")");
+                total_diff += res.getDifference();
+                total_len += res.getSequenceLen();
             }
-        }
 
-        while (i > 0) {
-            alignmentA.append(FSEQ.charAt(i - 1));
-            alignmentB.append('-');
-            i -= 1;
+            System.out.println("Len: " + total_len + " Diff: " + total_diff + " %: " + (double)total_diff / total_len * 100);
         }
+        System.out.println("Time: " + (System.currentTimeMillis() - startTime));
+    }
 
-        while (j > 0) {
-            alignmentB.append(SSEQ.charAt(j - 1));
-            alignmentA.append('-');
-            j -= 1;
+    @Ignore
+    @Test
+    public void GenomeComparisonOfNotParentAndChildThreads() throws Exception {
+        long startTime = System.currentTimeMillis();
+        GenomeComparatorThread comparator = new GenomeComparatorThread(PATH_TO_DAD_BAM_3, PATH_TO_SON_BAM_3, PATH_TO_BED);
+        Map<String, List<GenomeRegionComparisonResult>> result = comparator.compareGenomes();
+        for (String gene: result.keySet()) {
+            List<GenomeRegionComparisonResult> result1 = result.get(gene);
+            int total_diff = 0;
+            int total_len = 0;
+            for (GenomeRegionComparisonResult res: result1) {
+                System.out.println("Gene: " + gene + " Chrom: " + res.getChromName() + " - (diff; len) = (" + res.getDifference() + ", " + res.getSequenceLen() + ")");
+                total_diff += res.getDifference();
+                total_len += res.getSequenceLen();
+            }
+
+            System.out.println("Len: " + total_len + " Diff: " + total_diff + " %: " + (double)total_diff / total_len * 100);
         }
-
-        assertEquals(FIRST_SEQ, alignmentA.toString());
-        assertEquals(SECOND_SEQ, alignmentB.toString());
+        System.out.println("Time: " + (System.currentTimeMillis() - startTime));
     }
 }

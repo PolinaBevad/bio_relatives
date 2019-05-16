@@ -3,44 +3,52 @@ package bam;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.*;
+import util.LinkedSAMRecordList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
  * Class for parsing of BAM files to ArrayList of SAMRecords.
  *
  * @author Vladislav Marchenko
+ * @author Sergey Khvatov
  */
 public class BAMParser {
+
     /**
      * Describes the status of the input BAM file.
      */
     private enum BAMFileStatus {
-        OK,
-        CAN_NOT_READ {
+        OK, CAN_NOT_READ {
             @Override
             public String toString() {
                 return "Can not read from this BAM file";
             }
-        },
-        DOES_NOT_EXIST {
+        }, DOES_NOT_EXIST {
             @Override
             public String toString() {
                 return "The BAM file does not exist";
             }
-        },
-        INCORRECT_EXTENSION {
+        }, INCORRECT_EXTENSION {
             @Override
             public String toString() {
                 return "Incorrect extension for the BAM file";
             }
+        }, UNREADABLE {
+            @Override
+            public String toString() {return "BAM file is unreadable";}
         }
     }
 
+    /**
+     * Default extension of BAM files.
+     */
     private static final String BAM_EXTENSION = "bam";
+
     /**
      * BAM file.
      */
@@ -52,9 +60,9 @@ public class BAMParser {
     private String BAMFileName;
 
     /**
-     * ArrayList of exons (BEDFeatures) for which BAM file will be parsed.
+     * Reader for BAM file
      */
-    private ArrayList<BEDParser.BEDFeature> exons;
+    private SamReader samReader;
 
     /**
      * Status of input BAM file
@@ -65,20 +73,14 @@ public class BAMParser {
      * Deafult class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      *
      * @param BAMFileName name of the BAM file.
-     * @param exons       ArrayList of exons from the BED file.
      * @throws GenomeFileException if input BAM file is invalid.
      */
-    public BAMParser(String BAMFileName, ArrayList<BEDParser.BEDFeature> exons) throws GenomeFileException {
+    public BAMParser(String BAMFileName) throws GenomeFileException {
         this.BAMFileName = BAMFileName;
         this.BAMFile = new File(BAMFileName);
         if (isInvalid()) {
-            throw new GenomeFileException(this.getClass().getName(),
-                "BAMParser",
-                this.BAMFile.getName(),
-                this.status.toString()
-            );
+            throw new GenomeFileException(this.getClass().getName(), "BAMParser", this.BAMFile.getName(), this.status.toString());
         }
-        this.exons = exons;
     }
 
     /**
@@ -108,50 +110,47 @@ public class BAMParser {
         return false;
     }
 
+    /**
+     * Parse exons from the BAM file.
+     *
+     * @param exons List of exons that were parsed from the corresponding BED file.
+     * @return LinkedSAMRecordList of SAMRecords from the current gene
+     */
+    public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeException {
+
+        // output LinkedSAMRecordList
+        LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
+        // pass through all exons
+        for (BEDFeature exon : exons) {
+            samRecords.addAll(parse(exon));
+        }
+        return samRecords;
+    }
 
     /**
-     * Parse BAM file on exons.
+     * Parse exons from the BAM file.
      *
-     * @return HashMap with keys-names of chromosomes and values - ArrayLists of SAMRecords from the key chromosome
+     * @param exon exon , which we want to take
+     * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public HashMap<String, ArrayList<SAMRecord>> parse() throws GenomeException {
+    public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeException {
         try {
-            // Opening of the BAMFile
-            SamReader samReader = SamReaderFactory.makeDefault()
-                .validationStringency(ValidationStringency.STRICT)
-                .open(BAMFile);
-            // output HashMap
-            HashMap<String, ArrayList<SAMRecord>> samRecords = new HashMap<>();
-            // pass through all exons
-            for (BEDParser.BEDFeature exon : exons) {
-                // Start iterating from start to end of current chromosome.
-                SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), true);
-
-                // SAMRecords from current region
-                ArrayList<SAMRecord> currentSamRecords = new ArrayList<>();
-                // while there are sam strings in this region
-                while(iter.hasNext()){
-                    // Iterate thorough each record and extract fragment size
-                    SAMRecord rec = iter.next();
-                    currentSamRecords.add(rec);
-                }
-                // stop iterator
-                iter.close();
-                // adding current SAMRecords to the HashMap
-                if (samRecords.containsKey(exon.getChromosomeName())) {
-                    for (SAMRecord samRecord :  currentSamRecords) {
-                        samRecords.get(exon.getChromosomeName()).add(samRecord);
-                    }
-                }
-                else {
-                    samRecords.put(exon.getChromosomeName(), currentSamRecords);
-                }
+            SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
+            LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
+            // Start iterating from start to end of current chromosome.
+            SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), true);
+            // while there are sam strings in this region
+            while (iter.hasNext()) {
+                // Iterate thorough each record and extract fragment size
+                SAMRecord samRecord = iter.next();
+                samRecords.add(samRecord);
             }
+            // stop iterator
+            iter.close();
             return samRecords;
-        } catch (NullPointerException | IllegalArgumentException | SAMException ex) {
+        }catch (NullPointerException | IllegalArgumentException | SAMException ex) {
             // If catch an exception then create our GenomeException exception;
-            GenomeException ibfex =
-                new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
+            GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }

@@ -9,135 +9,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class that parses BED file.
  *
  * @author Sergey Hhatov
+ * @author Vladislav Marchenko
  */
 public class BEDParser {
-    /**
-     * BED file record class.
-     *
-     * @author Sergey Khvatov
-     */
-    public static class BEDFeature {
-        /**
-         * Set of characters that are allowed in genome symbol name.
-         */
-        private static HashSet<Character> ALLOWED_SYMBOLS = new HashSet<>();
-
-        static {
-            for (char ch = 'a'; ch <= 'z'; ch++) {
-                ALLOWED_SYMBOLS.add(ch);
-            }
-        }
-
-        /**
-         * Set of numbers that are allowed in genome symbol name.
-         */
-        private static HashSet<Character> ALLOWED_NUMBERS = new HashSet<>();
-
-        static {
-            for (char ch = '0'; ch <= '9'; ch++) {
-                ALLOWED_NUMBERS.add(ch);
-            }
-        }
-
-        /**
-         * Name of the chromosome.
-         */
-        private String chrom_;
-
-        /**
-         * Start position of the feature.
-         */
-        private int start_;
-
-        /**
-         * End position of the feature.
-         */
-        private int end_;
-
-        /**
-         * Name of the genome sequence.
-         */
-        private String genomeSymbol_;
-
-        /**
-         * Default class constructor from chromosome name, start and positions of the feature.
-         *
-         * @param chrom        Name of the chromosome.
-         * @param start        Start position.
-         * @param end          End position.
-         * @param genomeSymbol Name of the genome sequence.
-         * @throws GenomeException if start or end positions are incorrect.
-         */
-        public BEDFeature(String chrom, int start, int end, String genomeSymbol) throws GenomeException {
-            this.chrom_ = chrom;
-            boolean containsChars = false;
-            for (char ch : genomeSymbol.toLowerCase().toCharArray()) {
-                // check if input string contains inappropriate symbols
-                if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch)) {
-                    throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
-                        "Incorrect parameter was passed: [" + genomeSymbol + "]");
-                }
-                if (ALLOWED_SYMBOLS.contains(ch)) {
-                    containsChars = true;
-                }
-            }
-            if (!containsChars) {
-                throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
-                    "Incorrect parameter was passed: [" + genomeSymbol + "]");
-            }
-            this.genomeSymbol_ = genomeSymbol;
-
-            if (start <= 0 || end <= 0 || start >= end) {
-                throw new GenomeException("Error occurred during initialization of BEDFeature object: " +
-                    "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + "]");
-            }
-
-            this.start_ = start;
-            this.end_ = end;
-        }
-
-        /**
-         * Get the nam of the chromosome method.
-         *
-         * @return Name of the chromosome.
-         */
-        public String getChromosomeName() {
-            return chrom_;
-        }
-
-        /**
-         * Get the start position method.
-         *
-         * @return Start position of the feature in the chromosome.
-         */
-        public int getStartPos() {
-            return start_;
-        }
-
-        /**
-         * Get the end position method.
-         *
-         * @return End position of the feature in the chromosome.
-         */
-        public int getEndPos() {
-            return end_;
-        }
-
-        /**
-         * Get the genome symbol filed value method.
-         *
-         * @return Genome symbol filed value.
-         */
-        public String getGenomeSymbol() {
-            return genomeSymbol_;
-        }
-    }
 
     /**
      * Describes the status of the input bed file.
@@ -148,20 +30,17 @@ public class BEDParser {
             public String toString() {
                 return "this BED file doesn't exist";
             }
-        },
-        CAN_NOT_READ {
+        }, CAN_NOT_READ {
             @Override
             public String toString() {
                 return "can not read from this BED file";
             }
-        },
-        INCORRECT_EXTENSION {
+        }, INCORRECT_EXTENSION {
             @Override
             public String toString() {
                 return "incorrect extension for the BED file";
             }
-        },
-        OK
+        }, OK
     }
 
     /**
@@ -189,16 +68,12 @@ public class BEDParser {
      * Default class constructor from BED file.
      *
      * @param BEDFileName filename of the BED file to create object from.
-     * @throws GenomeFileException  if file is incorrect.
+     * @throws GenomeFileException if file is incorrect.
      */
     public BEDParser(String BEDFileName) throws GenomeFileException {
         this.bedFile = new File(BEDFileName);
         if (isInvalid()) {
-            throw new GenomeFileException(this.getClass().getName(),
-                "BEDParser",
-                this.bedFile.getName(),
-                this.status.toString()
-            );
+            throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), this.status.toString());
         }
     }
 
@@ -230,16 +105,17 @@ public class BEDParser {
     }
 
     /**
-     * Parse BED file line by line and create list of {@link BEDFeature} objects.
+     * Parse BED file line by line and create output HashMap (see @return)
      *
-     * @return List of parsed from the BED file {@link BEDFeature} objects.
+     * @return HashMap<String, ArrayList < BEDFeature>> where: key - name of gene,
+     * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeException if any kind of exception occurs in the method.
      */
-    public ArrayList<BEDFeature> parse() throws GenomeException {
+    public Map<String, List<BEDFeature>> parse() throws GenomeException {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
-            // result list of exons
-            ArrayList<BEDFeature> exons = new ArrayList<>();
+            // result HashMap of exons
+            Map<String, List<BEDFeature>> exons = new HashMap<>();
 
             BufferedReader reader = new BufferedReader(input);
 
@@ -256,17 +132,32 @@ public class BEDParser {
                 // check the input row of the table
                 if (rows.length != 4) {
                     // must be at 4 elements in the row
-                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " +
-                        "incorrect number of rows in the table. Expected 4 (chrom, start, end, genome name), got " + rows.length);
+                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 4 (chrom, start, end, gene name), got " + rows.length);
                 }
-                exons.add(new BEDFeature(rows[0], Integer.parseInt(rows[1]), Integer.parseInt(rows[2]), rows[3]));
+
+                // elements of the bed file record
+                String chrom = rows[0], gene = rows[3];
+                int start = Integer.parseInt(rows[1]), end = Integer.parseInt(rows[2]);
+
+                if (exons.containsKey(gene)) {
+                    // check if the same gene is located in different chromosomes
+                    for (BEDFeature bf : exons.get(gene)) {
+                        if (!chrom.equals(bf.getChromosomeName())) {
+                            throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 4 (chrom, start, end, gene name), got " + rows.length);
+                        }
+                    }
+                    exons.get(gene).add(new BEDFeature(chrom, start, end, gene));
+                } else {
+                    List<BEDFeature> buffer = new ArrayList<>();
+                    buffer.add(new BEDFeature(chrom, start, end, gene));
+                    exons.put(gene, buffer);
+                }
             }
             return exons;
         } catch (SAMException | IOException | NumberFormatException ex) {
             // if catch an exception then create our GenomeException exception,
             // set it as it's cause and throw it further
-            GenomeException ibfex =
-                new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
+            GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }

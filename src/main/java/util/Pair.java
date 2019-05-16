@@ -2,11 +2,12 @@ package util;
 
 /**
  * Structure for storage 2 objects
+ *
  * @param <K> key
  * @param <V> value
  * @author Vladiislav Marchenko
  */
-public class Pair<K,V>  {
+public class Pair<K, V> {
     /**
      * Key of this Pair
      */
@@ -18,7 +19,8 @@ public class Pair<K,V>  {
 
     /**
      * Creates a new pair
-     * @param key The key for this pair
+     *
+     * @param key   The key for this pair
      * @param value The value to use for this pair
      */
     public Pair(K key, V value) {
@@ -28,13 +30,19 @@ public class Pair<K,V>  {
 
     /**
      * Gets the key for this pair.
+     *
      * @return key for this pair
      */
-    public K getKey() { return key; }
+    public K getKey() {
+        return key;
+    }
 
     /**
      * Gets the value for this pair.
+     *
      * @return value for this pair
      */
-    public V getValue() { return value; }
+    public V getValue() {
+        return value;
+    }
 }

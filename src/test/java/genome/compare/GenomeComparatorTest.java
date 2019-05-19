@@ -25,7 +25,7 @@ public class GenomeComparatorTest {
     /**
      * Path to the second test BAM file
      */
-    private final static  String PATH_TO_SON_BAM_1 = "src/test/resources/genome/compare/testSonX.bam";
+    private final static  String PATH_TO_SON_BAM_1 = "src/test/resources/genome/compare/testSon4.bam";
 
     /**
      * Path to the first test BAM file
@@ -45,7 +45,7 @@ public class GenomeComparatorTest {
     /**
      * Path to the second test BAM file
      */
-    private final static  String PATH_TO_DAD_BAM_1 = "src/test/resources/genome/compare/testDadX.bam";
+    private final static  String PATH_TO_DAD_BAM_1 = "src/test/resources/genome/compare/testDad4.bam";
 
     /**
      * Path to the second test BAM file
@@ -65,13 +65,13 @@ public class GenomeComparatorTest {
     /**
      * Path to the first test BED file
      */
-    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct2.bed";
+    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct.bed";
 
     @Ignore
     @Test
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         long startTime = System.currentTimeMillis();
-        GenomeComparator comparator = new GenomeComparator("D:\\BIO_DATA\\chinaFatherTest1000.bam", "D:\\BIO_DATA\\chinaSonTest1000.bam", PATH_TO_BED);
+        GenomeComparator comparator = new GenomeComparator(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED);
         GeneComparisonResultAnalyzer result = comparator.compareGenomes(true);
         System.out.println(result);
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));
@@ -81,7 +81,7 @@ public class GenomeComparatorTest {
     @Test
     public void GenomeComparisonOfNotParentAndChildThreads() throws Exception {
         long startTime = System.currentTimeMillis();
-        GenomeComparatorThread comparator = new GenomeComparatorThread("D:\\BIO_DATA\\chinaFatherTest1000.bam", "D:\\BIO_DATA\\chinaSonTest1000.bam", PATH_TO_BED);
+        GenomeComparatorThread comparator = new GenomeComparatorThread(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED);
         GeneComparisonResultAnalyzer result = comparator.compareGenomes(true);
         System.out.println(result);
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));

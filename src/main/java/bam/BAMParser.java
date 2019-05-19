@@ -7,7 +7,6 @@ import util.LinkedSAMRecordList;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -40,9 +39,16 @@ public class BAMParser {
             }
         }, UNREADABLE {
             @Override
-            public String toString() {return "BAM file is unreadable";}
+            public String toString() {
+                return "BAM file is unreadable";
+            }
         }
     }
+
+    /**
+     * Maximum len of the region that will be processed.
+     */
+    private static final int MAX_REGION_LENGTH = 25;
 
     /**
      * Default extension of BAM files.
@@ -60,17 +66,17 @@ public class BAMParser {
     private String BAMFileName;
 
     /**
-     * Reader for BAM file
-     */
-    private SamReader samReader;
-
-    /**
      * Status of input BAM file
      */
     private BAMFileStatus status = BAMFileStatus.OK;
 
     /**
-     * Deafult class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
+     * Sam reader used to parse this bam file.
+     */
+    private SamReader samReader;
+
+    /**
+     * Default class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      *
      * @param BAMFileName name of the BAM file.
      * @throws GenomeFileException if input BAM file is invalid.
@@ -81,6 +87,7 @@ public class BAMParser {
         if (isInvalid()) {
             throw new GenomeFileException(this.getClass().getName(), "BAMParser", this.BAMFile.getName(), this.status.toString());
         }
+        samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
     }
 
     /**
@@ -117,7 +124,6 @@ public class BAMParser {
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
     public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeException {
-
         // output LinkedSAMRecordList
         LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
         // pass through all exons
@@ -128,17 +134,32 @@ public class BAMParser {
     }
 
     /**
-     * Parse exons from the BAM file.
+     * Parse the exon from the input BAM file.
      *
-     * @param exon exon , which we want to take
-     * @return LinkedSAMRecordList of SAMRecords from the current gene
+     * @param exon Input exon that should be parsed from the file.
+     * @return List with SAM records.
+     * @throws GenomeException if error occurs.
      */
     public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeException {
+        List<BEDFeature> smallerExons = generateExons(exon.getStartPos(), exon.getEndPos(), exon.getChromosomeName(), exon.getGene());
+        LinkedSAMRecordList recordList = new LinkedSAMRecordList();
+        for (BEDFeature e : smallerExons) {
+            recordList.addAll(parseExon(e));
+        }
+        return recordList;
+    }
+
+    /**
+     * Parse smaller exons from this BAM file.
+     *
+     * @param exon exon, which we want to take
+     * @return LinkedSAMRecordList of SAMRecords from the current gene
+     */
+    private LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
         try {
-            SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
             LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
             // Start iterating from start to end of current chromosome.
-            SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), true);
+            SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), false);
             // while there are sam strings in this region
             while (iter.hasNext()) {
                 // Iterate thorough each record and extract fragment size
@@ -150,12 +171,44 @@ public class BAMParser {
             // stop iterator
             iter.close();
             return samRecords;
-        }catch (NullPointerException | IllegalArgumentException | SAMException ex) {
+        } catch (NullPointerException | IllegalArgumentException | SAMException ex) {
             // If catch an exception then create our GenomeException exception;
             GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }
+    }
 
+    /**
+     * Adds an exon to the resulting list. If the length of the input
+     * region is more than MAX_REGION_LENGTH, then splits
+     * the input region into small parts.
+     *
+     * @param start Start position of the region.
+     * @param end   End position of the region.
+     * @param chrom Name of the chromosome.
+     * @param gene  Name of the gene.
+     * @return List with the regions from the bed file.
+     */
+    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene) throws GenomeException {
+        List<BEDFeature> list = new ArrayList<>();
+        // split big region into small parts
+        int exonLen = end - start;
+        if (exonLen <= MAX_REGION_LENGTH) {
+            list.add(new BEDFeature(chrom, start, end, gene));
+        } else {
+            int tempStart = start;
+            for (int tempEnd = start; tempEnd <= end; tempEnd++) {
+                if (tempEnd - tempStart > MAX_REGION_LENGTH) {
+                    list.add(new BEDFeature(chrom, tempStart, tempEnd, gene));
+                    tempStart = tempEnd + 1;
+                }
+            }
+            // if the last region size is lesser than MAX_REGION_LENGTH
+            if (tempStart - end != 0) {
+                list.add(new BEDFeature(chrom, tempStart, end, gene));
+            }
+        }
+        return list;
     }
 }

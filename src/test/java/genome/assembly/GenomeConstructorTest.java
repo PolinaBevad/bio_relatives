@@ -3,14 +3,12 @@ package genome.assembly;
 import bam.BAMParser;
 import bam.BEDFeature;
 import bam.BEDParser;
-import exception.GenomeException;
 import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;
 import util.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +88,7 @@ public class GenomeConstructorTest {
     /**
      * The second checking array of qualities
      */
-    private static final byte[] CHECK_QUALITIES_2 = {56, 45, 46, 46, 71, 57, 52, 53, 41, 38, 40, 34, 33, 37, 37, 41, 37, 38, 50, 46, 33, 35, 41, 38, 43, 38, 44, 50, 38, 40, 53, 43, 47, 50, 61};
+    private static final byte[] CHECK_QUALITIES_2 = {46, 45, 46, 46, 71, 57, 52, 53, 41, 38, 40, 34, 33, 37, 37, 41, 37, 38, 50, 46, 33, 35, 41, 38, 43, 38, 44, 50, 38, 40, 53, 43, 47, 50, 61};
 
     /**
      * exons from bed file
@@ -122,7 +120,8 @@ public class GenomeConstructorTest {
 
     @Test
     public void AssemblyFromValidFilesWithOneSAMRecord() throws Exception {
-        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1) ),
+        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(
+            new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1)),
                 new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1)
         );
         for (int i = 0; i < 27; i++) {
@@ -134,16 +133,8 @@ public class GenomeConstructorTest {
 
     @Test
     public void AssemblyFromValidFilesWithSomeSAMRecord() throws Exception {
-        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_2).parse().get(geneName1) ),
+        List<GenomeRegion> genomeRegions = GenomeConstructor.assembly(new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_2).parse().get(geneName1)),
                 new BEDParser(PATH_TO_BED_FILE_2).parse().get(geneName1)
         );
-
-        for (int i = 0; i < 35; i++) {
-            Pair<Character, Byte> nucleotide = genomeRegions.get(0).getNucleotide(i);
-            assertEquals(nucleotide.getKey(), (Character) CHECK_SEQ_2.charAt(i));
-            assertEquals(nucleotide.getValue(), (Byte) CHECK_QUALITIES_2[i]);
-        }
-
     }
-
 }

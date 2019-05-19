@@ -45,6 +45,7 @@ public class GeneComparisonResult {
      * that was used to calculate the distance between two genomes,
      * the distance value and the length of the longest nucleotide sequence
      * between compared ones.
+     *
      * @param chrom      Name of the chromosome.
      * @param difference Difference value.
      * @param len        Length of the nucl. seq.
@@ -89,6 +90,7 @@ public class GeneComparisonResult {
     public String getChromName() {
         return chrom;
     }
+
     /**
      * @return name of the gene that is stored in this region.
      */
@@ -98,11 +100,13 @@ public class GeneComparisonResult {
 
     /**
      * Overridden method toString() which return String with single gene intermediate results
+     *
      * @return String with single gene intermediate results
      */
     @Override
     public String toString() {
-        return "Comparison result of gene " + gene +" from chromosome " + chrom +": seqLength - " + sequenceLen +", differences - "
-                +difference+", similarity percentage - " + (100d - ((double) difference / (double) sequenceLen) * 100d) + "%";
+        if (sequenceLen != 0)
+            return "Comparison result of gene " + gene + " from chromosome " + chrom + ": seqLength - " + sequenceLen + ", differences - " + difference + ", similarity percentage - " + (100d - ((double) difference / (double) sequenceLen) * 100d) + "%";
+        return "Nucleotide sequence consists of only UNKNOWN_NUCLEOTIDES";
     }
 }

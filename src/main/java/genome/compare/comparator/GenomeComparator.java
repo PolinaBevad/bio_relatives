@@ -83,7 +83,8 @@ public class GenomeComparator {
 
                 // check the results
                 if (firstPersonsGenome.size() != secondPersonsGenome.size()) {
-                    throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                    //throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                    continue;
                 }
 
                 for (int i = 0; i < firstPersonsGenome.size(); i++) {

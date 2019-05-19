@@ -99,7 +99,8 @@ public class FeatureThread implements Runnable {
 
             // check the results
             if (firstGenome.size() != secondGenome.size()) {
-                throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                //throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                return;
             }
 
             // here we consider that both genomes are assembled and are the same size

@@ -4,6 +4,7 @@ import bam.BEDFeature;
 import exception.GenomeException;
 import htsjdk.samtools.SAMRecord;
 import org.apache.commons.lang3.StringUtils;
+import util.LinkedSAMRecordList;
 
 import java.util.*;
 
@@ -35,12 +36,12 @@ public class GenomeConstructor  {
     private static final int MAX_NUCLEOTIDE_SEQ_LEN = 256;
     /**
      * Method, which assembly genome from samrecords and exons
-     * @param samRecords input ArrayList of SAMRecords
+     * @param samRecords input LinkedSAMRecordList
      * @param exons input ArrayList of exones
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong
      */
-    public static List<GenomeRegion> assembly(ArrayList<SAMRecord> samRecords, ArrayList<BEDFeature> exons) throws GenomeException {
+    public static List<GenomeRegion> assembly(LinkedSAMRecordList samRecords, List<BEDFeature> exons) throws GenomeException {
         try {
             // output genome
             List<GenomeRegion> genomeRegions = new ArrayList<>();
@@ -59,12 +60,12 @@ public class GenomeConstructor  {
 
     /**
      * Overloaded method assembly()
-     * @param samRecords input ArrayList of SAMRecords
+     * @param samRecords input LinkedSAMRecordList
      * @param exon input exon
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong
      */
-    public static List<GenomeRegion> assembly(ArrayList<SAMRecord> samRecords, BEDFeature exon) throws GenomeException {
+    public static List<GenomeRegion> assembly(LinkedSAMRecordList samRecords, BEDFeature exon) throws GenomeException {
         try {
             // check the input
             if (samRecords.isEmpty()) {
@@ -72,7 +73,7 @@ public class GenomeConstructor  {
             }
 
             // list of regions
-            ArrayList<GenomeRegion> genomeRegions = new ArrayList<>();
+            List<GenomeRegion> genomeRegions = new ArrayList<>();
             // temp quality array
             byte[] qualities = new byte[MAX_NUCLEOTIDE_SEQ_LEN];
             // String of nucleotides from the current region
@@ -90,7 +91,7 @@ public class GenomeConstructor  {
             for (int j = exon.getStartPos(); j < exon.getEndPos(); j++) {
                 // HashMap in which there are nucleotides(with their qualities; see description of the method)
                 // from current position
-                HashMap<Character, ArrayList<Byte>> currentNucleotides = getNucleotideDistribution(samRecords, j, exon.getChromosomeName());
+                Map<Character, List<Byte>> currentNucleotides = getNucleotideDistribution(samRecords.get((long) j), j);
                 // the best nucleotide(if there are not any nucleotides, we write a *)
                 char bestNucleotide = UNKNOWN_NUCLEOTIDE;
                 // the best median quality of nucleotide
@@ -99,8 +100,8 @@ public class GenomeConstructor  {
                 int bestCount = 0;
 
                 // we pass on HashMap ( we define the best nucleotide)
-                Set<Map.Entry<Character, ArrayList<Byte>>> set = currentNucleotides.entrySet();
-                for (Map.Entry<Character, ArrayList<Byte>> s : set) {
+                Set<Map.Entry<Character, List<Byte>>> set = currentNucleotides.entrySet();
+                for (Map.Entry<Character, List<Byte>> s : set) {
                     // if the current nucleotide is the most met then it is the best nucleotide
                     if (s.getValue().size() > bestCount) {
                         bestCount = s.getValue().size();
@@ -156,47 +157,33 @@ public class GenomeConstructor  {
             throw ibfex;
         }
     }
-    /**
-     * Checks if the current position is in the range [start position of the
-     * nucleotide; start position + nucleotide sequence len]. Using this method we
-     * check, if the {@link SAMRecord} contains current processing nucleotide
-     *
-     * @param position Position of the current nucleotide.
-     * @param start    Start position of the nucleotide in the {@link SAMRecord}
-     * @param end      End psoition of the nucleotide sequence.
-     * @return True, if position is in range [start, start + len]. False otherwise.
-     */
-    private static boolean inRange(int position, int start, int end) {
-        return position >= start && position <= end;
-    }
 
     /**
      * Generates a map with each nucleotide and it's quality for the further usage.
      *
-     * @param chromName - name of chromosome
+     * @param samRecords List of SAMRecords with the position
      * @param position  Current position of the nucleotide we are analyzing.
      * @return HashMap with qualities for this nucleotide.
      */
-    private static HashMap<Character, ArrayList<Byte>> getNucleotideDistribution (ArrayList<SAMRecord> samRecords, int position, String chromName ) throws GenomeException {
+    private static Map<Character, List<Byte>> getNucleotideDistribution(List<SAMRecord> samRecords, int position) throws GenomeException {
         // initialize the storing structure
-        HashMap<Character, ArrayList<Byte>> dist = new HashMap<>();
+        Map<Character, List<Byte>> dist = new HashMap<>();
         for (char c : NUCLEOTIDES.toCharArray()) {
             dist.put(c, new ArrayList<>());
         }
+
         // for each read get the
         // nucleotide and it's quality if it contains it
         for (SAMRecord s : samRecords) {
-            if ((inRange(position, s.getStart(), s.getEnd()))) {
-                int pos = position - s.getStart();
-                char n = ' ';
-                byte q = 0;
-                if (pos < s.getReadLength()) {
-                    n = s.getReadString().toLowerCase().charAt(pos);
-                    q = s.getBaseQualities()[pos];
-                }
-                if (NUCLEOTIDES.contains(String.valueOf(n))) {
-                    dist.get(n).add(q);
-                }
+            int pos = position - s.getStart();
+            char n = ' ';
+            byte q = 0;
+            if (pos < s.getReadLength()) {
+                n = s.getReadString().toLowerCase().charAt(pos);
+                q = s.getBaseQualities()[pos];
+            }
+            if (NUCLEOTIDES.contains(String.valueOf(n))) {
+                dist.get(n).add(q);
             }
         }
         return dist;
@@ -208,7 +195,7 @@ public class GenomeConstructor  {
      * @param qualities input array of qualities of the nucleotide
      * @return median quality of the nucleotide
      */
-    private static byte getMedianQuality(ArrayList<Byte> qualities) {
+    private static byte getMedianQuality(List<Byte> qualities) {
         // sort ArrayList of qualities
         Collections.sort(qualities);
 
@@ -225,20 +212,5 @@ public class GenomeConstructor  {
         else {
             return 0;
         }
-    }
-
-    /**
-     * Checks if the input nucleotide sequence is empty (consists only of *) or not.
-     *
-     * @param sequence Nucleotide sequence.
-     * @return True, if other than '*' symbols appear, false otherwise.
-     */
-    private static boolean isNotEmptyNucleotideSequence(String sequence) {
-        for (char ch : sequence.toCharArray()) {
-            if (ch != UNKNOWN_NUCLEOTIDE) {
-                return true;
-            }
-        }
-        return false;
     }
 }

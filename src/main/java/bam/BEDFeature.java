@@ -48,7 +48,7 @@ public class BEDFeature {
      */
     public BEDFeature(String chrom, int start, int end, String gene) throws GenomeException {
         this.chrom = chrom;
-        if (start <= 0 || end <= 0 || start >= end) {
+        if (start < 0 || end < 0 || start >= end) {
             throw new GenomeException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + ", " + gene);
         }
 

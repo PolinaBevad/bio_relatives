@@ -12,6 +12,7 @@ import util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -94,22 +95,22 @@ public class GenomeConstructorTest {
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDFeature>> exons1;
+    private static Map<String, List<BEDFeature>> exons1;
 
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDFeature>> exons2;
+    private static Map<String, List<BEDFeature>> exons2;
 
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDFeature>> exons3;
+    private static Map<String, List<BEDFeature>> exons3;
 
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDFeature>> exons4;
+    private static Map<String, List<BEDFeature>> exons4;
 
     @Before
     public void setUp() throws Exception {

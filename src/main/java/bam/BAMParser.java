@@ -3,10 +3,12 @@ package bam;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.*;
+import util.LinkedSAMRecordList;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -112,12 +114,12 @@ public class BAMParser {
      * Parse exons from the BAM file.
      *
      * @param exons List of exons that were parsed from the corresponding BED file.
-     * @return ArrayList of SAMRecords from the current gene
+     * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public ArrayList<SAMRecord> parse(ArrayList<BEDFeature> exons) throws GenomeException {
+    public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeException {
 
-        // output ArrayList
-        ArrayList<SAMRecord> samRecords = new ArrayList<>();
+        // output LinkedSAMRecordList
+        LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
         // pass through all exons
         for (BEDFeature exon : exons) {
             samRecords.addAll(parse(exon));
@@ -129,12 +131,12 @@ public class BAMParser {
      * Parse exons from the BAM file.
      *
      * @param exon exon , which we want to take
-     * @return ArrayList of SAMRecords from the current gene
+     * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public ArrayList<SAMRecord> parse(BEDFeature exon) throws GenomeException {
+    public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeException {
         try {
             SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
-            ArrayList<SAMRecord> samRecords = new ArrayList<>();
+            LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
             // Start iterating from start to end of current chromosome.
             SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), true);
             // while there are sam strings in this region

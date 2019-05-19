@@ -1,15 +1,11 @@
-package genome.compare.comparator;
+package genome.compare.comparator.threads;
 
 import bam.BAMParser;
 import bam.BEDFeature;
 import bam.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.assembly.GenomeConstructor;
-import genome.assembly.GenomeRegion;
 import genome.compare.analyzis.GenomeRegionComparisonResult;
-import htsjdk.samtools.SAMRecord;
-import util.LinkedSAMRecordList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +18,7 @@ import java.util.Map;
  *
  * @author Sergey Hvatov
  */
-public class GenomeComparator {
+public class GenomeComparatorThread {
 
     /**
      * Path to the first person's BAM file.
@@ -49,7 +45,7 @@ public class GenomeComparator {
      * @throws GenomeException     if exception occurs file parsing the BED file.
      * @throws GenomeFileException if incorrect BED or BAM file is passed.
      */
-    public GenomeComparator(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
+    public GenomeComparatorThread(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
         this.exons = new BEDParser(pathToBED).parse();
@@ -70,37 +66,15 @@ public class GenomeComparator {
          * Value - List of the results of comparison of two genes from this chromosome,.
          */
         Map<String, List<GenomeRegionComparisonResult>> comparisonResults = new HashMap<>();
-        for (String gene : exons.keySet()) {
-            // get the list of the exons that contains this gene
-            List<BEDFeature> features = exons.get(gene);
-            for (BEDFeature feature : features) {
-                // get the list of sam records for each person
-                LinkedSAMRecordList firstSamRecords = firstBAMFile.parse(feature);
-                LinkedSAMRecordList secondSamRecords = secondBAMFile.parse(feature);
-
-                // construct genomes for this gene
-                List<GenomeRegion> firstPersonsGenome = GenomeConstructor.assembly(firstSamRecords, feature);
-                List<GenomeRegion> secondPersonsGenome = GenomeConstructor.assembly(secondSamRecords, feature);
-
-                // check the results
-                if (firstPersonsGenome.size() != secondPersonsGenome.size()) {
-                    throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
-                }
-
-                // temporary list that will store the result
-                List<GenomeRegionComparisonResult> tempResult = new ArrayList<>();
-                for (int i = 0; i < firstPersonsGenome.size(); i++) {
-                    GenomeRegionComparator comparator = new GenomeRegionComparator(firstPersonsGenome.get(i), secondPersonsGenome.get(i));
-                    tempResult.add(comparator.LevenshteinDistance());
-                }
-                if (comparisonResults.containsKey(gene)) {
-                    comparisonResults.get(gene).addAll(tempResult);
-                }
-                else {
-                    comparisonResults.put(gene, tempResult);
-                }
+        try {
+            for (String gene : exons.keySet()) {
+                Thread geneThread = new Thread(new GeneThread(exons.get(gene), firstBAMFile, secondBAMFile, comparisonResults));
+                geneThread.start();
+                geneThread.join();
             }
+            return comparisonResults;
+        } catch (InterruptedException iex) {
+            throw new GenomeException(iex.getMessage());
         }
-        return comparisonResults;
     }
 }

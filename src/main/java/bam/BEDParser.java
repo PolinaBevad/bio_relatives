@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class that parses BED file.
@@ -109,11 +111,11 @@ public class BEDParser {
      * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeException if any kind of exception occurs in the method.
      */
-    public HashMap<String, ArrayList<BEDFeature>> parse() throws GenomeException {
+    public Map<String, List<BEDFeature>> parse() throws GenomeException {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons
-            HashMap<String, ArrayList<BEDFeature>> exons = new HashMap<>();
+            Map<String, List<BEDFeature>> exons = new HashMap<>();
 
             BufferedReader reader = new BufferedReader(input);
 
@@ -146,7 +148,7 @@ public class BEDParser {
                     }
                     exons.get(gene).add(new BEDFeature(chrom, start, end, gene));
                 } else {
-                    ArrayList<BEDFeature> buffer = new ArrayList<>();
+                    List<BEDFeature> buffer = new ArrayList<>();
                     buffer.add(new BEDFeature(chrom, start, end, gene));
                     exons.put(gene, buffer);
                 }

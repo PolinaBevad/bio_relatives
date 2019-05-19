@@ -5,11 +5,9 @@ import exception.GenomeFileException;
 import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;
+import util.LinkedSAMRecordList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -72,7 +70,7 @@ public class BAMParserTest {
     /**
      * exons from bed file
      */
-    private static HashMap<String, ArrayList<BEDFeature>> exons;
+    private static Map<String, List<BEDFeature>> exons;
 
     @Before
     public void setUp() throws Exception {
@@ -108,7 +106,7 @@ public class BAMParserTest {
     @Test
     public void ParsingCorrectFile() throws Exception {
         BAMParser parser = new BAMParser(pathToCorrectFile);
-        ArrayList<SAMRecord> samRecords = parser.parse(exons.get(geneName2).get(0));
+        LinkedSAMRecordList samRecords = parser.parse(exons.get(geneName2).get(0));
         for (int i = 0; i < samRecords.size(); i++) {
             assertEquals(samRecords.get(i).getSAMString(), checkArray[i]);
         }

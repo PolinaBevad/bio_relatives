@@ -2,7 +2,7 @@ package util;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.analyzis.GenomeRegionComparisonResult;
 
 import java.util.Arrays;
 
@@ -20,11 +20,11 @@ public class Utilities {
      * It's algorithmic complexity is O(N * M). This method is used to
      * test the Needleman–Wunsch algorithm.
      *
-     * @return The list of {@link GeneComparisonResult} that contain
+     * @return The list of {@link GenomeRegionComparisonResult} that contain
      * the information about differences between all {@link GenomeRegion}.
-     * @throws GenomeException if exception is thrown in {@link GeneComparisonResult}.
+     * @throws GenomeException if exception is thrown in {@link GenomeRegionComparisonResult}.
      */
-    public static Pair<GeneComparisonResult, Integer[][]> LevenshteinDistanceCanonical(GenomeRegion firstPersonGenome, GenomeRegion secondPersonGenome) throws
+    public static Pair<GenomeRegionComparisonResult, Integer[][]> LevenshteinDistanceCanonical(GenomeRegion firstPersonGenome, GenomeRegion secondPersonGenome) throws
         GenomeException {
         String f = firstPersonGenome.getNucleotideSequence();
         String s = secondPersonGenome.getNucleotideSequence();
@@ -52,7 +52,7 @@ public class Utilities {
                 table[l][k] = Math.min(Math.min(table[l][k - 1] + 1, table[l - 1][k] + 1), Math.min(table[l][k - 1] + 1, table[l - 1][k - 1] + (f.charAt(l - 1) == s.charAt(k - 1) ? 0 : 1)));
             }
         }
-        return new Pair<>(new GeneComparisonResult(firstPersonGenome.getChromName(), firstPersonGenome.getGene(), firstPersonGenome.getStart(), table[f.length()][s.length()], Math.min(f.length(), s.length())), table);
+        return new Pair<>(new GenomeRegionComparisonResult(firstPersonGenome.getChromName(), firstPersonGenome.getGene(), firstPersonGenome.getStart(), table[f.length()][s.length()], Math.min(f.length(), s.length())), table);
     }
 
     /**

@@ -1,8 +1,7 @@
 package genome.compare;
 
-import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.analyzis.GenomeRegionComparisonResult;
 import genome.compare.comparator.GenomeRegionComparator;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,12 +64,12 @@ public class GenomeRegionComparatorTest {
     @Test
     public void HemmingDistTest() throws Exception {
         testObj = new GenomeRegionComparator(REGIONS[0], REGIONS[1]);
-        assertEquals(testObj.HemmingDistance().getDifference(), new GeneComparisonResult("chr1", "00", 0, 58, 75).getDifference());
+        assertEquals(testObj.HemmingDistance().getDifference(), new GenomeRegionComparisonResult("chr1", "00", 0, 58, 75).getDifference());
     }
 
     @Test
     public void LevenshteinDistTest() throws Exception {
         testObj = new GenomeRegionComparator(REGIONS[0], REGIONS[1]);
-        assertEquals(testObj.LevenshteinDistance().getDifference(), new GeneComparisonResult("chr1", "00", 0, 46, 75).getDifference());
+        assertEquals(testObj.LevenshteinDistance().getDifference(), new GenomeRegionComparisonResult("chr1", "00", 0, 46, 75).getDifference());
     }
 }

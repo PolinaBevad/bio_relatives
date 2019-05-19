@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sergey Khvatov
@@ -36,7 +37,7 @@ public class FeatureThread implements Runnable {
      * List, where the results of the comparison
      * will be stored in random order.
      */
-    private final Map<String, List<GenomeRegionComparisonResult>> comparisonResults;
+    private final ConcurrentMap<String, List<GenomeRegionComparisonResult>> comparisonResults;
 
     /**
      * Creates a feature thread using the following arguments.
@@ -47,7 +48,7 @@ public class FeatureThread implements Runnable {
      * @param results      List, where the results of the comparison
      *                     will be stored in random order.
      */
-    public FeatureThread(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, Map<String, List<GenomeRegionComparisonResult>> results) {
+    public FeatureThread(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ConcurrentMap<String, List<GenomeRegionComparisonResult>> results) {
         this.feature = feature;
         this.firstBAMFile = firstParser;
         this.secondBAMFile = secondParser;

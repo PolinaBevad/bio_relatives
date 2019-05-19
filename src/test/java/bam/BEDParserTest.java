@@ -102,7 +102,7 @@ public class BEDParserTest {
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
-    @Test(expected = GenomeFileException.class)
+    @Test(expected = GenomeException.class)
     public void ParsingIncorrectFileWithGeneContainsInTwoChromosomes() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile3);
         Map<String, List<BEDFeature>> result = parser.parse();

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Compares several genomes that are stored in the BAM files
@@ -34,7 +36,7 @@ public class GenomeComparatorThread {
      * Map with the exons that
      * are parsed from the input BED file.
      */
-    private Map<String, List<BEDFeature>> exons;
+    private ConcurrentMap<String, List<BEDFeature>> exons;
 
     /**
      * Default class constructor from paths to the BAM files and corresponding to them BED file.
@@ -48,7 +50,7 @@ public class GenomeComparatorThread {
     public GenomeComparatorThread(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
-        this.exons = new BEDParser(pathToBED).parse();
+        this.exons = new ConcurrentHashMap<>(new BEDParser(pathToBED).parse());
     }
 
     /**
@@ -65,7 +67,7 @@ public class GenomeComparatorThread {
          * Key - name of the gene,
          * Value - List of the results of comparison of two genes from this chromosome,.
          */
-        Map<String, List<GenomeRegionComparisonResult>> comparisonResults = new HashMap<>();
+        ConcurrentMap<String, List<GenomeRegionComparisonResult>> comparisonResults = new ConcurrentHashMap<>();
         try {
             for (String gene : exons.keySet()) {
                 Thread geneThread = new Thread(new GeneThread(exons.get(gene), firstBAMFile, secondBAMFile, comparisonResults));

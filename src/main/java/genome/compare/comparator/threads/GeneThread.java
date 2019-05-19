@@ -7,6 +7,7 @@ import genome.compare.analyzis.GenomeRegionComparisonResult;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sergey Khvatov
@@ -22,7 +23,7 @@ public class GeneThread implements Runnable {
     /**
      * Map where the results for each gene are stored.
      */
-    private final Map<String, List<GenomeRegionComparisonResult>> comparisonResults;
+    private final ConcurrentMap<String, List<GenomeRegionComparisonResult>> comparisonResults;
 
     /**
      * Path to the first person's BAM file.
@@ -42,7 +43,7 @@ public class GeneThread implements Runnable {
      * @param secondBAM Second BAM file parser object.
      * @param results   Map, where the results for each gene are stored.
      */
-    public GeneThread(List<BEDFeature> exons, BAMParser firstBAM, BAMParser secondBAM, Map<String, List<GenomeRegionComparisonResult>> results) {
+    public GeneThread(List<BEDFeature> exons, BAMParser firstBAM, BAMParser secondBAM, ConcurrentMap<String, List<GenomeRegionComparisonResult>> results) {
         this.exons = exons;
         this.comparisonResults = results;
         this.firstBAMFile = firstBAM;

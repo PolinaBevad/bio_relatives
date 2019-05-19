@@ -3,7 +3,8 @@ package genome.compare.comparator.threads;
 import exception.GenomeException;
 import exception.GenomeThreadException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 import genome.compare.comparator.GenomeRegionComparator;
 
 import java.util.List;
@@ -28,22 +29,31 @@ public class GenomeRegionThread implements Runnable {
     private final GenomeRegion secondGenomeRegion;
 
     /**
-     * Synchronized list with the results of the comparison of collocated
-     * on the same positions regions.
+     * Object of (@link GeneComparisonResultAnalyzer) which contains comparison results
      */
-    private final List<GenomeRegionComparisonResult> comparisonResults;
+    private final GeneComparisonResultAnalyzer comparisonResults;
+
+    /**
+     * if this flag is true , then interim genome comparison results will be displayed,
+     * else - only the main chromosome results will be obtained
+     */
+    private final boolean intermediateOutput;
 
     /**
      * Creates a {@link GenomeRegionThread} using the genome regions
      * of two people.
      *
-     * @param first  Some genome region of the first person.
-     * @param second Some genome region of the second person.
+     * @param first              Some genome region of the first person.
+     * @param second             Some genome region of the second person.
+     * @param results            Object of (@link GeneComparisonResultAnalyzer) which contains comparison results
+     * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
+     *                           else - only the main chromosome results will be obtained
      */
-    public GenomeRegionThread(GenomeRegion first, GenomeRegion second, List<GenomeRegionComparisonResult> results) {
+    public GenomeRegionThread(GenomeRegion first, GenomeRegion second, GeneComparisonResultAnalyzer results, boolean intermediateOutput) {
         this.firstGenomeRegion = first;
         this.secondGenomeRegion = second;
         this.comparisonResults = results;
+        this.intermediateOutput = intermediateOutput;
     }
 
     /**
@@ -56,8 +66,14 @@ public class GenomeRegionThread implements Runnable {
         try {
             // generate new comparator
             GenomeRegionComparator comparator = new GenomeRegionComparator(this.firstGenomeRegion, this.secondGenomeRegion);
-            // add the results of the comparison to the sync. list with the results
-            comparisonResults.add(comparator.LevenshteinDistance());
+            // compare two genes
+            GeneComparisonResult geneComparisonResult = comparator.LevenshteinDistance();
+            // print intermediate results if user chose this feature
+            if (intermediateOutput) {
+                System.out.println(geneComparisonResult);
+            }
+            // add the results of the comparison to the Object of (@link GeneComparisonResultAnalyzer)with the results
+            comparisonResults.add(geneComparisonResult);
         } catch (GenomeException gex) {
             throw new GenomeThreadException(gex.getMessage());
         }

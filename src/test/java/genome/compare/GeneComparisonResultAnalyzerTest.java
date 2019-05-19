@@ -2,16 +2,11 @@ package genome.compare;
 
 import exception.GenomeException;
 
-import genome.compare.analyzis.GeneComparisonResult;
-import genome.compare.analyzis.GeneComparisonResultAnalyzer;
-import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;
-import util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -104,16 +99,16 @@ public class GeneComparisonResultAnalyzerTest {
     /**
      * Test HashMap of results
      */
-    private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_1 = new HashMap<>();
+  //  private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_1 = new HashMap<>();
 
     /**
      * Test HashMap of results
      */
-    private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_2 = new HashMap<>();
+   // private HashMap<String, ArrayList<GeneComparisonResult>> RESULTS_2 = new HashMap<>();
     /**
      * Test empty input data
      */
-    private HashMap<String, ArrayList<GeneComparisonResult>> EMPTY_DATA = new HashMap<>();
+   // private HashMap<String, ArrayList<GeneComparisonResult>> EMPTY_DATA = new HashMap<>();
 
     /**
      * Check String with results of analysis
@@ -131,7 +126,7 @@ public class GeneComparisonResultAnalyzerTest {
             +"These persons are not child and parent.";
 
 
-
+/*
     @Before
     public void setUp() {
         try {
@@ -164,7 +159,7 @@ public class GeneComparisonResultAnalyzerTest {
         GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = new GeneComparisonResultAnalyzer(RESULTS_1);
         assertEquals(geneComparisonResultAnalyzer.toString(), CHECK_STRING_1);
         assertEquals(geneComparisonResultAnalyzer.areParentAndChild(), false);
-    }
+    } */
 
 
 }

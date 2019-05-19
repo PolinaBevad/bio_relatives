@@ -1,13 +1,7 @@
 package genome.compare;
 
 
-import bam.BAMParser;
-import bam.BEDFeature;
-import bam.BEDParser;
-import genome.assembly.GenomeConstructor;
-import genome.compare.analyzis.GeneComparisonResult;
 import genome.compare.comparator.GenomeComparator;
-import htsjdk.samtools.SAMRecord;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -74,18 +68,6 @@ public class PersonTest {
     @Test
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         GenomeComparator comparator = new GenomeComparator("D:\\BIO_DATA\\mother3M.bam","D:\\BIO_DATA\\father3M.bam", PATH_TO_BED);
-        HashMap<String, ArrayList<GeneComparisonResult>> result = comparator.compareGenomes();
-        for (String gene: result.keySet()) {
-            ArrayList<GeneComparisonResult> result1 = result.get(gene);
-            int total_diff = 0;
-            int total_len = 0;
-            for (GeneComparisonResult res: result1) {
-                System.out.println("Gene: " + gene + " Chrom: " + res.getChromName() + " - (diff; len) = (" + res.getDifference() + ", " + res.getSequenceLen() + ")");
-                total_diff += res.getDifference();
-                total_len += res.getSequenceLen();
-            }
-
-            System.out.println("Len: " + total_len + " Diff: " + total_diff + " %: " + (double)total_diff / total_len * 100);
-        }
+        System.out.println(comparator.compareGenomes(false));
     }
 }

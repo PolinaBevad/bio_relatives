@@ -3,10 +3,11 @@ package genome.compare.comparator.threads;
 import bam.BAMParser;
 import bam.BEDFeature;
 import exception.GenomeThreadException;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sergey Khvatov
@@ -20,9 +21,9 @@ public class GeneThread implements Runnable {
     private final List<BEDFeature> exons;
 
     /**
-     * Map where the results for each gene are stored.
+     * Object of (@link GeneComparisonResultAnalyzer) where the results for each gene are stored.
      */
-    private final Map<String, List<GenomeRegionComparisonResult>> comparisonResults;
+    private final GeneComparisonResultAnalyzer comparisonResults;
 
     /**
      * Path to the first person's BAM file.
@@ -35,18 +36,27 @@ public class GeneThread implements Runnable {
     private final BAMParser secondBAMFile;
 
     /**
+     * if this flag is true , then interim genome comparison results will be displayed,
+     * else - only the main chromosome results will be obtained
+     */
+    private final boolean intermediateOutput;
+
+    /**
      * Creates a Gene thread object using following arguments:
      *
-     * @param exons     List of exons from the BED file.
-     * @param firstBAM  First BAM file parser object.
-     * @param secondBAM Second BAM file parser object.
-     * @param results   Map, where the results for each gene are stored.
+     * @param exons                List of exons from the BED file.
+     * @param firstBAM             First BAM file parser object.
+     * @param secondBAM            Second BAM file parser object.
+     * @param results              Object of (@link GeneComparisonResultAnalyzer), where the results for each gene are stored.
+     * @param intermediateOutput   if this flag is true , then interim genome comparison results will be displayed,
+     *                             else - only the main chromosome results will be obtained
      */
-    public GeneThread(List<BEDFeature> exons, BAMParser firstBAM, BAMParser secondBAM, Map<String, List<GenomeRegionComparisonResult>> results) {
+    public GeneThread(List<BEDFeature> exons, BAMParser firstBAM, BAMParser secondBAM, GeneComparisonResultAnalyzer results, boolean intermediateOutput) {
         this.exons = exons;
         this.comparisonResults = results;
         this.firstBAMFile = firstBAM;
         this.secondBAMFile = secondBAM;
+        this.intermediateOutput = intermediateOutput;
     }
 
     /**
@@ -59,7 +69,7 @@ public class GeneThread implements Runnable {
         try {
             // go through all the exons
             for (BEDFeature feature : exons) {
-                Thread featureThread = new Thread(new FeatureThread(feature, firstBAMFile, secondBAMFile, comparisonResults));
+                Thread featureThread = new Thread(new FeatureThread(feature, firstBAMFile, secondBAMFile, comparisonResults, intermediateOutput));
                 featureThread.start();
                 featureThread.join();
             }

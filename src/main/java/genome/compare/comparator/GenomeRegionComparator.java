@@ -2,7 +2,7 @@ package genome.compare.comparator;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.analyzis.GeneComparisonResult;
 import util.Pair;
 
 import java.util.Arrays;
@@ -52,9 +52,9 @@ public class GenomeRegionComparator {
      * It's algorithmic complexity is O(min(N, M)).
      *
      * @return information about differences between these two {@link GenomeRegion}.
-     * @throws GenomeException if exception is thrown in {@link GenomeRegionComparisonResult}.
+     * @throws GenomeException if exception is thrown in {@link GeneComparisonResult}.
      */
-    public GenomeRegionComparisonResult LevenshteinDistance() throws GenomeException {
+    public GeneComparisonResult LevenshteinDistance() throws GenomeException {
         return lDistance(firstPersonGenome, secondPersonGenome);
     }
 
@@ -64,7 +64,7 @@ public class GenomeRegionComparator {
      * @return information about differences between these two {@link GenomeRegion}.
      * @throws GenomeException if sizes of strings from GenomeRegions are not equal.
      */
-    public GenomeRegionComparisonResult HemmingDistance() throws GenomeException {
+    public GeneComparisonResult HemmingDistance() throws GenomeException {
         return hDistance(firstPersonGenome, secondPersonGenome);
     }
 
@@ -87,9 +87,9 @@ public class GenomeRegionComparator {
      * @param second Second genome region.
      * @return The result of the comparison using Hemming distance.
      * @throws GenomeException if sizes of the regions are not equal or if exception
-     *                         is thrown in {@link GenomeRegionComparisonResult}.
+     *                         is thrown in {@link GeneComparisonResult}.
      */
-    private GenomeRegionComparisonResult hDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
+    private GeneComparisonResult hDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
         // normalize the input nucleotide sequences
         Pair<String, String> temp = getNormalizedAlignments(first.getNucleotideSequence(), second.getNucleotideSequence());
         // save new genome sequences
@@ -107,7 +107,7 @@ public class GenomeRegionComparator {
                 diff++;
             }
         }
-        return new GenomeRegionComparisonResult(first.getChromName(), first.getGene(), first.getStart(), diff, f.length());
+        return new GeneComparisonResult(first.getChromName(), first.getGene(), diff, f.length());
     }
 
     /**
@@ -119,9 +119,9 @@ public class GenomeRegionComparator {
      * @return The result of the comparison using Levenshtein distance. Compares two nucleotides,
      * if they are both known, otherwise deletes it from the nucleotide sequence.
      * @throws GenomeException if sizes of the regions are not equal or if exception
-     *                         is thrown in {@link GenomeRegionComparisonResult}.
+     *                         is thrown in {@link GeneComparisonResult}.
      */
-    private GenomeRegionComparisonResult lDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
+    private GeneComparisonResult lDistance(GenomeRegion first, GenomeRegion second) throws GenomeException {
         // normalize the input nucleotide sequences
         Pair<String, String> temp = getNormalizedAlignments(first.getNucleotideSequence(), second.getNucleotideSequence());
         // save new genome sequences
@@ -152,7 +152,7 @@ public class GenomeRegionComparator {
         // also, after validation we consider that the
         // start positions and the names of chromosomes and genes in these two regions
         // are the same.
-        return new GenomeRegionComparisonResult(first.getChromName(), first.getGene(), first.getStart(), current[s.length()], Math.max(f.length(), s.length()));
+        return new GeneComparisonResult(first.getChromName(), first.getGene(), current[s.length()], Math.max(f.length(), s.length()));
     }
 
     /**

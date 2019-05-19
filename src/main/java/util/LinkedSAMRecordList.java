@@ -34,8 +34,12 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
                     return true;
                 }
                 else if(lastIndex == firstIndex) {
-                    if (SAMRecordComparator(s, super.get(middleIndex)) > 0) {
+                    if (SAMRecordComparator(s, super.get(middleIndex)) > 0 && lastIndex == super.size() - 1) {
                         super.add(s);
+                        return true;
+                    }
+                    else if (SAMRecordComparator(s, super.get(middleIndex)) > 0){
+                        super.add(middleIndex + 1, s);
                         return true;
                     }
                     else {
@@ -43,10 +47,10 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
                         return true;
                     }
                 }
-                else if (SAMRecordComparator(s, super.get(middleIndex)) > 0) {
+                else if (s.getStart() > super.get(middleIndex).getStart() || s.getEnd() > super.get(middleIndex).getEnd() ) {
                     firstIndex = middleIndex +1;
                 }
-                else if (SAMRecordComparator(s, super.get(middleIndex)) < 0) {
+                else if (s.getStart() < super.get(middleIndex).getStart() || s.getEnd() < super.get(middleIndex).getEnd() ) {
                     lastIndex = middleIndex - 1;
                 }
             }

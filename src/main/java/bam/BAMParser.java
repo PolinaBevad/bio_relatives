@@ -143,7 +143,9 @@ public class BAMParser {
             while (iter.hasNext()) {
                 // Iterate thorough each record and extract fragment size
                 SAMRecord samRecord = iter.next();
-                samRecords.add(samRecord);
+                if (samRecord.getEnd() != 0) {
+                    samRecords.add(samRecord);
+                }
             }
             // stop iterator
             iter.close();

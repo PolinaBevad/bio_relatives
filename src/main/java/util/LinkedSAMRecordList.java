@@ -14,7 +14,7 @@ import java.util.List;
 public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
 
     /**
-     * Overrided method for addind a SAMRecord into sorted ArrayList by using binary search
+     * Overridden method for adding a SAMRecord into sorted ArrayList by using binary search
      *
      * @param s SAMRecord, which we need to add
      * @return true if all is OK

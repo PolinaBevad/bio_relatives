@@ -143,7 +143,7 @@ public class BEDParser {
                     // check if the same gene is located in different chromosomes
                     for (BEDFeature bf : exons.get(gene)) {
                         if (!chrom.equals(bf.getChromosomeName())) {
-                            throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 4 (chrom, start, end, gene name), got " + rows.length);
+                            throw new GenomeFileException("Error! The same gene " + bf.getChromosomeName() + " is found in different chromosomes.");
                         }
                     }
                     exons.get(gene).add(new BEDFeature(chrom, start, end, gene));

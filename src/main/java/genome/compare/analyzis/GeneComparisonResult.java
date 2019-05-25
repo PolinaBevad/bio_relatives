@@ -1,16 +1,16 @@
 package genome.compare.analyzis;
 
 import exception.GenomeException;
-import genome.assembly.GenomeRegion;
 import genome.compare.comparator.GenomeRegionComparator;
 
 /**
  * This class contains the results of the comparison of
  * two nucleotide sequences. Object of this class is a result
- * of comparison of two {@link GenomeRegion}
+ * of comparison of two {@link genome.assembly.GenomeRegion}
  * made by {@link GenomeRegionComparator}.
  *
  * @author Sergey Khvatov
+ * @author Vladislav Marchenko
  */
 public class GeneComparisonResult {
 
@@ -19,11 +19,6 @@ public class GeneComparisonResult {
      * which contains this nucleotide sequence.
      */
     private String chrom;
-
-    /**
-     * Start position of the nucleotide sequence.
-     */
-    private int startPos;
 
     /**
      * The distance value that was calculated
@@ -52,20 +47,13 @@ public class GeneComparisonResult {
      * between compared ones.
      *
      * @param chrom      Name of the chromosome.
-     * @param pos        It's start position in the chrom.
      * @param difference Difference value.
      * @param len        Length of the nucl. seq.
      * @throws GenomeException if input values are lesser than 0 or the chromosome name is invalid.
      */
-    public GeneComparisonResult(String chrom, String gene, int pos, int difference, int len) throws GenomeException {
+    public GeneComparisonResult(String chrom, String gene, int difference, int len) throws GenomeException {
         this.chrom = chrom;
         this.gene = gene;
-
-        // check the position
-        if (pos < 0) {
-            throw new GenomeException("GenomeRegion", "pos", " < 0");
-        }
-        this.startPos = pos;
 
         // check the diff value
         if (difference < 0) {
@@ -104,18 +92,21 @@ public class GeneComparisonResult {
     }
 
     /**
-     * Get the start position of the gene.
-     *
-     * @return Start position of the gene.
-     */
-    public int getStart() {
-        return startPos;
-    }
-
-    /**
      * @return name of the gene that is stored in this region.
      */
     public String getGene() {
         return gene;
+    }
+
+    /**
+     * Overridden method toString() which return String with single gene intermediate results
+     *
+     * @return String with single gene intermediate results
+     */
+    @Override
+    public String toString() {
+        if (sequenceLen != 0)
+            return "Comparison result of gene " + gene + " from chromosome " + chrom + ": seqLength - " + sequenceLen + ", differences - " + difference + ", similarity percentage - " + (100d - ((double) difference / (double) sequenceLen) * 100d) + "%";
+        return "Nucleotide sequence consists of only UNKNOWN_NUCLEOTIDES";
     }
 }

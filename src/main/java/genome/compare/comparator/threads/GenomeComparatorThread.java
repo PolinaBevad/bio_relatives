@@ -5,14 +5,11 @@ import bam.BEDFeature;
 import bam.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Compares several genomes that are stored in the BAM files
@@ -36,7 +33,7 @@ public class GenomeComparatorThread {
      * Map with the exons that
      * are parsed from the input BED file.
      */
-    private ConcurrentMap<String, List<BEDFeature>> exons;
+    private Map<String, List<BEDFeature>> exons;
 
     /**
      * Default class constructor from paths to the BAM files and corresponding to them BED file.
@@ -50,27 +47,25 @@ public class GenomeComparatorThread {
     public GenomeComparatorThread(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
-        this.exons = new ConcurrentHashMap<>(new BEDParser(pathToBED).parse());
+        this.exons = new BEDParser(pathToBED).parse();
     }
 
     /**
      * Compares two genomes parsing regions for each gene from the input files.
-     *
-     * @return Results of the comparison of two genomes - hashmap, where
-     * Key - name of the gene,
-     * Value - List of the results of comparison of two genes from this chromosome,.
+     * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
+     *                           else - only the main chromosome results will be obtained
+     * @return Results of the comparison of two genomes - Object of (@link GeneComparisonResultAnalyzer)
      * @throws GenomeException if exception occurs while parsing the input files.
      */
-    public Map<String, List<GenomeRegionComparisonResult>> compareGenomes() throws GenomeException {
+    public GeneComparisonResultAnalyzer compareGenomes(boolean intermediateOutput) throws GenomeException {
         /*
-         * Results of the comparison of two genomes - hashmap, where
-         * Key - name of the gene,
-         * Value - List of the results of comparison of two genes from this chromosome,.
+         * Results of the comparison of two genomes -
+         * Object of (@link GeneComparisonResultAnalyzer)
          */
-        ConcurrentMap<String, List<GenomeRegionComparisonResult>> comparisonResults = new ConcurrentHashMap<>();
+        GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
         try {
             for (String gene : exons.keySet()) {
-                Thread geneThread = new Thread(new GeneThread(exons.get(gene), firstBAMFile, secondBAMFile, comparisonResults));
+                Thread geneThread = new Thread(new GeneThread(exons.get(gene), firstBAMFile, secondBAMFile, comparisonResults, intermediateOutput));
                 geneThread.start();
                 geneThread.join();
             }

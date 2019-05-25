@@ -46,11 +46,20 @@ public class Pair<K, V> {
         return value;
     }
 
-    public void setKey(K key) {
-        this.key = key;
-    }
-
+    /**
+     * Sets the value for this pair.
+     * @param value for this pair
+     */
     public void setValue(V value) {
         this.value = value;
+    }
+
+
+    /**
+     * Sets the key for this pair.
+     * @param key for this pair
+     */
+    public void setKey(K key) {
+        this.key = key;
     }
 }

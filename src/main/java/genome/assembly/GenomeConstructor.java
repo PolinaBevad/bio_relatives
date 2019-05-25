@@ -22,7 +22,10 @@ public class GenomeConstructor  {
      */
     private static final String NUCLEOTIDES = "agct";
 
-    private static final double UNKNOWN_NUCL_PERCENTAGE = 0.2d;
+    /**
+     * Maximum percent of the unknown nucleotides in the sequence.
+     */
+    private static final double UNKNOWN_NUCL_PERCENTAGE = 0.1d;
 
     /**
      * Unknown nucleotide symbol.
@@ -69,7 +72,8 @@ public class GenomeConstructor  {
         try {
             // check the input
             if (samRecords.isEmpty()) {
-                throw new GenomeException("GenomeConstructor", "assembly", "samRecords", "is empty");
+                //throw new GenomeException("GenomeConstructor", "assembly", "samRecords", "is empty");
+                return new ArrayList<>();
             }
 
             // list of regions
@@ -165,7 +169,7 @@ public class GenomeConstructor  {
      * @param position  Current position of the nucleotide we are analyzing.
      * @return HashMap with qualities for this nucleotide.
      */
-    private static Map<Character, List<Byte>> getNucleotideDistribution(List<SAMRecord> samRecords, int position) throws GenomeException {
+    private static Map<Character, List<Byte>> getNucleotideDistribution(List<SAMRecord> samRecords, int position) {
         // initialize the storing structure
         Map<Character, List<Byte>> dist = new HashMap<>();
         for (char c : NUCLEOTIDES.toCharArray()) {
@@ -178,7 +182,7 @@ public class GenomeConstructor  {
             int pos = position - s.getStart();
             char n = ' ';
             byte q = 0;
-            if (pos < s.getReadLength()) {
+            if (pos < s.getReadLength() && pos >= 0) {
                 n = s.getReadString().toLowerCase().charAt(pos);
                 q = s.getBaseQualities()[pos];
             }

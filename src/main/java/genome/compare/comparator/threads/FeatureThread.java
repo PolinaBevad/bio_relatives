@@ -5,13 +5,12 @@ import bam.BEDFeature;
 import exception.GenomeException;
 import exception.GenomeThreadException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Sergey Khvatov
@@ -34,25 +33,34 @@ public class FeatureThread implements Runnable {
     private final BAMParser secondBAMFile;
 
     /**
-     * List, where the results of the comparison
+     * Object, where the results of the comparison
      * will be stored in random order.
      */
-    private final ConcurrentMap<String, List<GenomeRegionComparisonResult>> comparisonResults;
+    private final GeneComparisonResultAnalyzer comparisonResults;
+
+    /**
+     * if this flag is true , then interim genome comparison results will be displayed,
+     * else - only the main chromosome results will be obtained
+     */
+    private final boolean intermediateOutput;
 
     /**
      * Creates a feature thread using the following arguments.
      *
-     * @param feature      Corresponding BED file feature.
-     * @param firstParser  First person's BAM file parser.
-     * @param secondParser Second person's BAM file parser.
-     * @param results      List, where the results of the comparison
-     *                     will be stored in random order.
+     * @param feature              Corresponding BED file feature.
+     * @param firstParser          First person's BAM file parser.
+     * @param secondParser         Second person's BAM file parser.
+     * @param results              Object, where the results of the comparison
+     *                             will be stored in random order.
+     * @param intermediateOutput   if this flag is true , then interim genome comparison results will be displayed,
+     *                             else - only the main chromosome results will be obtained
      */
-    public FeatureThread(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ConcurrentMap<String, List<GenomeRegionComparisonResult>> results) {
+    public FeatureThread(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, GeneComparisonResultAnalyzer results, boolean intermediateOutput ) {
         this.feature = feature;
         this.firstBAMFile = firstParser;
         this.secondBAMFile = secondParser;
         this.comparisonResults = results;
+        this.intermediateOutput = intermediateOutput;
     }
 
     /**
@@ -91,26 +99,26 @@ public class FeatureThread implements Runnable {
 
             // check the results
             if (firstGenome.size() != secondGenome.size()) {
-                throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                //throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                return;
             }
 
             // here we consider that both genomes are assembled and are the same size
-            // temporary list that will store the result
-            List<GenomeRegionComparisonResult> tempResult = new ArrayList<>();
+
             // for all regions create GenomeRegionThreads
             for (int i = 0; i < firstGenome.size(); i++) {
-                Thread compareThread = new Thread(new GenomeRegionThread(firstGenome.get(i), secondGenome.get(i), tempResult));
+                Thread compareThread = new Thread(new GenomeRegionThread(firstGenome.get(i), secondGenome.get(i), comparisonResults, intermediateOutput));
                 compareThread.start();
                 compareThread.join();
             }
 
-            synchronized (comparisonResults) {
+           /* synchronized (comparisonResults) {
                 if (comparisonResults.containsKey(feature.getGene())) {
                     comparisonResults.get(feature.getGene()).addAll(tempResult);
                 } else {
                     comparisonResults.put(feature.getGene(), tempResult);
                 }
-            }
+            } */
         } catch (InterruptedException | GenomeException iex) {
             throw new GenomeThreadException(iex.getMessage());
         }

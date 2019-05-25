@@ -7,8 +7,8 @@ import exception.GenomeException;
 import exception.GenomeFileException;
 import genome.assembly.GenomeConstructor;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GenomeRegionComparisonResult;
-import htsjdk.samtools.SAMRecord;
+import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 import util.LinkedSAMRecordList;
 
 import java.util.ArrayList;
@@ -57,19 +57,18 @@ public class GenomeComparator {
 
     /**
      * Compares two genomes parsing regions for each gene from the input files.
-     *
-     * @return Results of the comparison of two genomes - hashmap, where
-     * Key - name of the gene,
-     * Value - List of the results of comparison of two genes from this chromosome,.
+     * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
+     *                           else - only the main chromosome results will be obtained
+     * @return Object GeneComparisonResultAnalyzer which contains results of the comparison of two genomes
      * @throws GenomeException if exception occurs while parsing the input files.
      */
-    public Map<String, List<GenomeRegionComparisonResult>> compareGenomes() throws GenomeException {
+    public GeneComparisonResultAnalyzer compareGenomes(boolean intermediateOutput) throws GenomeException {
         /*
          * Results of the comparison of two genomes - hashmap, where
          * Key - name of the gene,
          * Value - List of the results of comparison of two genes from this chromosome,.
          */
-        Map<String, List<GenomeRegionComparisonResult>> comparisonResults = new HashMap<>();
+        GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
         for (String gene : exons.keySet()) {
             // get the list of the exons that contains this gene
             List<BEDFeature> features = exons.get(gene);
@@ -84,21 +83,19 @@ public class GenomeComparator {
 
                 // check the results
                 if (firstPersonsGenome.size() != secondPersonsGenome.size()) {
-                    throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                    //throw new GenomeException(this.getClass().getName(), "compareGenomes", "sizes of regions are different");
+                    continue;
                 }
 
-                // temporary list that will store the result
-                List<GenomeRegionComparisonResult> tempResult = new ArrayList<>();
                 for (int i = 0; i < firstPersonsGenome.size(); i++) {
                     GenomeRegionComparator comparator = new GenomeRegionComparator(firstPersonsGenome.get(i), secondPersonsGenome.get(i));
-                    tempResult.add(comparator.LevenshteinDistance());
+                    GeneComparisonResult geneComparisonResult = comparator.LevenshteinDistance();
+                    if (intermediateOutput) {
+                        System.out.println(geneComparisonResult);
+                    }
+                    comparisonResults.add(geneComparisonResult);
                 }
-                if (comparisonResults.containsKey(gene)) {
-                    comparisonResults.get(gene).addAll(tempResult);
-                }
-                else {
-                    comparisonResults.put(gene, tempResult);
-                }
+
             }
         }
         return comparisonResults;

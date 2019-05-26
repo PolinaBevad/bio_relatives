@@ -121,7 +121,7 @@ public class UserInputParser {
      */
     private static boolean intermediateOutput = false;
 
-    public static String parseInput(String... input) throws Exception {
+    public static String parseInput(String... input) throws CommandLineException {
         try {
             // parse the input arguments
             CommandLineParser parser = new DefaultParser();
@@ -153,7 +153,7 @@ public class UserInputParser {
             } else {
                 return showHelpMessage();
             }
-        } catch (ParseException | IOException ex) {
+        } catch (Exception ex) {
             CommandLineException cmdex = new CommandLineException("exception occurred [" + ex.getClass().getName() + "]: [" + ex.getMessage() + "]");
             cmdex.initCause(ex);
             throw cmdex;

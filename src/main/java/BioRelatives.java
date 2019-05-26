@@ -22,6 +22,9 @@
  * SOFTWARE.
  */
 
+import exception.CommandLineException;
+import util.UserInputParser;
+
 /**
  * BioRelatives class of the program.
  *
@@ -29,6 +32,11 @@
  */
 public class BioRelatives {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        try {
+            UserInputParser.parseInput(args);
+        } catch (CommandLineException cmdex) {
+            System.out.println(cmdex.getMessage());
+            cmdex.printStackTrace();
+        }
     }
 }

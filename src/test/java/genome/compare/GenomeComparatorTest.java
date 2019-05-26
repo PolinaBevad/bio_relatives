@@ -62,6 +62,7 @@ public class GenomeComparatorTest {
      */
     private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct2.bed";
 
+    @Ignore
     @Test
     public void GenomeComparisonOfNotParentAndChildThreads() throws Exception {
         long startTime = System.currentTimeMillis();
@@ -71,6 +72,7 @@ public class GenomeComparatorTest {
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));
     }
 
+    @Ignore
     @Test
     public void GenomeComparisonOfNotParentAndChildExecutors() throws Exception {
         for (int i = 0; i < 10; i++) {

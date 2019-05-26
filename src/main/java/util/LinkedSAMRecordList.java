@@ -45,7 +45,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
      * @return true if all is OK
      */
     @Override
-    public synchronized boolean add(SAMRecord s) {
+    public boolean add(SAMRecord s) {
         // if this SAMRecord is the first then simply add it
         if (super.isEmpty()) {
             super.add(s);
@@ -92,7 +92,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
      * @return True, if all elements were added, false otherwise.
      */
     @Override
-    public synchronized boolean addAll(Collection<? extends SAMRecord> collection) {
+    public boolean addAll(Collection<? extends SAMRecord> collection) {
         for (SAMRecord record : collection) {
             if (!add(record)) {
                 return false;
@@ -107,7 +107,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
      * @param position position, which SAMRecords should contain
      * @return List of SAMRecords which contains the position
      */
-    public synchronized List<SAMRecord> getSAMRecordList(long position) {
+    public List<SAMRecord> getSAMRecordList(long position) {
         List<SAMRecord> samRecords = new ArrayList<>();
         // minIndex - minimal index of SAMRecord in the super ArrayList which contain the position
         int minIndex = 0;

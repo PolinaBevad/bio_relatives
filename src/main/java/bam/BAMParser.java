@@ -147,7 +147,7 @@ public class BAMParser {
      * @param exons List of exons that were parsed from the corresponding BED file.
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public synchronized LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
+    public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
         // output LinkedSAMRecordList
         LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
         // pass through all exons

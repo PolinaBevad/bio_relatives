@@ -1,9 +1,34 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package util;
 
 import htsjdk.samtools.SAMRecord;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +45,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
      * @return true if all is OK
      */
     @Override
-    public boolean add(SAMRecord s) {
+    public synchronized boolean add(SAMRecord s) {
         // if this SAMRecord is the first then simply add it
         if (super.isEmpty()) {
             super.add(s);
@@ -63,11 +88,11 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
     /**
      * Adds all the elements from the other collection.
      *
-     * @param collection Another collection to get the elements from.
+     * @param collection Another collection to getSAMRecordList the elements from.
      * @return True, if all elements were added, false otherwise.
      */
     @Override
-    public boolean addAll(Collection<? extends SAMRecord> collection) {
+    public synchronized boolean addAll(Collection<? extends SAMRecord> collection) {
         for (SAMRecord record : collection) {
             if (!add(record)) {
                 return false;
@@ -82,7 +107,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
      * @param position position, which SAMRecords should contain
      * @return List of SAMRecords which contains the position
      */
-    public List<SAMRecord> get(long position) {
+    public synchronized List<SAMRecord> getSAMRecordList(long position) {
         List<SAMRecord> samRecords = new ArrayList<>();
         // minIndex - minimal index of SAMRecord in the super ArrayList which contain the position
         int minIndex = 0;
@@ -127,7 +152,7 @@ public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
         for (int i = minIndex; i <= maxIndex; i++) {
             samRecords.add(super.get(i));
         }
-        return samRecords;
+        return Collections.synchronizedList(samRecords);
     }
 
     /**

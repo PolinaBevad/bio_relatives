@@ -1,10 +1,36 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package util;
 
 import exception.CommandLineException;
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.comparator.AshkenaziTrioComparator;
+import genome.compare.comparator.TrioComparator;
 import org.apache.commons.cli.*;
+
+import java.io.*;
 
 /**
  * This class implements a basic command line arguments parser
@@ -14,6 +40,14 @@ import org.apache.commons.cli.*;
  * @author Vladislav Marchenko
  */
 public class UserInputParser {
+    /**
+     * Start string from file (@link README.md) , which will print in help option
+     */
+    private static final String USAGE_STRING ="##Usage";
+    /**
+     * Finish string from file (@link README.md) , which will print in help option
+     */
+    private static final String MAINTAINER_STRING ="##Maintainer";
 
     /**
      * Tokens used as the keys for operations.
@@ -77,8 +111,7 @@ public class UserInputParser {
 
         // set setting intermediate output flag option
         Option setIntermediateOutputOption = Operation.getOption(Operation.SET_INTERMEDIATE_OUTPUT);
-        setIntermediateOutputOption.setArgs(1);
-        setIntermediateOutputOption.setArgName("<flag>");
+        setIntermediateOutputOption.setArgs(0);
         options.addOption(setIntermediateOutputOption);
     }
 
@@ -94,20 +127,13 @@ public class UserInputParser {
             CommandLineParser parser = new DefaultParser();
             CommandLine cmd = parser.parse(options, input);
 
-
             if (cmd.hasOption(SET_OUT_TOKENS[0])) {
-                // get the arguments values
-                String[] paths = cmd.getOptionValues(SET_OUT_TOKENS[0]);
-                // check them
-                if (paths == null || paths.length != 1 || (!paths[0].toLowerCase().equals("on") && !paths[0].toLowerCase().equals("off"))) {
-                    throw new CommandLineException("incorrect keys and arguments were passed");
-                }
-                setIntermediateOutput(paths[0]);
+                setIntermediateOutput();
             }
             if (cmd.hasOption(HELP_TOKENS[0])) {
                 return showHelpMessage();
             } else if (cmd.hasOption(COMP2_TOKENS[0])) {
-                // get the arguments values
+                // getSAMRecordList the arguments values
                 String[] paths = cmd.getOptionValues(COMP2_TOKENS[0]);
                 // check them
                 if (paths == null || paths.length != 3) {
@@ -116,7 +142,7 @@ public class UserInputParser {
                 // if ok then call method
                 return compareTwoGenomes(paths[0], paths[1], paths[2]);
             } else if (cmd.hasOption(COMP3_TOKENS[0])) {
-                // get the arguments values
+                // getSAMRecordList the arguments values
                 String[] paths = cmd.getOptionValues(COMP3_TOKENS[0]);
                 // check them
                 if (paths == null || paths.length != 4) {
@@ -127,7 +153,7 @@ public class UserInputParser {
             } else {
                 return showHelpMessage();
             }
-        } catch (ParseException ex) {
+        } catch (ParseException | IOException ex) {
             CommandLineException cmdex = new CommandLineException("exception occurred [" + ex.getClass().getName() + "]: [" + ex.getMessage() + "]");
             cmdex.initCause(ex);
             throw cmdex;
@@ -139,9 +165,44 @@ public class UserInputParser {
      *
      * @param args Not used variable.
      * @return Help message.
+     * @throws IOException if file README.md does not exist
      */
-    private static String showHelpMessage(String... args) {
-        return "help";
+    private static String showHelpMessage(String... args) throws IOException {
+        StringBuilder help = new StringBuilder();
+        File file = new File("README.md");
+        FileReader fr = new FileReader(file);
+        BufferedReader reader = new BufferedReader(fr);
+        String line = reader.readLine();
+        while (!line.equals(USAGE_STRING)) {
+            line = reader.readLine();
+        }
+        help.append(line);
+        help.append("\n");
+        int tabNum = 0;
+        int sharpCount = 2;
+        while(!line.equals(MAINTAINER_STRING)) {
+            line = reader.readLine();
+            line  = line.replace("    j", "j");
+            if (!line.equals(MAINTAINER_STRING)) {
+                if (!line.contains("#")) {
+                    help.append(getString((tabNum + 1), line));
+                }
+                else if(getSharpCount(line) == (sharpCount + 1)) {
+                    help.append(getString(tabNum, line));
+                }
+                else if (getSharpCount(line) > (sharpCount + 1)) {
+                    tabNum ++;
+                    sharpCount = getSharpCount(line);
+                    help.append(getString(tabNum, line));
+                }
+                else {
+                    tabNum -= sharpCount -getSharpCount(line);
+                    sharpCount = getSharpCount(line);
+                    help.append(getString(tabNum, line));
+                }
+            }
+        }
+        return help.toString();
     }
 
     /**
@@ -153,7 +214,9 @@ public class UserInputParser {
      * @throws GenomeFileException if files are invalid
      */
     private static String compareTwoGenomes(String... args) throws GenomeException, GenomeFileException {
-        return AshkenaziTrioComparator.compareTwoGenomes(args[0], args[1], args[2], intermediateOutput);
+        String result = TrioComparator.compareTwoGenomes(args[0], args[1], args[2], intermediateOutput);
+        intermediateOutput = false;
+        return result;
     }
 
     /**
@@ -166,19 +229,46 @@ public class UserInputParser {
      * @throws GenomeFileException if files are invalid
      */
     private static String compareThreeGenomes(String... args) throws GenomeException, GenomeFileException{
-        return AshkenaziTrioComparator.compareThreeGenomes(args[0], args[1], args[2], args[3], intermediateOutput);
+        String result = TrioComparator.compareThreeGenomes(args[0], args[1], args[2], args[3], intermediateOutput);
+        intermediateOutput = false;
+        return result;
     }
 
     /**
-     * Set the intermediate output flag
-     * @param arg string with the key word
+     * Set the intermediate output flag as true
      */
-    private static void setIntermediateOutput(String arg) {
-        if (arg.toLowerCase().equals("on")) {
-            intermediateOutput = true;
+    private static void setIntermediateOutput() {
+        intermediateOutput = true;
+    }
+
+    /**
+     * find count of # in input string
+     * @param string input string in which we will define count of #
+     * @return count of #
+     */
+    private static int getSharpCount(String string) {
+        int k = 0;
+        for (char c : string.toCharArray()) {
+            if (c == '#') {
+                k++;
+            }
         }
-        else {
-            intermediateOutput = false;
+        return k;
+    }
+
+    /**
+     * Getting a string from file line with need count of tabs
+     * @param tabNum count of tab
+     * @param line line from file
+     * @return need string
+     */
+    private static String getString(int tabNum, String line) {
+        StringBuilder res = new StringBuilder();
+        for (int i  = 0; i < tabNum; i++) {
+            res.append("\t");
         }
+        res.append(line);
+        res.append("\n");
+        return res.toString();
     }
 }

@@ -47,7 +47,7 @@ public class UserInputParser {
     /**
      * Finish string from file (@link README.md), which will print in help option
      */
-    private static final String MAINTAINER_STRING ="## Maintainer";
+    private static final String MAINTAINER_STRING ="## Maintainers";
 
     /**
      * Tokens used as the keys for operations.

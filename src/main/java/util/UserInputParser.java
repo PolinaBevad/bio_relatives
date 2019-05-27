@@ -41,13 +41,13 @@ import java.io.*;
  */
 public class UserInputParser {
     /**
-     * Start string from file (@link README.md) , which will print in help option
+     * Start string from file (@link README.md), which will print in help option
      */
-    private static final String USAGE_STRING ="##Usage";
+    private static final String USAGE_STRING ="## Usage";
     /**
-     * Finish string from file (@link README.md) , which will print in help option
+     * Finish string from file (@link README.md), which will print in help option
      */
-    private static final String MAINTAINER_STRING ="##Maintainer";
+    private static final String MAINTAINER_STRING ="## Maintainer";
 
     /**
      * Tokens used as the keys for operations.

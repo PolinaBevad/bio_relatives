@@ -1,27 +1,27 @@
-#bio_relatives
+# bio_relatives
 [![Build Status](https://travis-ci.org/PolinaBevad/bio_relatives.svg?branch=master)](https://travis-ci.org/PolinaBevad/bio_relatives)
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 [![License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/samtools/PolinaBevad/bio_relatives)
 
 Program, which determines the relationship between people at the level of mother / father / child.
 
-##Table of Contents
--   [Requirements](#requirements)
--   [Installing](#installing)
--   [Building](#building)
-    -   [Creation a project in IntelliJ](#creation a project in IntelliJ)
--   [Usage](#usage)
-    -   [Options](#options)
-    -   [Examples](#examples)
-        -   [Comparison of the genomes of two persons](#comparison of the genomes of two persons)
-        -   [Comparison of the genomes of three persons](#comparison of the genomes of three persons)
-        -   [Comparison of the genomes with intermediate output](#comparison-of-the-genomes-with-intermediate-output)
--   [Maintainer](#maintainer)
--   [Contributing](#contributing)
--   [Contributors](#contributors)
--   [License](#license)
+## Table of Contents
+-   [Requirements](#Requirements)
+-   [Installing](#Installing)
+-   [Building](#Building)
+    -   [Creation of the project in IntelliJ](#Creation of the project using IntelliJ)
+-   [Usage](#Usage)
+    -   [Options](#Options)
+    -   [Examples](#Examples)
+        -   [Comparison of the genomes of two persons](#Comparison of the genomes of two persons)
+        -   [Comparison of the genomes of three persons](#Comparison of the genomes of three persons)
+        -   [Comparison of the genomes with intermediate output](#Comparison-of-the-genomes-with-intermediate-output)
+-   [Maintainer](#Maintainer)
+-   [Contributing](#Contributing)
+-   [Contributors](#Contributors)
+-   [License](#License)
 
-##Requirements
+## Requirements
 * To run bio_relatives project:
     * Java 8 JDK or higher
 * To build bio_relatives project:
@@ -29,11 +29,11 @@ Program, which determines the relationship between people at the level of mother
     * Git 2.5 or higher
     * Gradle 3.1 or higher. We recommend using the `./gradlew` script, which will
           download and use an appropriate gradle version automatically (see examples below).
-##Installing
+## Installing
 
 You can download the latest version of the project from [github releases page](https://github.com/PolinaBevad/bio_relatives/releases).
 
-##Building
+## Building
 
 bio_relatives project can be built using [gradle](http://gradle.org/).
 
@@ -74,16 +74,16 @@ Examples of gradle usage from the bio_relatives root directory:
  ./gradlew tasks
  ```
 
-###Creation of the project using IntelliJ
+### Creation of the project using IntelliJ
 To create the project in IntelliJ IDE for bio_relatives do the following:
 
 1. Select fom the menu: `File -> New -> Project from Existing Sources`
 2. In the resulting dialog, chose `Import from existing model`, select `Gradle` and `Next`
 3. Choose the `default gradle wrapper` and `Finish`.
 
-##Usage
+## Usage
     java -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] 
-###Options
+### Options
 
 `-h`, `--help` - show help message.
 
@@ -93,30 +93,30 @@ To create the project in IntelliJ IDE for bio_relatives do the following:
 
 `-c3`, `--compare3` - compare genomes of three persons (father/mother/son).
 
-###Examples
-####Comparison of the genomes of two persons
+### Examples
+#### Comparison of the genomes of two persons
 ```
 java -jar bio_relatives.jar --compare2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed
 ```
-####Comparison of the genomes of three persons
+#### Comparison of the genomes of three persons
 ```
 java -jar bio_relatives.jar --compare3 ~/path/to/father.bam ~/path/to/mother.bam ~/path/to/son.bam ~/path/to/file.bed
 ```
-####Comparison of the genomes with intermediate output
+#### Comparison of the genomes with intermediate output
 ```
 java -jar bio_relatives.jar -io -c2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed
 ```
-##Maintainer
+## Maintainer
 [Polina Bevad](https://github.com/PolinaBevad)
 
-##Contributing
+## Contributing
 
 Please read [Contributing.md](CONTRIBUTING.md) for more details about our code of conduct, and the process of submitting pull requests to us.
 
-##Contributors
+## Contributors
 -   [Polina Bevad](https://github.com/PolinaBevad)
 -   [Sergey Hvatov](https://github.com/SHvatov)
 -   [Vladislav Marchenko](https://github.com/MarchenkoVladislav)
 
-##License
+## License
 This project is licenced under the terms of the [MIT](LICENSE) license.

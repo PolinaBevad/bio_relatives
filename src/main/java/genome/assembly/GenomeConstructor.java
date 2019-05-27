@@ -49,7 +49,7 @@ public class GenomeConstructor  {
     /**
      * Maximum percent of the unknown nucleotides in the sequence.
      */
-    private static final double UNKNOWN_NUCL_PERCENTAGE = 0.8d;
+    private static final double UNKNOWN_NUCL_PERCENTAGE = 1.1d;
 
     /**
      * Unknown nucleotide symbol.

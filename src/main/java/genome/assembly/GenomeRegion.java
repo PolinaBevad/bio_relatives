@@ -25,6 +25,7 @@
 package genome.assembly;
 
 import exception.GenomeException;
+import exception.GenomeFileException;
 import util.Pair;
 
 import java.util.HashSet;
@@ -37,26 +38,11 @@ import java.util.HashSet;
 public class GenomeRegion {
 
     /**
-     * Set of characters that are allowed in genome symbol name.
+     * Regular expression that contains all
+     * the allowed symbols for the gene name.
      */
-    private static HashSet<Character> ALLOWED_SYMBOLS = new HashSet<>();
+    private static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
 
-    static {
-        for (char ch = 'a'; ch <= 'z'; ch++) {
-            ALLOWED_SYMBOLS.add(ch);
-        }
-    }
-
-    /**
-     * Set of numbers that are allowed in genome symbol name.
-     */
-    private static HashSet<Character> ALLOWED_NUMBERS = new HashSet<>();
-
-    static {
-        for (char ch = '0'; ch <= '9'; ch++) {
-            ALLOWED_NUMBERS.add(ch);
-        }
-    }
 
     /**
      * Name of the chromosome
@@ -107,10 +93,8 @@ public class GenomeRegion {
         this.nucleotideseq = seq;
         this.gene = gene;
 
-        for (char ch : this.gene.toLowerCase().toCharArray()) {
-            if (!ALLOWED_SYMBOLS.contains(ch) && !ALLOWED_NUMBERS.contains(ch)) {
-                throw new GenomeException(this.getClass().getName(), "GenomeRegion", "gene", "incorrect value");
-            }
+        if (!gene.matches(ALLOWED_SYMBOLS_REGEXP)) {
+            throw new GenomeException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + startpos + ", " + gene);
         }
 
         // check the quality array

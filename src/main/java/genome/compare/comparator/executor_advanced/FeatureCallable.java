@@ -132,7 +132,10 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
 
             // check the results
             if (firstGenome.size() != secondGenome.size()) {
-                throw new GenomeException("Error occurred while assembling: " + feature);
+                //throw new GenomeException("Error occurred while assembling: " + feature);
+                // TODO add Logger
+                System.out.println("Error occurred while assembling: " + feature);
+                return Collections.synchronizedList(new ArrayList<>());
             }
 
             // submit the tasks to the executor

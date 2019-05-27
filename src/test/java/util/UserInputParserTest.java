@@ -40,31 +40,37 @@ public class UserInputParserTest {
             "\t\tjava -jar bio_relatives.jar -io -c2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed\n" +
             "\t\t```\n";
     private final static String CHECK_STR_1 ="Similarity percentage for each chromosome:\n" +
-        "\tName of chromosome: 4. Similarity percentage: 100.0%\n" +
-        "\tNumber of nucleotides compared: 884\n" +
-        "\tSimilarity percentage for each gene from this chromosome:\n" +
-        "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 100.0%\n" +
-        "Count of chromosomes with 99.7+% similarity: 1\n" +
-        "Count of dissimilar chromosomes: 0\n" +
-        "These persons are child and parent.";
+            "\tName of chromosome: 4. Similarity percentage: 100.0%\n" +
+            "\tNumber of nucleotides compared: 1768\n" +
+            "\tSimilarity percentage for each gene from this chromosome:\n" +
+            "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 100.0%\n" +
+            "\t\tName of gene: UPNWfYFPJQ. Similarity percentage: 100.0%\n" +
+            "Count of chromosomes with 99.7+% similarity: 1\n" +
+            "Count of dissimilar chromosomes: 0\n";
     private final static String CHECK_STR_2 ="Comparison of father and son genomes:\n" +
-        "Similarity percentage for each chromosome:\n" +
-        "\tName of chromosome: 4. Similarity percentage: 100.0%\n" +
-        "\tNumber of nucleotides compared: 884\n" +
-        "\tSimilarity percentage for each gene from this chromosome:\n" +
-        "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 100.0%\n" +
-        "Count of chromosomes with 99.7+% similarity: 1\n" +
-        "Count of dissimilar chromosomes: 0\n" +
-        "These persons are child and parent.\n" +
-        "Comparison of mother and son genomes:\n" +
-        "Similarity percentage for each chromosome:\n" +
-        "\tName of chromosome: 4. Similarity percentage: 98.29488465396189%\n" +
-        "\tNumber of nucleotides compared: 997\n" +
-        "\tSimilarity percentage for each gene from this chromosome:\n" +
-        "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 98.29488465396189%\n" +
-        "Count of chromosomes with 99.7+% similarity: 0\n" +
-        "Count of dissimilar chromosomes: 1\n" +
-        "These persons are not child and parent.";
+            "Similarity percentage for each chromosome:\n" +
+            "\tName of chromosome: 4. Similarity percentage: 100.0%\n" +
+            "\tNumber of nucleotides compared: 1768\n" +
+            "\tSimilarity percentage for each gene from this chromosome:\n" +
+            "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 100.0%\n" +
+            "\t\tName of gene: UPNWfYFPJQ. Similarity percentage: 100.0%\n" +
+            "Count of chromosomes with 99.7+% similarity: 1\n" +
+            "Count of dissimilar chromosomes: 0\n" +
+            "\n" +
+            "Comparison of mother and son genomes:\n" +
+            "Similarity percentage for each chromosome:\n" +
+            "\tName of chromosome: 4. Similarity percentage: 98.29488465396189%\n" +
+            "\tNumber of nucleotides compared: 1994\n" +
+            "\tSimilarity percentage for each gene from this chromosome:\n" +
+            "\t\tName of gene: UPNWPYFPJQ. Similarity percentage: 98.29488465396189%\n" +
+            "\t\tName of gene: UPNWfYFPJQ. Similarity percentage: 98.29488465396189%\n" +
+            "Count of chromosomes with 99.7+% similarity: 0\n" +
+            "Count of dissimilar chromosomes: 1\n" +
+            "\n" +
+            "Chromosomes from father: [4]\n" +
+            "Chromosomes from mother: []\n" +
+            "Number of chromosomes from father: 1\n" +
+            "Number of chromosomes from mother: 0\n";
 
     @Test
     public void CorrectUserInputTestHelpMessageLong() throws Exception {

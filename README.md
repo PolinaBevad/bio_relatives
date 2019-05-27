@@ -106,17 +106,13 @@ java -jar bio_relatives.jar --compare3 ~/path/to/father.bam ~/path/to/mother.bam
 ```
 java -jar bio_relatives.jar -io -c2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed
 ```
-## Maintainer
-[Polina Bevad](https://github.com/PolinaBevad)
-
-## Contributing
-
-Please read [Contributing.md](CONTRIBUTING.md) for more details about our code of conduct, and the process of submitting pull requests to us.
-
-## Contributors
+## Maintainers
 -   [Polina Bevad](https://github.com/PolinaBevad)
 -   [Sergey Hvatov](https://github.com/SHvatov)
 -   [Vladislav Marchenko](https://github.com/MarchenkoVladislav)
+## Contributing
+
+Please read [Contributing.md](CONTRIBUTING.md) for more details about our code of conduct, and the process of submitting pull requests to us.
 
 ## License
 This project is licenced under the terms of the [MIT](LICENSE) license.

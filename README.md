@@ -1,5 +1,5 @@
 # bio_relatives
-[![Build Status](https://travis-ci.org/PolinaBevad/bio_relatives.svg?branch=master)](https://travis-ci.org/PolinaBevad/bio_relatives)
+[![Build Status][travis_badge]][travis_link]
 [![Language](http://img.shields.io/badge/language-java-brightgreen.svg)](https://www.java.com/)
 [![License](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/samtools/PolinaBevad/bio_relatives)
 
@@ -120,3 +120,7 @@ Please read [Contributing.md](CONTRIBUTING.md) for more details about our code o
 
 ## License
 This project is licenced under the terms of the [MIT](LICENSE) license.
+
+[travis_link]: https://travis-ci.org/PolinaBevad/bio_relatives
+
+[travis_badge]: https://travis-ci.org/PolinaBevad/bio_relatives.svg?branch=master

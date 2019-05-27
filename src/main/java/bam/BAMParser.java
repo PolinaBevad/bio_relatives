@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package bam;
 
 import exception.GenomeException;
@@ -48,7 +72,7 @@ public class BAMParser {
     /**
      * Maximum len of the region that will be processed.
      */
-    private static final int MAX_REGION_LENGTH = 25;
+    private static final int MAX_REGION_LENGTH = 20;
 
     /**
      * Default extension of BAM files.
@@ -123,7 +147,7 @@ public class BAMParser {
      * @param exons List of exons that were parsed from the corresponding BED file.
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeException {
+    public synchronized LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
         // output LinkedSAMRecordList
         LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
         // pass through all exons
@@ -140,7 +164,7 @@ public class BAMParser {
      * @return List with SAM records.
      * @throws GenomeException if error occurs.
      */
-    public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeException {
+    public synchronized LinkedSAMRecordList parse(BEDFeature exon) throws GenomeFileException, GenomeException {
         List<BEDFeature> smallerExons = generateExons(exon.getStartPos(), exon.getEndPos(), exon.getChromosomeName(), exon.getGene());
         LinkedSAMRecordList recordList = new LinkedSAMRecordList();
         for (BEDFeature e : smallerExons) {
@@ -155,7 +179,7 @@ public class BAMParser {
      * @param exon exon, which we want to take
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    private LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
+    private synchronized LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
         try {
             LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
             // Start iterating from start to end of current chromosome.
@@ -190,7 +214,7 @@ public class BAMParser {
      * @param gene  Name of the gene.
      * @return List with the regions from the bed file.
      */
-    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene) throws GenomeException {
+    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene) throws GenomeFileException {
         List<BEDFeature> list = new ArrayList<>();
         // split big region into small parts
         int exonLen = end - start;
@@ -205,7 +229,7 @@ public class BAMParser {
                 }
             }
             // if the last region size is lesser than MAX_REGION_LENGTH
-            if (tempStart - end != 0) {
+            if (tempStart - end > 0) {
                 list.add(new BEDFeature(chrom, tempStart, end, gene));
             }
         }

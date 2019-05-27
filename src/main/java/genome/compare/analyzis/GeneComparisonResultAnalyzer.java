@@ -1,10 +1,32 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package genome.compare.analyzis;
 
 import util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,7 +44,7 @@ public class GeneComparisonResultAnalyzer {
     /**
      * List which contains average similarity values of all types chromosomes
      */
-    private List<Pair<String, Double>> averageSimilarityValues = new ArrayList<>();
+    private List<Pair<String, Double>> averageSimilarityValues = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * Concurrent Map of geneComparisonResults : key - chromosome name; value: Map of genes: key - gene name , value - Pair of differences and sequence length
@@ -78,6 +100,7 @@ public class GeneComparisonResultAnalyzer {
 
     /**
      * Method which returns info String of genes similarities from the chromosome
+     *
      * @param chrName name of chromosome
      * @return string with info of each gene similarity
      */
@@ -94,40 +117,34 @@ public class GeneComparisonResultAnalyzer {
         return result.toString();
     }
 
-
-    /**
-     * Method that answers the question of whether the people studied are a parent and child
-     *
-     * @return true if they are parent and child, else return false
-     */
-    public boolean areParentAndChild() {
-        return (highSimilarityChromosomeCount > nonSimilarityChromosomeCount);
-    }
-
     /**
      * Method for adding gene comparison result into Map of chromosomes and genes
+     *
      * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
      */
     public void add(GeneComparisonResult geneComparisonResult) {
         if (geneComparisonResults.containsKey(geneComparisonResult.getChromName())) {
             if (geneComparisonResults.get(geneComparisonResult.getChromName()).containsKey(geneComparisonResult.getGene())) {
-                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setKey(
-                        geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getKey() + geneComparisonResult.getDifference()
-                );
-                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setValue(
-                        geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getValue() + geneComparisonResult.getSequenceLen()
-                );
+                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setKey(geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getKey() + geneComparisonResult.getDifference());
+                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setValue(geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getValue() + geneComparisonResult.getSequenceLen());
+            } else {
+                geneComparisonResults.get(geneComparisonResult.getChromName()).put(geneComparisonResult.getGene(), new Pair<>(geneComparisonResult.getDifference(), geneComparisonResult.getSequenceLen()));
             }
-            else {
-                geneComparisonResults.get(
-                        geneComparisonResult.getChromName()).put(geneComparisonResult.getGene(), new Pair<>(geneComparisonResult.getDifference(), geneComparisonResult.getSequenceLen())
-                );
-            }
-        }
-        else {
-            Map<String , Pair<Integer, Integer>> currentGene = new ConcurrentHashMap<>();
+        } else {
+            Map<String, Pair<Integer, Integer>> currentGene = new ConcurrentHashMap<>();
             currentGene.put(geneComparisonResult.getGene(), new Pair<>(geneComparisonResult.getDifference(), geneComparisonResult.getSequenceLen()));
             geneComparisonResults.put(geneComparisonResult.getChromName(), currentGene);
+        }
+    }
+
+    /**
+     * Method for adding a list of gene comparison results into Map of chromosomes and genes.
+     *
+     * @param collection Collection with the results of the comparison.
+     */
+    public void add(Collection<GeneComparisonResult> collection) {
+        for (GeneComparisonResult element : collection) {
+            this.add(element);
         }
     }
 
@@ -141,7 +158,7 @@ public class GeneComparisonResultAnalyzer {
             }
         }
         for (Pair<String, Double> similarity : averageSimilarityValues) {
-            if (similarity.getValue() >= HIGH_PERCENTAGE) {
+            if (similarity.getValue() > HIGH_PERCENTAGE) {
                 highSimilarityChromosomeCount++;
             } else {
                 nonSimilarityChromosomeCount++;
@@ -164,7 +181,8 @@ public class GeneComparisonResultAnalyzer {
 
     /**
      * Overloaded method which find an average value of similarities
-     * @param diff differences between two genes
+     *
+     * @param diff   differences between two genes
      * @param seqLen length of gene
      * @return average value of similarities
      */
@@ -177,29 +195,21 @@ public class GeneComparisonResultAnalyzer {
 
     /**
      * Method which return total sequence length of chromosome
+     *
      * @param chrom Map of genes from the chromosome
      * @return total sequence length of chromosome
      */
     private Integer getSumSeqLengthFromChrom(Map<String, Pair<Integer, Integer>> chrom) {
-        int length = 0;
-        for (String gene : chrom.keySet()) {
-            length+=chrom.get(gene).getValue();
-        }
-        return length;
+        return chrom.keySet().stream().mapToInt(gene -> chrom.get(gene).getValue()).sum();
     }
 
     /**
      * Method which return total difference count of chromosome
+     *
      * @param chrom Map of genes from the chromosome
      * @return total difference count of chromosome
      */
     private Integer getSumDiffFromChrom(Map<String, Pair<Integer, Integer>> chrom) {
-        int diff = 0;
-        for (String gene : chrom.keySet()) {
-            diff+=chrom.get(gene).getKey();
-        }
-        return diff;
+        return chrom.keySet().stream().mapToInt(gene -> chrom.get(gene).getKey()).sum();
     }
-
-
 }

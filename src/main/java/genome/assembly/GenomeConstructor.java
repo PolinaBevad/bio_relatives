@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package genome.assembly;
 
 import bam.BEDFeature;
@@ -25,7 +49,7 @@ public class GenomeConstructor  {
     /**
      * Maximum percent of the unknown nucleotides in the sequence.
      */
-    private static final double UNKNOWN_NUCL_PERCENTAGE = 0.1d;
+    private static final double UNKNOWN_NUCL_PERCENTAGE = 0.8d;
 
     /**
      * Unknown nucleotide symbol.
@@ -95,7 +119,7 @@ public class GenomeConstructor  {
             for (int j = exon.getStartPos(); j < exon.getEndPos(); j++) {
                 // HashMap in which there are nucleotides(with their qualities; see description of the method)
                 // from current position
-                Map<Character, List<Byte>> currentNucleotides = getNucleotideDistribution(samRecords.get((long) j), j);
+                Map<Character, List<Byte>> currentNucleotides = getNucleotideDistribution(samRecords.getSAMRecordList((long) j), j);
                 // the best nucleotide(if there are not any nucleotides, we write a *)
                 char bestNucleotide = UNKNOWN_NUCLEOTIDE;
                 // the best median quality of nucleotide
@@ -176,7 +200,7 @@ public class GenomeConstructor  {
             dist.put(c, new ArrayList<>());
         }
 
-        // for each read get the
+        // for each read getSAMRecordList the
         // nucleotide and it's quality if it contains it
         for (SAMRecord s : samRecords) {
             int pos = position - s.getStart();

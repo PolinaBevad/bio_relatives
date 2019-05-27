@@ -22,18 +22,19 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.threads;
+package genome.compare.comparator.executors;
 
 import bam.BAMParser;
 import bam.BEDFeature;
 import bam.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
+import genome.compare.analyzis.GeneComparisonResult;
 import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 
 /**
  * Compares several genomes that are stored in the BAM files
@@ -41,7 +42,13 @@ import java.util.Map;
  *
  * @author Sergey Hvatov
  */
-public class GenomeComparatorThread {
+@Deprecated
+public class GenomeComparator {
+
+    /**
+     * Default number of comparing threads.
+     */
+    private static final int GENE_COMPARISON_THREADS_NUM = 32;
 
     /**
      * Path to the first person's BAM file.
@@ -68,34 +75,47 @@ public class GenomeComparatorThread {
      * @throws GenomeException     if exception occurs file parsing the BED file.
      * @throws GenomeFileException if incorrect BED or BAM file is passed.
      */
-    public GenomeComparatorThread(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
+    public GenomeComparator(String pathToFirstBAM, String pathToSecondBAM, String pathToBED) throws GenomeException, GenomeFileException {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
-        this.exons = new BEDParser(pathToBED).parse();
+        this.exons = new ConcurrentHashMap<>(new BEDParser(pathToBED).parse());
     }
 
     /**
      * Compares two genomes parsing regions for each gene from the input files.
-     * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
-     *                           else - only the main chromosome results will be obtained
-     * @return Results of the comparison of two genomes - Object of (@link GeneComparisonResultAnalyzer)
+     *
+     * @param advancedOutput if this flag is true, then interim genome comparison results will be displayed,
+     *                       else - only the main chromosome results will be obtained
+     * @return Object GeneComparisonResultAnalyzer which contains results of the comparison of two genomes
      * @throws GenomeException if exception occurs while parsing the input files.
      */
-    public GeneComparisonResultAnalyzer compareGenomes(boolean intermediateOutput) throws GenomeException {
-        /*
-         * Results of the comparison of two genomes -
-         * Object of (@link GeneComparisonResultAnalyzer)
-         */
+    public GeneComparisonResultAnalyzer compareGenomes(boolean advancedOutput) throws GenomeException {
+        // results of the comparison
         GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
+        // executors that will be used in the method
+        ExecutorService executorPool = Executors.newFixedThreadPool(GENE_COMPARISON_THREADS_NUM);
+        CompletionService<List<GeneComparisonResult>> executorService = new ExecutorCompletionService<>(executorPool);
+
         try {
             for (String gene : exons.keySet()) {
-                Thread geneThread = new Thread(new GeneThread(exons.get(gene), firstBAMFile, secondBAMFile, comparisonResults, intermediateOutput));
-                geneThread.start();
-                geneThread.join();
+                executorService.submit(new GeneCallable(exons.get(gene), firstBAMFile, secondBAMFile, advancedOutput));
             }
+
+            for (int i = 0; i < exons.keySet().size(); i++) {
+                comparisonResults.add(executorService.take().get());
+            }
+
+            executorPool.shutdown();
             return comparisonResults;
-        } catch (InterruptedException iex) {
-            throw new GenomeException(iex.getMessage());
+        } catch (Exception ex) {
+            // if exception has occurred during the call
+            // then getSAMRecordList the cause and init our own exception
+            Throwable t = ex.getCause();
+            GenomeException gex = new GenomeException(this.getClass().getName(), "call", t.getMessage());
+            gex.initCause(t);
+            throw gex;
+        } finally {
+            executorPool.shutdownNow();
         }
     }
 }

@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package genome.compare.comparator;
 
 import bam.BAMParser;
@@ -62,7 +86,7 @@ public class GenomeComparator {
      * @return Object GeneComparisonResultAnalyzer which contains results of the comparison of two genomes
      * @throws GenomeException if exception occurs while parsing the input files.
      */
-    public GeneComparisonResultAnalyzer compareGenomes(boolean intermediateOutput) throws GenomeException {
+    public GeneComparisonResultAnalyzer compareGenomes(boolean intermediateOutput) throws GenomeFileException, GenomeException {
         /*
          * Results of the comparison of two genomes - hashmap, where
          * Key - name of the gene,
@@ -70,10 +94,10 @@ public class GenomeComparator {
          */
         GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
         for (String gene : exons.keySet()) {
-            // get the list of the exons that contains this gene
+            // getSAMRecordList the list of the exons that contains this gene
             List<BEDFeature> features = exons.get(gene);
             for (BEDFeature feature : features) {
-                // get the list of sam records for each person
+                // getSAMRecordList the list of sam records for each person
                 LinkedSAMRecordList firstSamRecords = firstBAMFile.parse(feature);
                 LinkedSAMRecordList secondSamRecords = secondBAMFile.parse(feature);
 

@@ -26,8 +26,11 @@ package genome.compare.comparator;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.comparator.executors.GenomeComparator;
-import genome.compare.comparator.threads.GenomeComparatorThread;
+import genome.compare.analyzis.GeneComparisonResultAnalyzer;
+import genome.compare.comparator.executor_advanced.GenomeComparatorExecutor;
+import util.Pair;
+
+import java.util.List;
 
 /**
  * Class for running of genome comparing of two or three persons
@@ -50,8 +53,10 @@ public class TrioComparator {
      */
     public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, boolean intermediateOutput) throws
         GenomeFileException, GenomeException {
-        GenomeComparator comparator = new GenomeComparator(BAMFileName1, BAMFileName2, BEDFileName);
-        return comparator.compareGenomes(intermediateOutput).toString();
+        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(BAMFileName1, BAMFileName2, BEDFileName);
+        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = comparator.compareGenomes(intermediateOutput);
+        geneComparisonResultAnalyzer.analyze();
+        return geneComparisonResultAnalyzer.toString();
     }
 
     /**
@@ -69,14 +74,55 @@ public class TrioComparator {
      */
     public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, boolean intermediateOutput) throws
         GenomeFileException, GenomeException {
-        GenomeComparator comparator1 = new GenomeComparator(sonBAMFileName, fatherBAMFileName, BEDFileName);
+        GenomeComparatorExecutor comparator1 = new GenomeComparatorExecutor(sonBAMFileName, fatherBAMFileName, BEDFileName);
+        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer1 = comparator1.compareGenomes(intermediateOutput);
+        geneComparisonResultAnalyzer1.analyze();
         StringBuilder result = new StringBuilder("Comparison of father and son genomes:\n");
-        result.append(comparator1.compareGenomes(intermediateOutput));
+        result.append(geneComparisonResultAnalyzer1);
 
-        GenomeComparator comparator2 = new GenomeComparator(sonBAMFileName, motherBAMFileName, BEDFileName);
+        GenomeComparatorExecutor comparator2 = new GenomeComparatorExecutor(sonBAMFileName, motherBAMFileName, BEDFileName);
+
+        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer2 = comparator2.compareGenomes(intermediateOutput);
+        geneComparisonResultAnalyzer2.analyze();
         result.append("\nComparison of mother and son genomes:\n");
-        result.append(comparator2.compareGenomes(intermediateOutput));
+        result.append(geneComparisonResultAnalyzer2);
+        result.append(getChromosomeFromParentsInfo(geneComparisonResultAnalyzer1.getResults(), geneComparisonResultAnalyzer2.getResults()));
 
         return result.toString();
+    }
+
+
+    private static  String getChromosomeFromParentsInfo(List<Pair<String, Double>> fatherChromosomes, List<Pair<String, Double>> motherChromosomes) {
+        StringBuilder res = new StringBuilder("\nChromosomes from father: [");
+        StringBuilder motherChr = new StringBuilder("\nChromosomes from mother: [");
+        int numMom = 0;
+        int numDad = 0;
+        for (int i = 0; i < fatherChromosomes.size(); i++) {
+            if (Double.compare(fatherChromosomes.get(i).getValue(), motherChromosomes.get(i).getValue()) == 1) {
+                numDad++;
+                res.append(fatherChromosomes.get(i).getKey());
+                res.append(", ");
+            }
+            else {
+                numMom++;
+                motherChr.append(motherChromosomes.get(i).getKey());
+                motherChr.append(", ");
+            }
+        }
+        if (res.toString().contains(",")) {
+            res.delete(res.length()-2, res.length());
+        }
+        res.append("]");
+        if (motherChr.toString().contains(",")) {
+            motherChr.delete(motherChr.length() - 2, motherChr.length());
+        }
+        motherChr.append("]\n");
+        res.append(motherChr);
+        res.append("Number of chromosomes from father: ");
+        res.append(numDad);
+        res.append("\nNumber of chromosomes from mother: ");
+        res.append(numMom);
+        res.append("\n");
+        return res.toString();
     }
 }

@@ -16,9 +16,8 @@ Program, which determines the relationship between people at the level of mother
         -   [Comparison of the genomes of two persons](#Comparison-of-the-genomes-of-two-persons)
         -   [Comparison of the genomes of three persons](#Comparison-of-the-genomes-of-three-persons)
         -   [Comparison of the genomes with intermediate output](#Comparison-of-the-genomes-with-intermediate-output)
--   [Maintainer](#Maintainer)
+-   [Maintainers](#Maintainers)
 -   [Contributing](#Contributing)
--   [Contributors](#Contributors)
 -   [License](#License)
 
 ## Requirements

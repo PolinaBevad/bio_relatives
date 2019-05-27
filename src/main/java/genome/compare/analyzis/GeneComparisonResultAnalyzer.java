@@ -40,7 +40,7 @@ public class GeneComparisonResultAnalyzer {
     /**
      * High percentage of chromosome similarity for the parent and child.
      */
-    private static final Double HIGH_PERCENTAGE = 99.7;
+    private static final double HIGH_PERCENTAGE = 99.7;
     /**
      * List which contains average similarity values of all types chromosomes
      */
@@ -68,8 +68,6 @@ public class GeneComparisonResultAnalyzer {
      */
     @Override
     public String toString() {
-        analyze();
-
         StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
         for (Pair<String, Double> averageSimilarityValue : averageSimilarityValues) {
             result.append("\tName of chromosome: ");
@@ -88,14 +86,15 @@ public class GeneComparisonResultAnalyzer {
         result.append("\nCount of dissimilar chromosomes: ");
         result.append(nonSimilarityChromosomeCount);
         result.append("\n");
-
-        if ((highSimilarityChromosomeCount) > nonSimilarityChromosomeCount) {
-            result.append("These persons are child and parent.");
-        } else {
-            result.append("These persons are not child and parent.");
-        }
-
         return result.toString();
+    }
+
+    /**
+     * Method which returns List of two person similarities for each chromosomes
+     * @return field averageSimilarityValues
+     */
+    public List<Pair<String, Double>> getResults() {
+        return averageSimilarityValues;
     }
 
     /**
@@ -151,14 +150,14 @@ public class GeneComparisonResultAnalyzer {
     /**
      * Method which analyze results of comparison of two gene
      */
-    private void analyze() {
+    public void analyze() {
         for (String chrom : geneComparisonResults.keySet()) {
             if (getSumSeqLengthFromChrom(geneComparisonResults.get(chrom)) != 0) {
                 averageSimilarityValues.add(new Pair<>(chrom, getAverageSimilarity(geneComparisonResults.get(chrom))));
             }
         }
         for (Pair<String, Double> similarity : averageSimilarityValues) {
-            if (similarity.getValue() > HIGH_PERCENTAGE) {
+            if (Double.compare(similarity.getValue(),HIGH_PERCENTAGE) == 0 || Double.compare(similarity.getValue(),HIGH_PERCENTAGE) == 1) {
                 highSimilarityChromosomeCount++;
             } else {
                 nonSimilarityChromosomeCount++;

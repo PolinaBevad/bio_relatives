@@ -229,7 +229,7 @@ public class BAMParser {
                 }
             }
             // if the last region size is lesser than MAX_REGION_LENGTH
-            if (tempStart - end > 0) {
+            if (end - tempStart > 1) {
                 list.add(new BEDFeature(chrom, tempStart, end, gene));
             }
         }

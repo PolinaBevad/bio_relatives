@@ -20,4 +20,4 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.7.22'
 }
 
-mainClassName = 'Main'
+mainClassName = 'BioRelatives'

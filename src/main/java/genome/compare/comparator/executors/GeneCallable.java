@@ -42,6 +42,7 @@ import java.util.concurrent.*;
  *
  * @author Sergey Khvatov
  */
+@Deprecated
 public class GeneCallable implements Callable<List<GeneComparisonResult>> {
 
     /**

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package genome.compare.comparator.executor_advanced;
 
 import bam.BAMParser;
 import bam.BEDFeature;
@@ -42,18 +42,12 @@ import java.util.concurrent.*;
  *
  * @author Sergey Khvatov
  */
-@Deprecated
 public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
 
     /**
      * Default number of assembling threads.
      */
     private static final int ASSEMBLY_THREADS_NUM = 2;
-
-    /**
-     * Default number of comparing threads.
-     */
-    private static final int COMPARISON_THREADS_NUM = 512;
 
     /**
      * Index of the genome of the first person in the list.
@@ -117,16 +111,11 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
     @Override
     public List<GeneComparisonResult> call() throws GenomeException, InterruptedException {
         // executor services that will be used in the method
-        ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM), comparePool = Executors.newFixedThreadPool(COMPARISON_THREADS_NUM);
+        ExecutorService assemblyService = Executors.newSingleThreadExecutor(),
+                comparePool = Executors.newSingleThreadExecutor();
         CompletionService<GeneComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
-
         try {
-            /* first we start an ExecutorService that will
-            assembly two genome regions according to the feature object;
-            the main thread is waiting till both regions are assembled; */
-            // list with all the tasks for the assembly executor service
             List<GenomeAssemblyCallable> assemblyTasks = new ArrayList<>();
-
             // add the tasks to the list
             assemblyTasks.add(new GenomeAssemblyCallable(firstBAMFile, feature));
             assemblyTasks.add(new GenomeAssemblyCallable(secondBAMFile, feature));
@@ -154,8 +143,7 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
             // save the results of the comparison
             List<GeneComparisonResult> results = Collections.synchronizedList(new ArrayList<>());
             for (int i = 0; i < firstGenome.size(); i++) {
-                Future<GeneComparisonResult> temp = compareService.take();
-                results.add(temp.get());
+                results.add(compareService.take().get());
             }
 
             // shutdown the comparing executor

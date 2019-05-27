@@ -147,7 +147,7 @@ public class BAMParser {
      * @param exons List of exons that were parsed from the corresponding BED file.
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    public LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
+    public synchronized LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
         // output LinkedSAMRecordList
         LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
         // pass through all exons
@@ -229,7 +229,7 @@ public class BAMParser {
                 }
             }
             // if the last region size is lesser than MAX_REGION_LENGTH
-            if (tempStart - end != 0) {
+            if (tempStart - end > 0) {
                 list.add(new BEDFeature(chrom, tempStart, end, gene));
             }
         }

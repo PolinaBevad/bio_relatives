@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package genome.compare.comparator.executor_advanced;
 
 import bam.BAMParser;
 import bam.BEDFeature;
@@ -43,7 +43,6 @@ import java.util.concurrent.Callable;
  *
  * @author Sergey Khvatov
  */
-@Deprecated
 public class GenomeAssemblyCallable implements Callable<List<GenomeRegion>> {
 
     /**
@@ -83,6 +82,6 @@ public class GenomeAssemblyCallable implements Callable<List<GenomeRegion>> {
         //LinkedSAMRecordList samRecords = new BAMParser(this.bamFile.getBAMFileName()).parse(feature);
         LinkedSAMRecordList samRecords = this.bamFile.parse(feature);
         // assembly the nucleotides and return the result
-        return Collections.synchronizedList(GenomeConstructor.assembly(samRecords, feature));
+        return GenomeConstructor.assembly(samRecords, feature);
     }
 }

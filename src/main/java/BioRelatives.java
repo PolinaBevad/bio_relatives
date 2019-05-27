@@ -33,7 +33,7 @@ import util.UserInputParser;
 public class BioRelatives {
     public static void main(String[] args) {
         try {
-            UserInputParser.parseInput(args);
+            System.out.println(UserInputParser.parseInput(args));
         } catch (CommandLineException cmdex) {
             System.out.println(cmdex.getMessage());
             cmdex.printStackTrace();

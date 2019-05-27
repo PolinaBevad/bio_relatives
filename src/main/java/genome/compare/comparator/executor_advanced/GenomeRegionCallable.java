@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package genome.compare.comparator.executor_advanced;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
@@ -38,7 +38,6 @@ import java.util.concurrent.Callable;
  *
  * @author Sergey Khvatov
  */
-@Deprecated
 public class GenomeRegionCallable implements Callable<GeneComparisonResult> {
 
     /**

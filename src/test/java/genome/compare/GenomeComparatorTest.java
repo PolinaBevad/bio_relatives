@@ -61,7 +61,7 @@ public class GenomeComparatorTest {
     /**
      * Path to the first test BED file
      */
-    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct.bed";
+    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct_MT.bed";
 
     @Ignore
     @Test
@@ -97,7 +97,7 @@ public class GenomeComparatorTest {
     @Test
     public void GenomeComparisonOfNotParentAndChildSuperExecutors() throws Exception {
         long startTime = System.currentTimeMillis();
-        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_3, PATH_TO_MOM_BAM_3, PATH_TO_BED);
+        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_3, PATH_TO_DAD_BAM_3, PATH_TO_BED);
         GeneComparisonResultAnalyzer result = comparator.compareGenomes(false);
         System.out.println(result);
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));

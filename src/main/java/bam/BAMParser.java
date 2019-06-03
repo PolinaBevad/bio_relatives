@@ -30,6 +30,7 @@ import htsjdk.samtools.*;
 import util.LinkedSAMRecordList;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -190,8 +191,9 @@ public class BAMParser {
             }
             // stop iterator
             iter.close();
+            samReader.close();
             return samRecords;
-        } catch (NullPointerException | IllegalArgumentException | SAMException ex) {
+        } catch (NullPointerException | IllegalArgumentException | SAMException | IOException ex) {
             // If catch an exception then create our GenomeException exception;
             GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
             ibfex.initCause(ex);

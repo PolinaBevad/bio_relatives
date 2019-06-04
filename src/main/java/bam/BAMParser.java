@@ -95,11 +95,6 @@ public class BAMParser {
     private BAMFileStatus status = BAMFileStatus.OK;
 
     /**
-     * Sam reader used to parse this bam file.
-     */
-    private SamReader samReader;
-
-    /**
      * Default class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      *
      * @param BAMFileName name of the BAM file.
@@ -111,7 +106,7 @@ public class BAMParser {
         if (isInvalid()) {
             throw new GenomeFileException(this.getClass().getName(), "BAMParser", this.BAMFile.getName(), this.status.toString());
         }
-        samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
+
     }
 
     /**
@@ -164,7 +159,7 @@ public class BAMParser {
      * @return List with SAM records.
      * @throws GenomeException if error occurs.
      */
-    public synchronized LinkedSAMRecordList parse(BEDFeature exon) throws GenomeFileException, GenomeException {
+    public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeFileException, GenomeException {
         List<BEDFeature> smallerExons = generateExons(exon.getStartPos(), exon.getEndPos(), exon.getChromosomeName(), exon.getGene());
         LinkedSAMRecordList recordList = new LinkedSAMRecordList();
         for (BEDFeature e : smallerExons) {
@@ -179,10 +174,11 @@ public class BAMParser {
      * @param exon exon, which we want to take
      * @return LinkedSAMRecordList of SAMRecords from the current gene
      */
-    private synchronized LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
+    private LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
         try {
             LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
             // Start iterating from start to end of current chromosome.
+            SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
             SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), false);
             // while there are sam strings in this region
             while (iter.hasNext()) {

@@ -16,6 +16,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GenomeComparatorExecutor {
+    //TODO: Better to extract as a property
+    public static final int EXONS_THREADS = 2;
     /**
      * Path to the first person's BAM file.
      */
@@ -59,7 +61,7 @@ public class GenomeComparatorExecutor {
         // results of the comparison
         GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
         // executors that will be used in the method
-        ExecutorService executorPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+        ExecutorService executorPool = Executors.newFixedThreadPool(EXONS_THREADS);
         CompletionService<List<GeneComparisonResult>> executorService = new ExecutorCompletionService<>(executorPool);
         try {
             int tasksNumber = 0;

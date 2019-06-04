@@ -45,9 +45,16 @@ import java.util.concurrent.*;
 public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
 
     /**
-     * Default number of assembling threads.
+     * Default number of assembling threads
      */
     private static final int ASSEMBLY_THREADS_NUM = 2;
+
+    /**
+     * Default number of assembling threads.
+     */
+    private static final int COMPARE_THREADS_NUM = Runtime.getRuntime().availableProcessors() / GenomeComparatorExecutor.EXONS_THREADS > 0
+            ? Runtime.getRuntime().availableProcessors() / GenomeComparatorExecutor.EXONS_THREADS
+            : 1;
 
     /**
      * Index of the genome of the first person in the list.
@@ -111,8 +118,8 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
     @Override
     public List<GeneComparisonResult> call() throws GenomeException, InterruptedException {
         // executor services that will be used in the method
-        ExecutorService assemblyService = Executors.newSingleThreadExecutor(),
-                comparePool = Executors.newSingleThreadExecutor();
+        ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
+        ExecutorService comparePool = Executors.newFixedThreadPool(COMPARE_THREADS_NUM);
         CompletionService<GeneComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
         try {
             List<GenomeAssemblyCallable> assemblyTasks = new ArrayList<>();

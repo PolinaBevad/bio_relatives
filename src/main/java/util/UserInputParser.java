@@ -55,6 +55,7 @@ public class UserInputParser {
     private static final String[] HELP_TOKENS = {"h", "help"};
     private static final String[] COMP2_TOKENS = {"c2", "compare2"};
     private static final String[] COMP3_TOKENS = {"c3", "compare3"};
+    private static final String[] TH_TOKENS = {"th", "threads"};
     private static final String[] SET_OUT_TOKENS = {"io", "intermediateOutput"};
 
     /**

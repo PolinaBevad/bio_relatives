@@ -3,7 +3,6 @@ package genome.compare;
 import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 import genome.compare.comparator.GenomeComparator;
 import genome.compare.comparator.executor_advanced.GenomeComparatorExecutor;
-import genome.compare.comparator.threads.GenomeComparatorThread;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -61,43 +60,12 @@ public class GenomeComparatorTest {
     /**
      * Path to the first test BED file
      */
-    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct_MT.bed";
+    private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct.bed";
 
-    @Ignore
-    @Test
-    public void GenomeComparisonOfNotParentAndChildThreads() throws Exception {
-        long startTime = System.currentTimeMillis();
-        GenomeComparatorThread comparator = new GenomeComparatorThread(PATH_TO_SON_BAM_3, PATH_TO_DAD_BAM_3, PATH_TO_BED);
-        GeneComparisonResultAnalyzer result = comparator.compareGenomes(false);
-        System.out.println(result);
-        System.out.println("Time: " + (System.currentTimeMillis() - startTime));
-    }
-
-    @Ignore
-    @Test
-    public void GenomeComparisonOfNotParentAndChildExecutors() throws Exception {
-        long startTime = System.currentTimeMillis();
-        genome.compare.comparator.executors.GenomeComparator comparator = new genome.compare.comparator.executors.GenomeComparator(PATH_TO_SON_BAM_3, PATH_TO_DAD_BAM_3, PATH_TO_BED);
-        GeneComparisonResultAnalyzer result = comparator.compareGenomes(false);
-        System.out.println(result);
-        System.out.println("Time: " + (System.currentTimeMillis() - startTime));
-    }
-
-    @Ignore
     @Test
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         long startTime = System.currentTimeMillis();
-        GenomeComparator comparator = new GenomeComparator(PATH_TO_SON_BAM_3, PATH_TO_DAD_BAM_3, PATH_TO_BED);
-        GeneComparisonResultAnalyzer result = comparator.compareGenomes(false);
-        System.out.println(result);
-        System.out.println("Time: " + (System.currentTimeMillis() - startTime));
-    }
-
-    @Ignore
-    @Test
-    public void GenomeComparisonOfNotParentAndChildSuperExecutors() throws Exception {
-        long startTime = System.currentTimeMillis();
-        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_3, PATH_TO_DAD_BAM_3, PATH_TO_BED);
+        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED);
         GeneComparisonResultAnalyzer result = comparator.compareGenomes(false);
         System.out.println(result);
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));

@@ -22,6 +22,10 @@
  * SOFTWARE.
  */
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import exception.CommandLineException;
 import util.UserInputParser;
 
@@ -31,12 +35,14 @@ import util.UserInputParser;
  * @author Sergey Hvatov
  */
 public class BioRelatives {
+
+    private static final Logger rootLogger = LogManager.getRootLogger();
+
     public static void main(String[] args) {
         try {
             System.out.println(UserInputParser.parseInput(args));
         } catch (CommandLineException cmdex) {
-            System.out.println(cmdex.getMessage());
-            cmdex.printStackTrace();
+            rootLogger.catching(Level.ERROR, cmdex);
         }
     }
 }

@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,6 +29,8 @@ import bam.BEDFeature;
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
 import genome.compare.analyzis.GeneComparisonResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,13 +52,6 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
     private static final int ASSEMBLY_THREADS_NUM = 2;
 
     /**
-     * Default number of assembling threads.
-     */
-    private static final int COMPARE_THREADS_NUM = Runtime.getRuntime().availableProcessors() / GenomeComparatorExecutor.EXONS_THREADS > 0
-            ? Runtime.getRuntime().availableProcessors() / GenomeComparatorExecutor.EXONS_THREADS
-            : 1;
-
-    /**
      * Index of the genome of the first person in the list.
      */
     private static final int FIRST_PERSON = 0;
@@ -65,6 +60,11 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
      * Index of the genome of the second person in the list.
      */
     private static final int SECOND_PERSON = 1;
+
+    /**
+     * Logger that is used to write down the information about feature processing.
+     */
+    private static final Logger featureLogger = LogManager.getLogger(FeatureCallable.class);
 
     /**
      * Corresponding BED file feature.
@@ -81,6 +81,10 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
      */
     private BAMParser secondBAMFile;
 
+    /**
+     * Number of assembling threads.
+     */
+    private int compareThreadsNumber;
 
     /**
      * Defines whether the some additional information
@@ -95,14 +99,16 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
      * @param feature          Corresponding BED file feature.
      * @param firstParser      First person's BAM file parser.
      * @param secondParser     Second person's BAM file parser.
+     * @param threadsNumber    Number of threads that are used in {@link GenomeComparatorExecutor}.
      * @param additionalOutput if this flag is true, then advanced region comparison results will be displayed,
      *                         else - only the main chromosome results will be obtained
      */
-    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, boolean additionalOutput) {
+    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, int threadsNumber, boolean additionalOutput) {
         this.feature = feature;
         this.firstBAMFile = firstParser;
         this.secondBAMFile = secondParser;
         this.additionalOutput = additionalOutput;
+        this.compareThreadsNumber = Runtime.getRuntime().availableProcessors() / threadsNumber > 0 ? Runtime.getRuntime().availableProcessors() / threadsNumber : 1;
     }
 
     /**
@@ -119,9 +125,12 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
     public List<GeneComparisonResult> call() throws GenomeException, InterruptedException {
         // executor services that will be used in the method
         ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
-        ExecutorService comparePool = Executors.newFixedThreadPool(COMPARE_THREADS_NUM);
+        ExecutorService comparePool = Executors.newFixedThreadPool(compareThreadsNumber);
         CompletionService<GeneComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
         try {
+            // log the start of the processing
+            featureLogger.info("Processing feature: " + feature.toString());
+
             List<GenomeAssemblyCallable> assemblyTasks = new ArrayList<>();
             // add the tasks to the list
             assemblyTasks.add(new GenomeAssemblyCallable(firstBAMFile, feature));
@@ -158,6 +167,9 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
 
             // shutdown the comparing executor
             comparePool.shutdown();
+
+            // log the end of the processing
+            featureLogger.info("End of processing feature: " + feature.toString());
 
             // return the results
             return results;

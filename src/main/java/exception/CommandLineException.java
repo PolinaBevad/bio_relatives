@@ -35,6 +35,6 @@ import java.io.IOException;
 public class CommandLineException extends IOException {
 
     public CommandLineException(String message) {
-        super("Error occurred in class [CommandLineParser] in method [parse]:" + message);
+        super("Error occurred in class [CommandLineParser] in method [parse]: " + message);
     }
 }

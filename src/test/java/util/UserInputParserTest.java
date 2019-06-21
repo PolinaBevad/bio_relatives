@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+// TODO: add tests for io and thread keys
 public class UserInputParserTest {
 
     private final static String PATH_TO_BED ="src/test/resources/genome/compare/correct.bed";

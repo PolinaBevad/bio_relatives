@@ -16,8 +16,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class GenomeComparatorExecutor {
-    //TODO: Better to extract as a property
-    public static final int EXONS_THREADS = 2;
+
+    /**
+     * Number of thread that
+     * will be created to process exons.
+     * Default value is two
+     */
+    private int exonsThreadsNumber = 2;
+
     /**
      * Path to the first person's BAM file.
      */
@@ -33,6 +39,7 @@ public class GenomeComparatorExecutor {
      * are parsed from the input BED file.
      */
     private Map<String, List<BEDFeature>> exons;
+
 
     /**
      * Default class constructor from paths to the BAM files and corresponding to them BED file.
@@ -50,6 +57,25 @@ public class GenomeComparatorExecutor {
     }
 
     /**
+     * Default class constructor from paths to the BAM files and corresponding to them BED file
+     * and number of threads that will process the exons.
+     *
+     * @param pathToFirstBAM  Path to the BAM file where first person's genome is stored.
+     * @param pathToSecondBAM Path to the BAM file where first person's genome is stored.
+     * @param pathToBED       Path to the BED file.
+     * @param threadsNum      Number of threads that will be used to process exons.
+     * @throws GenomeException     if exception occurs file parsing the BED file.
+     * @throws GenomeFileException if incorrect BED or BAM file is passed.
+     */
+    public GenomeComparatorExecutor(String pathToFirstBAM, String pathToSecondBAM, String pathToBED, int threadsNum) throws GenomeException,
+        GenomeFileException {
+        this.firstBAMFile = new BAMParser(pathToFirstBAM);
+        this.secondBAMFile = new BAMParser(pathToSecondBAM);
+        this.exons = new BEDParser(pathToBED).parse();
+        this.exonsThreadsNumber = threadsNum;
+    }
+
+    /**
      * Compares two genomes parsing regions for each gene from the input files.
      *
      * @param advancedOutput if this flag is true , then interim genome comparison results will be displayed,
@@ -61,14 +87,14 @@ public class GenomeComparatorExecutor {
         // results of the comparison
         GeneComparisonResultAnalyzer comparisonResults = new GeneComparisonResultAnalyzer();
         // executors that will be used in the method
-        ExecutorService executorPool = Executors.newFixedThreadPool(EXONS_THREADS);
+        ExecutorService executorPool = Executors.newFixedThreadPool(this.exonsThreadsNumber);
         CompletionService<List<GeneComparisonResult>> executorService = new ExecutorCompletionService<>(executorPool);
         try {
             int tasksNumber = 0;
             for (String gene : exons.keySet()) {
                 // add tasks to the executor and wait for the results
                 for (BEDFeature feature : exons.get(gene)) {
-                    executorService.submit(new FeatureCallable(feature, firstBAMFile, secondBAMFile, advancedOutput));
+                    executorService.submit(new FeatureCallable(feature, firstBAMFile, secondBAMFile, exonsThreadsNumber, advancedOutput));
                     tasksNumber++;
                 }
             }
@@ -88,5 +114,14 @@ public class GenomeComparatorExecutor {
         } finally {
             executorPool.shutdownNow();
         }
+    }
+
+    /**
+     * Get the number of the threads that are used to process exons.
+     *
+     * @return Number of threads.
+     */
+    public int getExonsThreadsNumber() {
+        return exonsThreadsNumber;
     }
 }

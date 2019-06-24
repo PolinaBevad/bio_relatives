@@ -2,8 +2,7 @@ package genome.compare;
 
 import genome.compare.analyzis.GeneComparisonResultAnalyzer;
 import genome.compare.comparator.GenomeComparator;
-import genome.compare.comparator.executor_advanced.GenomeComparatorExecutor;
-import org.junit.Ignore;
+import genome.compare.comparator.executors.GenomeComparatorExecutor;
 import org.junit.Test;
 
 /**

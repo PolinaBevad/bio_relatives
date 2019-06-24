@@ -33,10 +33,8 @@ import genome.assembly.GenomeConstructor;
 import genome.assembly.GenomeRegion;
 import genome.compare.analyzis.GeneComparisonResult;
 import genome.compare.analyzis.GeneComparisonResultAnalyzer;
-import util.LinkedSAMRecordList;
+import genome.assembly.SAMRecordList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,8 +96,8 @@ public class GenomeComparator {
             List<BEDFeature> features = exons.get(gene);
             for (BEDFeature feature : features) {
                 // getSAMRecordList the list of sam records for each person
-                LinkedSAMRecordList firstSamRecords = firstBAMFile.parse(feature);
-                LinkedSAMRecordList secondSamRecords = secondBAMFile.parse(feature);
+                SAMRecordList firstSamRecords = firstBAMFile.parse(feature);
+                SAMRecordList secondSamRecords = secondBAMFile.parse(feature);
 
                 // construct genomes for this gene
                 List<GenomeRegion> firstPersonsGenome = GenomeConstructor.assembly(firstSamRecords, feature);

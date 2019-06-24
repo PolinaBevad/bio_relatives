@@ -31,7 +31,7 @@ import java.io.IOException;
  *
  * @author Sergey Khvatov
  */
-public class GenomeFileException extends IOException {
+public class GenomeFileException extends RuntimeException {
 
     public GenomeFileException(String message) {
         super(message);

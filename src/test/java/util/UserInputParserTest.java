@@ -1,10 +1,14 @@
 package util;
 
+import cmd.CmdParser;
+import cmd.Configuration;
+import cmd.Operation;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-// TODO: add tests for io and thread keys
+// TODO: make new tests
 public class UserInputParserTest {
 
     private final static String PATH_TO_BED ="src/test/resources/genome/compare/correct.bed";
@@ -15,7 +19,7 @@ public class UserInputParserTest {
 
     private final static String PATH_TO_BAM_3 = "src/test/resources/genome/compare/testSon4.bam";
 
-    private final static String CHECK_STR_0 ="## Usage\n" +
+    private final static String CHECK_STR_0 = "## Usage\n" +
             "\tjava -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] \n" +
             "### Options\n" +
             "\t\n" +
@@ -76,36 +80,42 @@ public class UserInputParserTest {
     @Test
     public void CorrectUserInputTestHelpMessageLong() throws Exception {
         String[] args = {"--help"};
-        assertEquals(CHECK_STR_0, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_0, new Operation().start(config));
     }
 
     @Test
     public void CorrectUserInputTestHelpMessageShort() throws Exception {
         String[] args = {"-h"};
-        assertEquals(CHECK_STR_0, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_0, new Operation().start(config));
     }
 
     @Test
     public void CorrectUserInputTestCmp2Long() throws Exception {
         String[] args = {"-compare2", PATH_TO_BAM_1, PATH_TO_BAM_3, PATH_TO_BED};
-        assertEquals(CHECK_STR_1, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_1, new Operation().start(config));
     }
 
     @Test
     public void CorrectUserInputTestCmp2Short() throws Exception {
         String[] args = {"-c2", PATH_TO_BAM_1, PATH_TO_BAM_3, PATH_TO_BED};
-        assertEquals(CHECK_STR_1, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_1, new Operation().start(config));
     }
 
     @Test
     public void CorrectUserInputTestCmp3Long() throws Exception {
         String[] args = {"--compare3", PATH_TO_BAM_1, PATH_TO_BAM_2, PATH_TO_BAM_3, PATH_TO_BED};
-        assertEquals(CHECK_STR_2, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_2, new Operation().start(config));
     }
 
     @Test
     public void CorrectUserInputTestCmp3Short() throws Exception {
         String[] args = {"-c3", PATH_TO_BAM_1, PATH_TO_BAM_2, PATH_TO_BAM_3, PATH_TO_BED};
-        assertEquals(CHECK_STR_2, UserInputParser.parseInput(args));
+        Configuration config = new CmdParser().parseCommandLine(args);
+        assertEquals(CHECK_STR_2, new Operation().start(config));
     }
 }

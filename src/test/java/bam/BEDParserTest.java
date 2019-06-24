@@ -88,19 +88,19 @@ public class BEDParserTest {
         BEDParser parser = new BEDParser(pathToNotAFile);
     }
 
-    @Test(expected = GenomeException.class)
+    @Test(expected = GenomeFileException.class)
     public void ParsingIncorrectFileWithWrongStartEnd() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile1);
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
-    @Test(expected = GenomeException.class)
+    @Test(expected = GenomeFileException.class)
     public void ParsingIncorrectFileWithWrongGenome() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile2);
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
-    @Test(expected = GenomeException.class)
+    @Test(expected = GenomeFileException.class)
     public void ParsingIncorrectFileWithGeneContainsInTwoChromosomes() throws Exception {
         BEDParser parser = new BEDParser(pathToIncorrectFile3);
         Map<String, List<BEDFeature>> result = parser.parse();

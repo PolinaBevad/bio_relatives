@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package util;
+package genome.assembly;
 
 import htsjdk.samtools.SAMRecord;
 
@@ -36,7 +36,7 @@ import java.util.List;
  *
  * @author Vladislav Marchenko
  */
-public class LinkedSAMRecordList extends ArrayList<SAMRecord> {
+public class SAMRecordList extends ArrayList<SAMRecord> {
 
     /**
      * Overridden method for adding a SAMRecord into sorted ArrayList by using binary search

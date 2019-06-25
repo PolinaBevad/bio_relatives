@@ -1,4 +1,4 @@
-package genome.compare.comparator.executor_advanced;
+package genome.compare.comparator.executors;
 
 import bam.BAMParser;
 import bam.BEDFeature;
@@ -106,7 +106,7 @@ public class GenomeComparatorExecutor {
             return comparisonResults;
         } catch (Exception ex) {
             // if exception has occurred during the call
-            // then getSAMRecordList the cause and init our own exception
+            // then get the cause and init our own exception
             Throwable t = ex.getCause();
             GenomeException gex = new GenomeException(this.getClass().getName(), "call", t.getMessage());
             gex.initCause(t);

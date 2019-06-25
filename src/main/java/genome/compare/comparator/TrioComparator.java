@@ -27,7 +27,7 @@ package genome.compare.comparator;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import genome.compare.analyzis.GeneComparisonResultAnalyzer;
-import genome.compare.comparator.executor_advanced.GenomeComparatorExecutor;
+import genome.compare.comparator.executors.GenomeComparatorExecutor;
 import util.Pair;
 
 import java.util.List;

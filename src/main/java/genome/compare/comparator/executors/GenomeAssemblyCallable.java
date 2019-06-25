@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executor_advanced;
+package genome.compare.comparator.executors;
 
 import bam.BAMParser;
 import bam.BEDFeature;
@@ -30,9 +30,8 @@ import exception.GenomeException;
 import exception.GenomeFileException;
 import genome.assembly.GenomeConstructor;
 import genome.assembly.GenomeRegion;
-import util.LinkedSAMRecordList;
+import genome.assembly.SAMRecordList;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -79,8 +78,8 @@ public class GenomeAssemblyCallable implements Callable<List<GenomeRegion>> {
     @Override
     public List<GenomeRegion> call() throws GenomeException, GenomeFileException {
         // getSAMRecordList the list of sam records for each person
-        //LinkedSAMRecordList samRecords = new BAMParser(this.bamFile.getBAMFileName()).parse(feature);
-        LinkedSAMRecordList samRecords = this.bamFile.parse(feature);
+        //SAMRecordList samRecords = new BAMParser(this.bamFile.getBAMFileName()).parse(feature);
+        SAMRecordList samRecords = this.bamFile.parse(feature);
         // assembly the nucleotides and return the result
         return GenomeConstructor.assembly(samRecords, feature);
     }

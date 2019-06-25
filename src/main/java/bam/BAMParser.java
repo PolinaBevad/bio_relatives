@@ -27,7 +27,7 @@ package bam;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.*;
-import util.LinkedSAMRecordList;
+import genome.assembly.SAMRecordList;
 
 import java.io.File;
 import java.io.IOException;
@@ -141,11 +141,11 @@ public class BAMParser {
      * Parse exons from the BAM file.
      *
      * @param exons List of exons that were parsed from the corresponding BED file.
-     * @return LinkedSAMRecordList of SAMRecords from the current gene
+     * @return SAMRecordList of SAMRecords from the current gene
      */
-    public synchronized LinkedSAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
-        // output LinkedSAMRecordList
-        LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
+    public synchronized SAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
+        // output SAMRecordList
+        SAMRecordList samRecords = new SAMRecordList();
         // pass through all exons
         for (BEDFeature exon : exons) {
             samRecords.addAll(parse(exon));
@@ -160,9 +160,9 @@ public class BAMParser {
      * @return List with SAM records.
      * @throws GenomeException if error occurs.
      */
-    public LinkedSAMRecordList parse(BEDFeature exon) throws GenomeFileException, GenomeException {
+    public SAMRecordList parse(BEDFeature exon) throws GenomeFileException, GenomeException {
         List<BEDFeature> smallerExons = generateExons(exon.getStartPos(), exon.getEndPos(), exon.getChromosomeName(), exon.getGene());
-        LinkedSAMRecordList recordList = new LinkedSAMRecordList();
+        SAMRecordList recordList = new SAMRecordList();
         for (BEDFeature e : smallerExons) {
             recordList.addAll(parseExon(e));
         }
@@ -173,11 +173,11 @@ public class BAMParser {
      * Parse smaller exons from this BAM file.
      *
      * @param exon exon, which we want to take
-     * @return LinkedSAMRecordList of SAMRecords from the current gene
+     * @return SAMRecordList of SAMRecords from the current gene
      */
-    private LinkedSAMRecordList parseExon(BEDFeature exon) throws GenomeException {
+    private SAMRecordList parseExon(BEDFeature exon) throws GenomeException {
         try {
-            LinkedSAMRecordList samRecords = new LinkedSAMRecordList();
+            SAMRecordList samRecords = new SAMRecordList();
             // Start iterating from start to end of current chromosome.
             SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
             SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), false);

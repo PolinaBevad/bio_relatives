@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 
+import cmd.CmdParser;
+import cmd.Configuration;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import exception.CommandLineException;
-import util.UserInputParser;
+import cmd.Operation;
 
 /**
  * BioRelatives class of the program.
@@ -38,11 +39,15 @@ public class BioRelatives {
 
     private static final Logger rootLogger = LogManager.getRootLogger();
 
-    public static void main(String[] args) {
+    public static void main(String... args) {
         try {
-            System.out.println(UserInputParser.parseInput(args));
-        } catch (CommandLineException cmdex) {
-            rootLogger.catching(Level.ERROR, cmdex);
+            Configuration config = new CmdParser().parseCommandLine(args);
+            System.out.println(new Operation().start(config));
+        }
+        catch (RuntimeException ex) {
+            rootLogger.catching(Level.ERROR, ex);
+        } catch (Exception ex) {
+            rootLogger.info(Level.ERROR, ex);
         }
     }
 }

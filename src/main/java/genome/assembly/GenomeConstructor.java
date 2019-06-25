@@ -28,7 +28,6 @@ import bam.BEDFeature;
 import exception.GenomeException;
 import htsjdk.samtools.SAMRecord;
 import org.apache.commons.lang3.StringUtils;
-import util.LinkedSAMRecordList;
 
 import java.util.*;
 
@@ -63,12 +62,12 @@ public class GenomeConstructor  {
     private static final int MAX_NUCLEOTIDE_SEQ_LEN = 256;
     /**
      * Method, which assembly genome from samrecords and exons
-     * @param samRecords input LinkedSAMRecordList
+     * @param samRecords input SAMRecordList
      * @param exons input ArrayList of exones
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong
      */
-    public static List<GenomeRegion> assembly(LinkedSAMRecordList samRecords, List<BEDFeature> exons) throws GenomeException {
+    public static List<GenomeRegion> assembly(SAMRecordList samRecords, List<BEDFeature> exons) throws GenomeException {
         try {
             // output genome
             List<GenomeRegion> genomeRegions = new ArrayList<>();
@@ -87,12 +86,12 @@ public class GenomeConstructor  {
 
     /**
      * Overloaded method assembly()
-     * @param samRecords input LinkedSAMRecordList
+     * @param samRecords input SAMRecordList
      * @param exon input exon
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong
      */
-    public static List<GenomeRegion> assembly(LinkedSAMRecordList samRecords, BEDFeature exon) throws GenomeException {
+    public static List<GenomeRegion> assembly(SAMRecordList samRecords, BEDFeature exon) throws GenomeException {
         try {
             // check the input
             if (samRecords.isEmpty()) {

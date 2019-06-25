@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executor_advanced;
+package genome.compare.comparator.executors;
 
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;

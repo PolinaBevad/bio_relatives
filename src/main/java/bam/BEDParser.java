@@ -131,7 +131,7 @@ public class BEDParser {
     /**
      * Parse BED file line by line and create output HashMap (see @return)
      *
-     * @return HashMap<String, ArrayList < BEDFeature>> where: key - name of gene,
+     * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeException if any kind of exception occurs in the method.
      */
@@ -142,9 +142,8 @@ public class BEDParser {
             Map<String, List<BEDFeature>> exons = new HashMap<>();
 
             BufferedReader reader = new BufferedReader(input);
-
-            // read from file
             String temp;
+            // read from file
             while ((temp = reader.readLine()) != null) {
                 // if not useful for us line appears
                 if (temp.startsWith(COMMENT_LINE)) {
@@ -152,7 +151,6 @@ public class BEDParser {
                 }
 
                 String[] rows = temp.split("\\s+");
-
                 // check the input row of the table
                 if (rows.length != 4) {
                     if (temp.equals("\n")) {

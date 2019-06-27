@@ -124,6 +124,7 @@ public class GenomeConstructorTest {
             new BAMParser(PATH_TO_CORRECT_BAM).parse(new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1)),
                 new BEDParser(PATH_TO_BED_FILE_1).parse().get(geneName1)
         );
+
         for (int i = 0; i < 27; i++) {
             Pair<Character, Byte> nucleotide = genomeRegions.get(0).getNucleotide(i);
             assertEquals(nucleotide.getKey(), (Character) CHECK_SEQ_1.charAt(i));

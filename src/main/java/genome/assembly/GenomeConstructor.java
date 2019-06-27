@@ -60,6 +60,7 @@ public class GenomeConstructor  {
      * in the genome region.
      */
     private static final int MAX_NUCLEOTIDE_SEQ_LEN = 256;
+
     /**
      * Method, which assembly genome from samrecords and exons
      * @param samRecords input SAMRecordList
@@ -118,7 +119,7 @@ public class GenomeConstructor  {
             for (int j = exon.getStartPos(); j < exon.getEndPos(); j++) {
                 // HashMap in which there are nucleotides(with their qualities; see description of the method)
                 // from current position
-                Map<Character, List<Byte>> currentNucleotides = getNucleotideDistribution(samRecords.getSAMRecordList((long) j), j);
+                Map<Character, List<Byte>> currentNucleotides = getNucleotideDistribution(samRecords.getSAMRecordList(j), j);
                 // the best nucleotide(if there are not any nucleotides, we write a *)
                 char bestNucleotide = UNKNOWN_NUCLEOTIDE;
                 // the best median quality of nucleotide
@@ -206,7 +207,7 @@ public class GenomeConstructor  {
             char n = ' ';
             byte q = 0;
             if (pos < s.getReadLength() && pos >= 0) {
-                n = s.getReadString().toLowerCase().charAt(pos);
+                n = Character.toLowerCase(s.getReadString().charAt(pos));
                 q = s.getBaseQualities()[pos];
             }
             if (NUCLEOTIDES.contains(String.valueOf(n))) {

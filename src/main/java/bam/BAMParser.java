@@ -62,11 +62,6 @@ public class BAMParser {
             public String toString() {
                 return "Incorrect extension for the BAM file";
             }
-        }, UNREADABLE {
-            @Override
-            public String toString() {
-                return "BAM file is unreadable";
-            }
         }
     }
 

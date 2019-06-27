@@ -3,7 +3,6 @@ package util;
 import cmd.CmdParser;
 import cmd.Configuration;
 import cmd.Operation;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

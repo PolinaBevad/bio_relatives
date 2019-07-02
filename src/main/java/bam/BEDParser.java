@@ -46,28 +46,6 @@ import java.util.Map;
 public class BEDParser {
 
     /**
-     * Describes the status of the input bed file.
-     */
-    private enum BEDFileError {
-        DOES_NOT_EXIST {
-            @Override
-            public String toString() {
-                return "this BED file doesn't exist";
-            }
-        }, CAN_NOT_READ {
-            @Override
-            public String toString() {
-                return "can not read from this BED file";
-            }
-        }, INCORRECT_EXTENSION {
-            @Override
-            public String toString() {
-                return "incorrect extension for the BED file";
-            }
-        }, OK
-    }
-
-    /**
      * Default extension of the bed file.
      */
     private static final String BED_EXTENSION = "bed";
@@ -84,11 +62,6 @@ public class BEDParser {
     private File bedFile;
 
     /**
-     * Input BED file status.
-     */
-    private BEDFileError status = BEDFileError.OK;
-
-    /**
      * Default class constructor from BED file.
      *
      * @param BEDFileName filename of the BED file to create object from.
@@ -97,7 +70,7 @@ public class BEDParser {
     public BEDParser(String BEDFileName) throws GenomeFileException {
         this.bedFile = new File(BEDFileName);
         if (isInvalid()) {
-            throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), this.status.toString());
+            throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), "error occurred during file validation");
         }
     }
 
@@ -108,24 +81,17 @@ public class BEDParser {
      */
     private boolean isInvalid() {
         if (!this.bedFile.exists()) {
-            this.status = BEDFileError.DOES_NOT_EXIST;
             return true;
         }
 
         if (!this.bedFile.isFile()) {
-            this.status = BEDFileError.CAN_NOT_READ;
             return true;
         }
 
         String[] filename = this.bedFile.getName().split("\\.");
         String extension = filename[filename.length - 1];
 
-        if (!extension.toLowerCase().equals(BED_EXTENSION)) {
-            this.status = BEDFileError.INCORRECT_EXTENSION;
-            return true;
-        }
-
-        return false;
+        return !extension.toLowerCase().equals(BED_EXTENSION);
     }
 
     /**
@@ -135,7 +101,7 @@ public class BEDParser {
      * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeException if any kind of exception occurs in the method.
      */
-    public Map<String, List<BEDFeature>> parse() throws GenomeException {
+    public Map<String, List<BEDFeature>> parse() throws GenomeFileException {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons
@@ -182,7 +148,7 @@ public class BEDParser {
         } catch (SAMException | IOException | NumberFormatException ex) {
             // if catch an exception then create our GenomeException exception,
             // set it as it's cause and throw it further
-            GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
+            GenomeFileException ibfex = new GenomeFileException(this.getClass().getName(), "parse", this.bedFile.getName(), ex.getMessage());
             ibfex.initCause(ex);
             throw ibfex;
         }

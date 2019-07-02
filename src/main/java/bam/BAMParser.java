@@ -28,6 +28,7 @@ import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.*;
 import genome.assembly.SAMRecordList;
+import htsjdk.samtools.SAMRecord;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,28 +43,6 @@ import java.util.List;
  * @author Sergey Khvatov
  */
 public class BAMParser {
-
-    /**
-     * Describes the status of the input BAM file.
-     */
-    private enum BAMFileStatus {
-        OK, CAN_NOT_READ {
-            @Override
-            public String toString() {
-                return "Can not read from this BAM file";
-            }
-        }, DOES_NOT_EXIST {
-            @Override
-            public String toString() {
-                return "The BAM file does not exist";
-            }
-        }, INCORRECT_EXTENSION {
-            @Override
-            public String toString() {
-                return "Incorrect extension for the BAM file";
-            }
-        }
-    }
 
     /**
      * Maximum len of the region that will be processed.
@@ -81,26 +60,15 @@ public class BAMParser {
     private File BAMFile;
 
     /**
-     * Name of BAM file.
-     */
-    private String BAMFileName;
-
-    /**
-     * Status of input BAM file
-     */
-    private BAMFileStatus status = BAMFileStatus.OK;
-
-    /**
      * Default class constructor from name of the BAM file and ArrayList of exons(class BEDFeature).
      *
      * @param BAMFileName name of the BAM file.
      * @throws GenomeFileException if input BAM file is invalid.
      */
     public BAMParser(String BAMFileName) throws GenomeFileException {
-        this.BAMFileName = BAMFileName;
         this.BAMFile = new File(BAMFileName);
-        if (isInvalid()) {
-            throw new GenomeFileException(this.getClass().getName(), "BAMParser", this.BAMFile.getName(), this.status.toString());
+        if (isInvalid(this.BAMFile)) {
+            throw new GenomeFileException(this.getClass().getName(), "BAMParser", BAMFileName, "error occurred during file validation");
         }
 
     }
@@ -110,26 +78,19 @@ public class BAMParser {
      *
      * @return true if BAM file is not valid, else return false.
      */
-    private boolean isInvalid() {
-        if (!this.BAMFile.exists()) {
-            this.status = BAMFileStatus.DOES_NOT_EXIST;
+    private static boolean isInvalid(File BAMFile) {
+        if (!BAMFile.exists()) {
             return true;
         }
 
-        if (!this.BAMFile.canRead() || !this.BAMFile.isFile()) {
-            this.status = BAMFileStatus.CAN_NOT_READ;
+        if (!BAMFile.canRead() || !BAMFile.isFile()) {
             return true;
         }
 
-        String[] filename = this.BAMFileName.split("\\.");
+        String[] filename = BAMFile.getName().split("\\.");
         String extension = filename[filename.length - 1];
 
-        if (!extension.toLowerCase().equals(BAM_EXTENSION)) {
-            this.status = BAMFileStatus.INCORRECT_EXTENSION;
-            return true;
-        }
-
-        return false;
+        return !extension.toLowerCase().equals(BAM_EXTENSION);
     }
 
     /**
@@ -138,7 +99,7 @@ public class BAMParser {
      * @param exons List of exons that were parsed from the corresponding BED file.
      * @return SAMRecordList of SAMRecords from the current gene
      */
-    public synchronized SAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
+    public SAMRecordList parse(List<BEDFeature> exons) throws GenomeFileException, GenomeException {
         // output SAMRecordList
         SAMRecordList samRecords = new SAMRecordList();
         // pass through all exons
@@ -188,10 +149,10 @@ public class BAMParser {
             iter.close();
             samReader.close();
             return samRecords;
-        } catch (NullPointerException | IllegalArgumentException | SAMException | IOException ex) {
+        } catch (NullPointerException | IllegalArgumentException | SAMException | IOException ioex) {
             // If catch an exception then create our GenomeException exception;
-            GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ex.getMessage());
-            ibfex.initCause(ex);
+            GenomeException ibfex = new GenomeException(this.getClass().getName(), "parse", ioex.getMessage());
+            ibfex.initCause(ioex);
             throw ibfex;
         }
     }

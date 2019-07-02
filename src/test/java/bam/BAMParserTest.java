@@ -2,6 +2,7 @@ package bam;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
+import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;
 import genome.assembly.SAMRecordList;
@@ -106,9 +107,9 @@ public class BAMParserTest {
     public void ParsingCorrectFile() throws Exception {
         BAMParser parser = new BAMParser(pathToCorrectFile);
         SAMRecordList samRecords = parser.parse(exons.get(geneName2).get(0));
-        for (int i = 0; i < samRecords.size(); i++) {
-            assertEquals(samRecords.get(i).getSAMString(), checkArray[i]);
+        int i = 0;
+        for (SAMRecord samRecord: samRecords) {
+            assertEquals(samRecord.getSAMString(), checkArray[i++]);
         }
-
     }
 }

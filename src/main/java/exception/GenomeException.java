@@ -29,7 +29,7 @@ package exception;
  *
  * @author Sergey Khvatov
  */
-public class GenomeException extends RuntimeException {
+public class GenomeException extends Exception {
 
     public GenomeException(String message) {
         super(message);

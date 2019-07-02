@@ -1,0 +1,9 @@
+Similarity percentage for each chromosome:
+	Name of chromosome: 4. Similarity percentage: 99.2081447963801%
+	Number of nucleotides compared: 1768
+	Similarity percentage for each gene from this chromosome:
+		Name of gene: UPNWPYFPJQ. Similarity percentage: 99.2081447963801%
+		Name of gene: UPNWfYFPJQ. Similarity percentage: 99.2081447963801%
+Count of chromosomes with 99.7+% similarity: 0
+Count of dissimilar chromosomes: 1
+

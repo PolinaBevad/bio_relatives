@@ -127,6 +127,7 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
         ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
         ExecutorService comparePool = Executors.newFixedThreadPool(compareThreadsNumber);
         CompletionService<GeneComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
+
         try {
             // log the start of the processing
             featureLogger.info("Processing feature: " + feature.toString());
@@ -149,8 +150,7 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
             // check the results
             if (firstGenome.size() != secondGenome.size()) {
                 //throw new GenomeException("Error occurred while assembling: " + feature);
-                // TODO add Logger
-                System.out.println("Error occurred while assembling: " + feature);
+                featureLogger.error("Error occurred while assembling: " + feature);
                 return Collections.synchronizedList(new ArrayList<>());
             }
 

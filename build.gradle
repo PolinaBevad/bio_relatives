@@ -1,9 +1,10 @@
 plugins {
     id 'java'
     id 'application'
+    id 'jacoco'
 }
 
-version '1.0-SNAPSHOT'
+version '1.4-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -22,4 +23,38 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.7.22'
 }
 
-mainClassName = 'BioRelatives'
+jacoco {
+    toolVersion = "0.8.4"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = false
+        csv.enabled = false
+        html.enabled = true
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'BioRelatives'
+        )
+    }
+}
+
+application {
+    mainClassName = 'BioRelatives'
+}
+
+//create a single Jar with all dependencies
+task createProjectJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'BioRealtives project jar',
+                'Implementation-Version': version,
+                'Main-Class': 'BioRelatives'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

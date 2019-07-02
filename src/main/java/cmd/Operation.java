@@ -24,6 +24,8 @@
 
 package cmd;
 
+import exception.GenomeException;
+import exception.GenomeFileException;
 import genome.compare.comparator.TrioComparator;
 
 /**
@@ -70,7 +72,7 @@ public class Operation {
      * @param config Configuration object.
      * @return Result of the execution of the program with this arguments.
      */
-    public String start(Configuration config) {
+    public String start(Configuration config) throws GenomeFileException, GenomeException {
         if (config.numberOfRecipients == 2) {
             return TrioComparator.compareTwoGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToBed, config.threadsNumber, config.intermediateOutput);
         } else if (config.numberOfRecipients == 3) {

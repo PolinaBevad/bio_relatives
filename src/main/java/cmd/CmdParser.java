@@ -26,6 +26,11 @@ package cmd;
 import exception.CommandLineException;
 import org.apache.commons.cli.*;
 
+/**
+ * User input through command line parser.
+ *
+ * @author Sergey Khvatov
+ */
 public class CmdParser {
 
     /**

@@ -25,10 +25,7 @@
 package genome.assembly;
 
 import exception.GenomeException;
-import exception.GenomeFileException;
 import util.Pair;
-
-import java.util.HashSet;
 
 /**
  * This class stores genome information and data for each region in BED file.
@@ -53,17 +50,17 @@ public class GenomeRegion {
     /**
      * Nucleotide sequence in this chromosome.
      */
-    private String nucleotideseq;
+    private String nucleotideSeq;
 
     /**
      * Start position of the nucleotide sequence.
      */
-    private int startpos;
+    private int startPos;
 
     /**
      * Array of qualities for each nucleotide in the sequence.
      */
-    private byte[] nucleotidequality;
+    private byte[] nucleotideQuality;
 
     /**
      * Name of the gene that is located in this genome region.
@@ -89,19 +86,19 @@ public class GenomeRegion {
         if (pos < 0) {
             throw new GenomeException(this.getClass().getName(), "GenomeRegion", "pos", " < 0");
         }
-        this.startpos = pos;
-        this.nucleotideseq = seq;
+        this.startPos = pos;
+        this.nucleotideSeq = seq;
         this.gene = gene;
 
         if (!gene.matches(ALLOWED_SYMBOLS_REGEXP)) {
-            throw new GenomeException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + startpos + ", " + gene);
+            throw new GenomeException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + startPos + ", " + gene);
         }
 
         // check the quality array
         if (quality.length != seq.length()) {
             throw new GenomeException(this.getClass().getName(), "GenomeRegion", "seq", "not equals to the len of nucleotide sequence");
         }
-        this.nucleotidequality = quality;
+        this.nucleotideQuality = quality;
     }
 
     /**
@@ -112,10 +109,10 @@ public class GenomeRegion {
      * @throws GenomeException if pos is < 0 or len < pos.
      */
     public Pair<Character, Byte> getNucleotide(int pos) throws GenomeException {
-        if (pos < 0 || pos >= nucleotideseq.length()) {
+        if (pos < 0 || pos >= nucleotideSeq.length()) {
             throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(0, len)");
         }
-        return new Pair<>(nucleotideseq.charAt(pos), nucleotidequality[pos]);
+        return new Pair<>(nucleotideSeq.charAt(pos), nucleotideQuality[pos]);
     }
 
     /**
@@ -126,10 +123,10 @@ public class GenomeRegion {
      * @throws GenomeException if nucleotide is not in the range of this nucleotide sequence.
      */
     public int normalize(int position) throws GenomeException {
-        if (position < startpos || position > startpos + nucleotideseq.length()) {
-            throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(startpos, startpos + len)");
+        if (position < startPos || position > startPos + nucleotideSeq.length()) {
+            throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(startPos, startPos + len)");
         }
-        return position - startpos;
+        return position - startPos;
     }
 
     /**
@@ -147,7 +144,7 @@ public class GenomeRegion {
      * @return Start position of the gene.
      */
     public int getStart() {
-        return startpos;
+        return startPos;
     }
 
     /**
@@ -156,14 +153,14 @@ public class GenomeRegion {
      * @return The length of the nucleotide sequence.
      */
     public int getNucleotideLength() {
-        return nucleotideseq.length();
+        return nucleotideSeq.length();
     }
 
     /**
      * @return nucleotide sequence from this region.
      */
     public String getNucleotideSequence() {
-        return nucleotideseq;
+        return nucleotideSeq;
     }
 
     /**
@@ -185,7 +182,7 @@ public class GenomeRegion {
     public boolean equals(Object other) {
         if (other instanceof GenomeRegion) {
             GenomeRegion otherRegion = (GenomeRegion) other;
-            return this.chrom.equals(otherRegion.chrom) && this.gene.equals(otherRegion.gene) && this.startpos == otherRegion.startpos;
+            return this.chrom.equals(otherRegion.chrom) && this.gene.equals(otherRegion.gene) && this.startPos == otherRegion.startPos;
         }
         return false;
     }

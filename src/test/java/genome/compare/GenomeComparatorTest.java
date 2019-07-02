@@ -44,7 +44,7 @@ public class GenomeComparatorTest {
     /**
      * Path to the second test BAM file
      */
-    private final static  String PATH_TO_DAD_BAM_3 = "src/test/resources/genome/compare/father.bam";
+    private final static  String PATH_TO_DAD_BAM_3 = "H:\\china\\chinaFatherTest1000.bam";
 
     /**
      * Path to the first test BAM file
@@ -54,7 +54,7 @@ public class GenomeComparatorTest {
     /**
      * Path to the first test BAM file
      */
-    private final static  String PATH_TO_SON_BAM_3 = "src/test/resources/genome/compare/son.bam";
+    private final static  String PATH_TO_SON_BAM_3 = "H:\\china\\chinaSonTest1000.bam";
 
     /**
      * Path to the first test BED file

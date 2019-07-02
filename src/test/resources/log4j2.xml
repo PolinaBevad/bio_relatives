@@ -2,19 +2,19 @@
 <Configuration status="WARN">
 
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
+        <File name="LogFile" filename="logs/bio_relatives.log">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </Console>
+        </File>
     </Appenders>
 
     <Loggers>
         <Logger name= "bio_relatives_logger" level="debug" additivity="true">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="LogFile"/>
         </Logger>
 
         <!-- Root Logger -->
         <Root level="all">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="LogFile"/>
         </Root>
     </Loggers>
 

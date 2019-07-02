@@ -39,8 +39,7 @@ function test_1 {
 	ACTUAL="$OUTPUT_DIR/test_1.comparison_two_genomes_of_not_parent_and_child.txt"
 	EXPECTED="$SCRIPT_DIR/expected/expected_two_genomes_not_parent_and_child.txt"
 	
-	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.3-SNAPSHOT.jar --compare2 $BAM1 $BAM2 $BED -th 4 > $ACTUAL
-	sed -i '1,8d' $ACTUAL
+	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.4-SNAPSHOT.jar --compare2 $BAM1 $BAM2 $BED -th 4 > $ACTUAL
 	compare_results 1 $EXPECTED $ACTUAL
 }
 
@@ -53,8 +52,7 @@ function test_2 {
 	ACTUAL="$OUTPUT_DIR/test_2.comparison_two_genomes_of_parent_and_child.txt"
 	EXPECTED="$SCRIPT_DIR/expected/expected_two_genomes_parent_and_child.txt"
 	
-	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.3-SNAPSHOT.jar --compare2 $BAM1 $BAM2 $BED -th 4 > $ACTUAL
-	sed -i '1,8d' $ACTUAL
+	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.4-SNAPSHOT.jar --compare2 $BAM1 $BAM2 $BED -th 4 > $ACTUAL
 	compare_results 2 $EXPECTED $ACTUAL
 }
 
@@ -68,8 +66,7 @@ function test_3 {
 	ACTUAL="$OUTPUT_DIR/test_3.comparison_of_genomes_of_three_persons_in_the_mt_chr.txt"
 	EXPECTED="$SCRIPT_DIR/expected/expected_three_genomes_mt_chr.txt"
 	
-	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.3-SNAPSHOT.jar --compare3 $BAM1 $BAM2 $BAM3 $BED -th 4 > $ACTUAL
-	sed -i '1,16d' $ACTUAL
+	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.4-SNAPSHOT.jar --compare3 $BAM1 $BAM2 $BAM3 $BED -th 4 > $ACTUAL
 	compare_results 3 $EXPECTED $ACTUAL
 }
 
@@ -83,8 +80,7 @@ function test_4 {
 	ACTUAL="$OUTPUT_DIR/test_4.comparison_of_genomes_of_three_persons_in_the_autosomal_chr.txt"
 	EXPECTED="$SCRIPT_DIR/expected/expected_three_genomes_autosomal_chr.txt"
 	
-	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.3-SNAPSHOT.jar --compare3 $BAM1 $BAM2 $BAM3 $BED -th 4 > $ACTUAL
-	sed -i '1,16d' $ACTUAL
+	java -jar $PROJECT_DIR/build/libs/bio_relatives-all-1.4-SNAPSHOT.jar --compare3 $BAM1 $BAM2 $BAM3 $BED -th 4 > $ACTUAL
 	compare_results 4 $EXPECTED $ACTUAL
 }
 

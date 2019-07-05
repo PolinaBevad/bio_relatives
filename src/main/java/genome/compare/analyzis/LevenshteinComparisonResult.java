@@ -25,18 +25,17 @@
 package genome.compare.analyzis;
 
 import exception.GenomeException;
-import genome.compare.comparator.GenomeRegionComparator;
+import genome.compare.ComparatorType;
 
 /**
  * This class contains the results of the comparison of
  * two nucleotide sequences. Object of this class is a result
- * of comparison of two {@link genome.assembly.GenomeRegion}
- * made by {@link GenomeRegionComparator}.
+ * of comparison of two {@link genome.assembly.GenomeRegion}.
  *
  * @author Sergey Khvatov
  * @author Vladislav Marchenko
  */
-public class GeneComparisonResult {
+public class LevenshteinComparisonResult implements ComparisonResult {
 
     /**
      * Name of the chromosome
@@ -45,8 +44,7 @@ public class GeneComparisonResult {
     private String chrom;
 
     /**
-     * The distance value that was calculated
-     * by the {@link GenomeRegionComparator} methods.
+     * The distance value that was calculated.
      */
     private int difference;
 
@@ -75,19 +73,19 @@ public class GeneComparisonResult {
      * @param len        Length of the nucl. seq.
      * @throws GenomeException if input values are lesser than 0 or the chromosome name is invalid.
      */
-    public GeneComparisonResult(String chrom, String gene, int difference, int len) throws GenomeException {
+    public LevenshteinComparisonResult(String chrom, String gene, int difference, int len) {
         this.chrom = chrom;
         this.gene = gene;
 
         // check the diff value
         if (difference < 0) {
-            throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "difference", "is lesser than 0");
+            throw new GenomeException(this.getClass().getName(), "LevenshteinComparisonResult", "difference", "is lesser than 0");
         }
         this.difference = difference;
 
         // check the len value
         if (len < 0) {
-            throw new GenomeException(this.getClass().getName(), "GeneComparisonResult", "len", "is lesser than 0");
+            throw new GenomeException(this.getClass().getName(), "LevenshteinComparisonResult", "len", "is lesser than 0");
         }
         sequenceLen = len;
     }
@@ -123,14 +121,23 @@ public class GeneComparisonResult {
     }
 
     /**
-     * Overridden method toString() which return String with single gene intermediate results
+     * Overridden method getResults() which return String with single gene intermediate results
      *
      * @return String with single gene intermediate results
      */
-    @Override
-    public String toString() {
+    public String getResults() {
         if (sequenceLen != 0)
             return "Comparison result of gene " + gene + " from chromosome " + chrom + ": seqLength - " + sequenceLen + ", differences - " + difference + ", similarity percentage - " + (100d - ((double) difference / (double) sequenceLen) * 100d) + "%";
         return "Nucleotide sequence consists of only UNKNOWN_NUCLEOTIDES";
+    }
+
+    /**
+     * Defines, which comparator was used to get these results.
+     *
+     * @return type of the comparator.
+     */
+    @Override
+    public ComparatorType getComparatorType() {
+        return ComparatorType.LEVENSHTEIN;
     }
 }

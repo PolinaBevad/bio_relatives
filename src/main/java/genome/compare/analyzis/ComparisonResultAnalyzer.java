@@ -35,7 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Vladislav Marchenko
  * @author Sergey Khvatov
  */
-public class GeneComparisonResultAnalyzer {
+// TODO remake this class to use it with ComparisonResult
+public class ComparisonResultAnalyzer {
 
     /**
      * High percentage of chromosome similarity for the parent and child.
@@ -121,7 +122,7 @@ public class GeneComparisonResultAnalyzer {
      *
      * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
      */
-    public void add(GeneComparisonResult geneComparisonResult) {
+    public void add(LevenshteinComparisonResult geneComparisonResult) {
         if (geneComparisonResults.containsKey(geneComparisonResult.getChromName())) {
             if (geneComparisonResults.get(geneComparisonResult.getChromName()).containsKey(geneComparisonResult.getGene())) {
                 geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setKey(geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getKey() + geneComparisonResult.getDifference());
@@ -137,12 +138,22 @@ public class GeneComparisonResultAnalyzer {
     }
 
     /**
+     * Method for adding gene comparison result into Map of chromosomes and genes
+     *
+     * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
+     */
+    public void add(ComparisonResult geneComparisonResult) {
+
+    }
+
+
+    /**
      * Method for adding a list of gene comparison results into Map of chromosomes and genes.
      *
      * @param collection Collection with the results of the comparison.
      */
-    public void add(Collection<GeneComparisonResult> collection) {
-        for (GeneComparisonResult element : collection) {
+    public void add(Collection<? extends ComparisonResult> collection) {
+        for (ComparisonResult element : collection) {
             this.add(element);
         }
     }

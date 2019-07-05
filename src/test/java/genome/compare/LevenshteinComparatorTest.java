@@ -1,23 +1,22 @@
 package genome.compare;
 
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GeneComparisonResult;
-import genome.compare.comparator.GenomeRegionComparator;
+import genome.compare.analyzis.LevenshteinComparisonResult;
+import genome.compare.comparator.LevenshteinComparator;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for the {@link GenomeRegionComparator} class.
  *
  * @author Sergey Khvatov
  */
-public class GenomeRegionComparatorTest {
+public class LevenshteinComparatorTest {
     /**
      * Test object of GenomeRegionComparator class.
      */
-    private GenomeRegionComparator testObj;
+    private LevenshteinComparator testObj;
 
     /**
      * Test sequence of nucleotides with
@@ -58,18 +57,12 @@ public class GenomeRegionComparatorTest {
 
     @Test
     public void GenomeComparatorConstructorTest() throws Exception {
-        testObj = new GenomeRegionComparator(REGIONS[0], REGIONS[1]);
-    }
-
-    @Test
-    public void HemmingDistTest() throws Exception {
-        testObj = new GenomeRegionComparator(REGIONS[0], REGIONS[1]);
-        assertEquals(testObj.HemmingDistance().getDifference(), new GeneComparisonResult("chr1", "00", 58, 75).getDifference());
+        testObj = new LevenshteinComparator(REGIONS[0], REGIONS[1]);
     }
 
     @Test
     public void LevenshteinDistTest() throws Exception {
-        testObj = new GenomeRegionComparator(REGIONS[0], REGIONS[1]);
-        assertEquals(testObj.LevenshteinDistance().getDifference(), new GeneComparisonResult("chr1", "00", 46, 75).getDifference());
+        testObj = new LevenshteinComparator(REGIONS[0], REGIONS[1]);
+        assertEquals(testObj.compare().getDifference(), new LevenshteinComparisonResult("chr1", "00", 46, 75).getDifference());
     }
 }

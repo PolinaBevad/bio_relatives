@@ -22,91 +22,57 @@
  * SOFTWARE.
  */
 
-package bam;
+package bam.marker_region;
 
+import bam.regular.BEDFeature;
+import bam.regular.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.SAMException;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
- * Class that parses BED file.
+ * Class that parses marker region file.
  *
  * @author Sergey Hhatov
  * @author Vladislav Marchenko
  */
-public class BEDParser {
+public class MarkerRegionFileParser extends BEDParser {
 
     /**
-     * Default extension of the bed file.
-     */
-    private static final String BED_EXTENSION = "bed";
-
-    /**
-     * Default start word of the browse line in
-     * the bed file we are not interested in.
-     */
-    private static final String COMMENT_LINE = "#";
-
-    /**
-     * Input BED file.
-     */
-    private File bedFile;
-
-    /**
-     * Default class constructor from BED file.
+     * Default class constructor from path to the marker region file.
      *
-     * @param BEDFileName filename of the BED file to create object from.
+     * @param markerRegionFileName filename of the BED file to create object from.
      * @throws GenomeFileException if file is incorrect.
      */
-    public BEDParser(String BEDFileName) throws GenomeFileException {
-        this.bedFile = new File(BEDFileName);
-        if (isInvalid()) {
-            throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), "error occurred during file validation");
-        }
+    public MarkerRegionFileParser(String markerRegionFileName) {
+        super(markerRegionFileName);
     }
 
     /**
-     * Validates the input BED file.
-     *
-     * @return true if BED file is not valid, else return false.
-     */
-    private boolean isInvalid() {
-        if (!this.bedFile.exists()) {
-            return true;
-        }
-
-        if (!this.bedFile.isFile()) {
-            return true;
-        }
-
-        String[] filename = this.bedFile.getName().split("\\.");
-        String extension = filename[filename.length - 1];
-
-        return !extension.toLowerCase().equals(BED_EXTENSION);
-    }
-
-    /**
-     * Parse BED file line by line and create output HashMap (see @return)
+     * Parse marker region file line by line and create output HashMap (see @return)
      *
      * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeException if any kind of exception occurs in the method.
      */
-    public Map<String, List<BEDFeature>> parse() throws GenomeFileException {
+    @Override
+    public Map<String, List<BEDFeature>> parse() {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons
             Map<String, List<BEDFeature>> exons = new HashMap<>();
-
+            // map with all the pre-compiled motif strings
+            Map<String, Pattern> compiledPatterns = new HashMap<>();
+            // open reader
             BufferedReader reader = new BufferedReader(input);
             String temp;
             // read from file
@@ -118,30 +84,27 @@ public class BEDParser {
 
                 String[] rows = temp.split("\\s+");
                 // check the input row of the table
-                if (rows.length != 4) {
+                if (rows.length != 5) {
                     if (temp.equals("\n")) {
                         continue;
                     }
                     // must be at 4 elements in the row
-                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 4 (chrom, start, end, gene name), got " + rows.length);
+                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 5 (chrom, start, end, marker name, marker motif), got " + rows.length);
                 }
 
                 // elements of the bed file record
-                String chrom = rows[0], gene = rows[3];
+                String chrom = rows[0], markerName = rows[3], markerMotif = rows[4];
                 int start = Integer.parseInt(rows[1]), end = Integer.parseInt(rows[2]);
-
-                if (exons.containsKey(gene)) {
-                    // check if the same gene is located in different chromosomes
-                    for (BEDFeature bf : exons.get(gene)) {
-                        if (!chrom.equals(bf.getChromosomeName())) {
-                            throw new GenomeFileException("Error! The same gene " + bf.getChromosomeName() + " is found in different chromosomes.");
-                        }
+                if (exons.containsKey(markerName)) {
+                    if (!chrom.contains("Y") && !chrom.contains("X")) {
+                        throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect chromosome name, expected X or Y, found: " + chrom);
                     }
-                    exons.get(gene).add(new BEDFeature(chrom, start, end, gene));
+                    exons.get(markerName).add(new MarkerRegionFeature(chrom, start, end, markerName, compiledPatterns.get(markerName)));
                 } else {
                     List<BEDFeature> buffer = new ArrayList<>();
-                    buffer.add(new BEDFeature(chrom, start, end, gene));
-                    exons.put(gene, buffer);
+                    compiledPatterns.put(markerName, Pattern.compile(markerMotif));
+                    buffer.add(new MarkerRegionFeature(chrom, start, end, markerName, compiledPatterns.get(markerName)));
+                    exons.put(markerName, buffer);
                 }
             }
             return exons;

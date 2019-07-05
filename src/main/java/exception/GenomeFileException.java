@@ -24,14 +24,12 @@
 
 package exception;
 
-import java.io.IOException;
-
 /**
  * Represents basic exception, that may occur while working with files methods.
  *
  * @author Sergey Khvatov
  */
-public class GenomeFileException extends IOException {
+public class GenomeFileException extends RuntimeException {
 
     public GenomeFileException(String message) {
         super(message);

@@ -1,6 +1,7 @@
 package bam;
 
-import exception.GenomeException;
+import bam.regular.BEDFeature;
+import bam.regular.BEDParser;
 import exception.GenomeFileException;
 import org.junit.Test;
 

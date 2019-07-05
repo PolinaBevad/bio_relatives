@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package executors;
 
-import bam.BAMParser;
-import bam.BEDFeature;
+import bam.regular.BAMParser;
+import bam.regular.BEDFeature;
+import bam.marker_region.MarkerRegionFeature;
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.GeneComparisonResult;
+import genome.compare.ComparatorType;
+import genome.compare.analyzis.ComparisonResult;
+import genome.compare.comparator.GenomeComparator;
+import genome.compare.comparator.LevenshteinComparator;
+import genome.compare.comparator.YSTRComparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,7 +49,7 @@ import java.util.concurrent.*;
  *
  * @author Sergey Khvatov
  */
-public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
+public class FeatureCallable implements Callable<List<ComparisonResult>> {
 
     /**
      * Default number of assembling threads
@@ -94,16 +99,27 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
     private boolean additionalOutput;
 
     /**
+     * Type of the comparator that is used.
+     */
+    private ComparatorType mode;
+
+    /**
      * Creates a feature thread using the following arguments.
      *
-     * @param feature          Corresponding BED file feature.
+     * @param feature          Corresponding BED file or Marker file feature.
      * @param firstParser      First person's BAM file parser.
      * @param secondParser     Second person's BAM file parser.
+     * @param type             Type of the comparator, that will be used to compare genomes.
      * @param threadsNumber    Number of threads that are used in {@link GenomeComparatorExecutor}.
      * @param additionalOutput if this flag is true, then advanced region comparison results will be displayed,
      *                         else - only the main chromosome results will be obtained
+     * @throws GenomeException if mode of comparator used is X_STR or Y_STR, but regular features were passed.
      */
-    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, int threadsNumber, boolean additionalOutput) {
+    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) {
+        if ((type == ComparatorType.Y_STR || type == ComparatorType.X_STR) && !(feature instanceof MarkerRegionFeature)) {
+            throw new GenomeException(this.getClass().getName(), "FeatureCallable", "Incompatible types occurred: mode=" + type + ", but wrong features were passed");
+        }
+        this.mode = type;
         this.feature = feature;
         this.firstBAMFile = firstParser;
         this.secondBAMFile = secondParser;
@@ -122,11 +138,11 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
      * @throws InterruptedException if thread was interrupted.
      */
     @Override
-    public List<GeneComparisonResult> call() throws GenomeException, InterruptedException {
+    public List<ComparisonResult> call() throws GenomeException, InterruptedException {
         // executor services that will be used in the method
         ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
         ExecutorService comparePool = Executors.newFixedThreadPool(compareThreadsNumber);
-        CompletionService<GeneComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
+        CompletionService<ComparisonResult> compareService = new ExecutorCompletionService<>(comparePool);
 
         try {
             // log the start of the processing
@@ -154,13 +170,25 @@ public class FeatureCallable implements Callable<List<GeneComparisonResult>> {
                 return Collections.synchronizedList(new ArrayList<>());
             }
 
-            // submit the tasks to the executor
+            // submit the tasks to the executor for the further comparison
             for (int i = 0; i < firstGenome.size(); i++) {
-                compareService.submit(new GenomeRegionCallable(firstGenome.get(i), secondGenome.get(i), additionalOutput));
+                GenomeComparator comparator = null;
+                switch (mode) {
+                    case LEVENSHTEIN:
+                        comparator = new LevenshteinComparator(firstGenome.get(i), secondGenome.get(i));
+                        break;
+                    case Y_STR:
+                        comparator = new YSTRComparator((MarkerRegionFeature) feature, firstGenome.get(i), secondGenome.get(i));
+                        break;
+                    case X_STR:
+                        // TODO add XSTRComparator
+                        break;
+                }
+                compareService.submit(new GenomeRegionCallable(comparator, additionalOutput));
             }
 
             // save the results of the comparison
-            List<GeneComparisonResult> results = Collections.synchronizedList(new ArrayList<>());
+            List<ComparisonResult> results = Collections.synchronizedList(new ArrayList<>());
             for (int i = 0; i < firstGenome.size(); i++) {
                 results.add(compareService.take().get());
             }

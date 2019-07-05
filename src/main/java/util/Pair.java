@@ -86,4 +86,9 @@ public class Pair<K, V> {
     public void setKey(K key) {
         this.key = key;
     }
+
+    @Override
+    public String toString() {
+        return "[" + "first=" + key + ", second=" + value + "]";
+    }
 }

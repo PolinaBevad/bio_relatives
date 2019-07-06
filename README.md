@@ -10,6 +10,7 @@ Program, which determines the relationship between people at the level of mother
 -   [Installing](#Installing)
 -   [Building](#Building)
     -   [Creation of the project in IntelliJ](#Creation-of-the-project-using-IntelliJ)
+-   [Running integration tests](#Running-integration-tests)
 -   [Usage](#Usage)
     -   [Options](#Options)
     -   [Examples](#Examples)
@@ -79,6 +80,10 @@ To create the project in IntelliJ IDE for bio_relatives do the following:
 1. Select fom the menu: `File -> New -> Project from Existing Sources`
 2. In the resulting dialog, chose `Import from existing model`, select `Gradle` and `Next`
 3. Choose the `default gradle wrapper` and `Finish`.
+
+## Running integration tests
+To run the integration tests, go to the `src/test/bash/`. Then, run the script `integration_test.sh` the usual way(the script does not require any arguments): `./integration_test.sh`.
+The output of each test can be found in the `src/test/bash/output/` folder. You can see the expected test results in the `src/test/bash/expected/` folder. You can see the difference between the test and expected data in the `src/test/bash/output` 
 
 ## Usage
     java -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] 

@@ -1,0 +1,25 @@
+Comparison of father and son genomes:
+Similarity percentage for each chromosome:
+	Name of chromosome: 4. Similarity percentage: 100.0%
+	Number of nucleotides compared: 1768
+	Similarity percentage for each gene from this chromosome:
+		Name of gene: UPNWPYFPJQ. Similarity percentage: 100.0%
+		Name of gene: UPNWfYFPJQ. Similarity percentage: 100.0%
+Count of chromosomes with 99.7+% similarity: 1
+Count of dissimilar chromosomes: 0
+
+Comparison of mother and son genomes:
+Similarity percentage for each chromosome:
+	Name of chromosome: 4. Similarity percentage: 98.29488465396189%
+	Number of nucleotides compared: 1994
+	Similarity percentage for each gene from this chromosome:
+		Name of gene: UPNWPYFPJQ. Similarity percentage: 98.29488465396189%
+		Name of gene: UPNWfYFPJQ. Similarity percentage: 98.29488465396189%
+Count of chromosomes with 99.7+% similarity: 0
+Count of dissimilar chromosomes: 1
+
+Chromosomes from father: [4]
+Chromosomes from mother: []
+Number of chromosomes from father: 1
+Number of chromosomes from mother: 0
+

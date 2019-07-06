@@ -1,0 +1,25 @@
+Comparison of father and son genomes:
+Similarity percentage for each chromosome:
+	Name of chromosome: MT. Similarity percentage: 99.81481481481481%
+	Number of nucleotides compared: 1620
+	Similarity percentage for each gene from this chromosome:
+		Name of gene: GGGGGGGU. Similarity percentage: 99.69909729187563%
+		Name of gene: GGGGGGGH. Similarity percentage: 100.0%
+Count of chromosomes with 99.7+% similarity: 1
+Count of dissimilar chromosomes: 0
+
+Comparison of mother and son genomes:
+Similarity percentage for each chromosome:
+	Name of chromosome: MT. Similarity percentage: 99.87654320987654%
+	Number of nucleotides compared: 1620
+	Similarity percentage for each gene from this chromosome:
+		Name of gene: GGGGGGGU. Similarity percentage: 99.79939819458374%
+		Name of gene: GGGGGGGH. Similarity percentage: 100.0%
+Count of chromosomes with 99.7+% similarity: 1
+Count of dissimilar chromosomes: 0
+
+Chromosomes from father: []
+Chromosomes from mother: [MT]
+Number of chromosomes from father: 0
+Number of chromosomes from mother: 1
+

@@ -63,7 +63,7 @@ public class LevenshteinComparator extends GenomeComparator {
      * @throws GenomeException if sizes of the regions are not equal or if exception
      *                         is thrown in {@link LevenshteinComparisonResult}.
      */
-    public LevenshteinComparisonResult compare() {
+    public LevenshteinComparisonResult compare() throws GenomeException{
         // normalize the input nucleotide sequences
         Pair<String, String> temp = getNormalizedAlignments(first.getNucleotideSequence(), second.getNucleotideSequence());
         // save new genome sequences

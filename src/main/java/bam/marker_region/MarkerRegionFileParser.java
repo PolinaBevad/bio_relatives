@@ -53,7 +53,7 @@ public class MarkerRegionFileParser extends BEDParser {
      * @param markerRegionFileName filename of the BED file to create object from.
      * @throws GenomeFileException if file is incorrect.
      */
-    public MarkerRegionFileParser(String markerRegionFileName) {
+    public MarkerRegionFileParser(String markerRegionFileName) throws GenomeFileException {
         super(markerRegionFileName);
     }
 
@@ -62,10 +62,10 @@ public class MarkerRegionFileParser extends BEDParser {
      *
      * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
-     * @throws GenomeException if any kind of exception occurs in the method.
+     * @throws GenomeFileException if any kind of exception occurs in the method.
      */
     @Override
-    public Map<String, List<BEDFeature>> parse() {
+    public Map<String, List<BEDFeature>> parse() throws GenomeFileException{
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons

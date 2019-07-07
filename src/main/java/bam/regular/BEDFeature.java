@@ -69,9 +69,9 @@ public class BEDFeature {
      * @param start Start position.
      * @param end   End position.
      * @param gene  Name of the gene.
-     * @throws GenomeException if start or end positions are incorrect.
+     * @throws GenomeFileException if start or end positions are incorrect.
      */
-    public BEDFeature(String chrom, int start, int end, String gene) {
+    public BEDFeature(String chrom, int start, int end, String gene) throws GenomeFileException {
         this.chrom = chrom;
         if (start < 0 || end < 0 || start >= end) {
             throw new GenomeFileException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + ", " + gene);

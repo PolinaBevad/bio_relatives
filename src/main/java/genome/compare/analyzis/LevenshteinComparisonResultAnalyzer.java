@@ -124,7 +124,7 @@ public class LevenshteinComparisonResultAnalyzer implements  ComparisonResultAna
      * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
      */
     @Override
-    public void add(ComparisonResult geneComparisonResult) throws GenomeException {
+    public void add(ComparisonResult geneComparisonResult) {
         LevenshteinComparisonResult levenshteinComparisonResult = (LevenshteinComparisonResult) geneComparisonResult;
         if (geneComparisonResults.containsKey(levenshteinComparisonResult.getChromName())) {
             if (geneComparisonResults.get(levenshteinComparisonResult.getChromName()).containsKey(levenshteinComparisonResult.getGene())) {

@@ -53,7 +53,7 @@ public class TrioComparator {
      * @throws GenomeFileException if some errors of input files occurred
      * @throws GenomeException     if some errors occurred through the work of code
      */
-    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) {
+    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) throws GenomeFileException, GenomeException {
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(BAMFileName1, BAMFileName2, BEDFileName, type);
         ComparisonResultAnalyzer geneComparisonResultAnalyzer = comparator.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer.analyze();
@@ -75,7 +75,7 @@ public class TrioComparator {
      * @throws GenomeException     if some errors occurred through the work of code
      */
     public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput)
-            throws GenomeException{
+            throws GenomeException, GenomeFileException{
         if (type == ComparatorType.Y_STR) {
                 throw new GenomeException("TrioComparator", "compareThreeGenomes(...)", "invalid type of the comparator: women do not have Y chr");
         }
@@ -83,13 +83,13 @@ public class TrioComparator {
         ComparisonResultAnalyzer geneComparisonResultAnalyzer1 = comparator1.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer1.analyze();
         StringBuilder result = new StringBuilder("Comparison of father and son genomes:\n");
-        result.append(geneComparisonResultAnalyzer1);
+        result.append(geneComparisonResultAnalyzer1.getResultString());
 
         GenomeComparatorExecutor comparator2 = new GenomeComparatorExecutor(sonBAMFileName, motherBAMFileName, BEDFileName, type);
         ComparisonResultAnalyzer geneComparisonResultAnalyzer2 = comparator2.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer2.analyze();
         result.append("\nComparison of mother and son genomes:\n");
-        result.append(geneComparisonResultAnalyzer2);
+        result.append(geneComparisonResultAnalyzer2.getResultString());
 
         // TODO add support of XSTRAnalyzer, when it will be developed
         LevenshteinComparisonResultAnalyzer analyzer1 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer1;

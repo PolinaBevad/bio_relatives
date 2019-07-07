@@ -41,7 +41,7 @@ public class CmdParser {
      * @return User input arguments.
      * @throws CommandLineException if error occurs while parsing user input.
      */
-    public Configuration parseCommandLine(String... args) {
+    public Configuration parseCommandLine(String... args) throws CommandLineException {
         try {
             Options options = this.buildOptions();
             CommandLineParser cmd = new DefaultParser();
@@ -60,7 +60,7 @@ public class CmdParser {
      * @return User input arguments.
      * @throws CommandLineException if error occurs while parsing user input.
      */
-    private Configuration parseParameters(CommandLine cmd) {
+    private Configuration parseParameters(CommandLine cmd) throws CommandLineException{
         Configuration config = new Configuration();
 
         // check main arguments

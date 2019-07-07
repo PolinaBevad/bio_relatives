@@ -73,7 +73,7 @@ public class LevenshteinComparisonResult implements ComparisonResult {
      * @param len        Length of the nucl. seq.
      * @throws GenomeException if input values are lesser than 0 or the chromosome name is invalid.
      */
-    public LevenshteinComparisonResult(String chrom, String gene, int difference, int len) {
+    public LevenshteinComparisonResult(String chrom, String gene, int difference, int len) throws GenomeException {
         this.chrom = chrom;
         this.gene = gene;
 

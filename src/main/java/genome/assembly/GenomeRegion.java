@@ -77,7 +77,7 @@ public class GenomeRegion {
      * @param gene    Name of the gene.
      * @throws GenomeException if starting position of the nucleotide sequence is < 0.
      */
-    public GenomeRegion(String chrom, int pos, String seq, byte[] quality, String gene) {
+    public GenomeRegion(String chrom, int pos, String seq, byte[] quality, String gene) throws GenomeException {
         // set the name of the chromosome
         this.chrom = chrom;
 
@@ -107,7 +107,7 @@ public class GenomeRegion {
      * @return Pair of nucleotide and it's quality.
      * @throws GenomeException if pos is < 0 or len < pos.
      */
-    public Pair<Character, Byte> getNucleotide(int pos) {
+    public Pair<Character, Byte> getNucleotide(int pos) throws GenomeException {
         if (pos < 0 || pos >= nucleotideSeq.length()) {
             throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(0, len)");
         }
@@ -121,7 +121,7 @@ public class GenomeRegion {
      * @return Transformed position into position in the range [0, len).
      * @throws GenomeException if nucleotide is not in the range of this nucleotide sequence.
      */
-    public int normalize(int position) {
+    public int normalize(int position) throws  GenomeException {
         if (position < startPos || position > startPos + nucleotideSeq.length()) {
             throw new GenomeException(this.getClass().getName(), "getNucleotide", "pos", "is not in range(startPos, startPos + len)");
         }

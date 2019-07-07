@@ -115,7 +115,7 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
      *                         else - only the main chromosome results will be obtained
      * @throws GenomeException if mode of comparator used is X_STR or Y_STR, but regular features were passed.
      */
-    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) {
+    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) throws GenomeException {
         if ((type == ComparatorType.Y_STR || type == ComparatorType.X_STR) && !(feature instanceof MarkerRegionFeature)) {
             throw new GenomeException(this.getClass().getName(), "FeatureCallable", "Incompatible types occurred: mode=" + type + ", but wrong features were passed");
         }

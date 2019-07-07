@@ -1,5 +1,8 @@
 package bam;
 
+import bam.regular.BAMParser;
+import bam.regular.BEDFeature;
+import bam.regular.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.SAMRecord;

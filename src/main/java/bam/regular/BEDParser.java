@@ -67,7 +67,7 @@ public class BEDParser {
      * @param BEDFileName filename of the BED file to create object from.
      * @throws GenomeFileException if file is incorrect.
      */
-    public BEDParser(String BEDFileName) {
+    public BEDParser(String BEDFileName) throws GenomeFileException {
         this.bedFile = new File(BEDFileName);
         if (isInvalid()) {
             throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), "error occurred during file validation");
@@ -99,9 +99,9 @@ public class BEDParser {
      *
      * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
-     * @throws GenomeException if any kind of exception occurs in the method.
+     * @throws GenomeFileException if any kind of exception occurs in the method.
      */
-    public Map<String, List<BEDFeature>> parse() {
+    public Map<String, List<BEDFeature>> parse() throws GenomeFileException {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons

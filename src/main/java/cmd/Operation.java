@@ -74,7 +74,7 @@ public class Operation {
      * @throws GenomeException
      * @throws GenomeFileException if error occurs while comparing genomes.
      */
-    public String start(Configuration config) throws GenomeFileException, GenomeException{
+    public String start(Configuration config) {
         if (config.numberOfRecipients == 2) {
             return TrioComparator.compareTwoGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToBed, config.type, config.threadsNumber, config.intermediateOutput);
         } else if (config.numberOfRecipients == 3) {

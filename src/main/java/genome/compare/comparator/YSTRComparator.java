@@ -54,7 +54,7 @@ public class YSTRComparator extends GenomeComparator {
      * @param second Genome of the second person.
      * @throws GenomeException if regions fail validation.
      */
-    public YSTRComparator(MarkerRegionFeature marker, GenomeRegion first, GenomeRegion second) throws GenomeException {
+    public YSTRComparator(MarkerRegionFeature marker, GenomeRegion first, GenomeRegion second) {
         super(first, second);
         this.feature = marker;
     }

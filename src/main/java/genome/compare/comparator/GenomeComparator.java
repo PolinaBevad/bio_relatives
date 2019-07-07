@@ -53,7 +53,7 @@ public abstract class GenomeComparator {
      * @param second Genome of the second person.
      * @throws GenomeException if genomes fail validation.
      */
-    protected GenomeComparator(GenomeRegion first, GenomeRegion second) throws GenomeException {
+    protected GenomeComparator(GenomeRegion first, GenomeRegion second)  {
         this.first = first;
         this.second = second;
 
@@ -71,7 +71,7 @@ public abstract class GenomeComparator {
      * @return Results of the comparison of two genome regions.
      * @throws GenomeException if genomes fail validation.
      */
-    public abstract ComparisonResult compare() throws GenomeException;
+    public abstract ComparisonResult compare();
 
     /**
      * Validate all input genome regions.

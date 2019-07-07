@@ -74,7 +74,7 @@ public class GenomeRegionCallable implements Callable<ComparisonResult> {
      * @throws GenomeException if regions don't pass the validation.
      */
     @Override
-    public ComparisonResult call() throws GenomeException {
+    public ComparisonResult call() {
         // compare two genes
         ComparisonResult geneComparisonResult = comparator.compare();
         // print additional output if it is necessary

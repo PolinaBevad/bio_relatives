@@ -68,7 +68,7 @@ public class GenomeConstructor  {
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong.
      */
-    public static List<GenomeRegion> assembly(SAMRecordList samRecords, List<BEDFeature> exons) throws GenomeException {
+    public static List<GenomeRegion> assembly(SAMRecordList samRecords, List<BEDFeature> exons) {
         try {
             // output genome
             List<GenomeRegion> genomeRegions = new ArrayList<>();
@@ -92,7 +92,7 @@ public class GenomeConstructor  {
      * @return gene (List of GenomeRegion)
      * @throws GenomeException if anything went wrong
      */
-    public static List<GenomeRegion> assembly(SAMRecordList samRecords, BEDFeature exon) throws GenomeException{
+    public static List<GenomeRegion> assembly(SAMRecordList samRecords, BEDFeature exon) {
         try {
             // check the input
             if (samRecords.isEmpty()) {

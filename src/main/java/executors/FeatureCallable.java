@@ -115,7 +115,7 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
      *                         else - only the main chromosome results will be obtained
      * @throws GenomeException if mode of comparator used is X_STR or Y_STR, but regular features were passed.
      */
-    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) throws GenomeException {
+    public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) {
         if ((type == ComparatorType.Y_STR || type == ComparatorType.X_STR) && !(feature instanceof MarkerRegionFeature)) {
             throw new GenomeException(this.getClass().getName(), "FeatureCallable", "Incompatible types occurred: mode=" + type + ", but wrong features were passed");
         }
@@ -138,7 +138,7 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
      * @throws InterruptedException if thread was interrupted.
      */
     @Override
-    public List<ComparisonResult> call() throws GenomeException, InterruptedException {
+    public List<ComparisonResult> call() throws InterruptedException {
         // executor services that will be used in the method
         ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
         ExecutorService comparePool = Executors.newFixedThreadPool(compareThreadsNumber);

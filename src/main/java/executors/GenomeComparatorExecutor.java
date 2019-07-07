@@ -53,8 +53,7 @@ public class GenomeComparatorExecutor {
      * @throws GenomeException     if exception occurs file parsing the BED file.
      * @throws GenomeFileException if incorrect BED or BAM file is passed.
      */
-    public GenomeComparatorExecutor(String pathToFirstBAM, String pathToSecondBAM, String pathToBED, ComparatorType type) throws GenomeException,
-        GenomeFileException {
+    public GenomeComparatorExecutor(String pathToFirstBAM, String pathToSecondBAM, String pathToBED, ComparatorType type) {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
         this.type = type;

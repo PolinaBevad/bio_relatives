@@ -53,7 +53,7 @@ public class TrioComparator {
      * @throws GenomeFileException if some errors of input files occurred
      * @throws GenomeException     if some errors occurred through the work of code
      */
-    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) throws GenomeFileException, GenomeException {
+    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) {
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(BAMFileName1, BAMFileName2, BEDFileName, type);
         ComparisonResultAnalyzer geneComparisonResultAnalyzer = comparator.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer.analyze();
@@ -74,8 +74,7 @@ public class TrioComparator {
      * @return String with results of genomes comparing of three persons: son with father and son with mother
      * @throws GenomeException     if some errors occurred through the work of code
      */
-    public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput)
-            throws GenomeException, GenomeFileException{
+    public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) {
         if (type == ComparatorType.Y_STR) {
                 throw new GenomeException("TrioComparator", "compareThreeGenomes(...)", "invalid type of the comparator: women do not have Y chr");
         }

@@ -76,7 +76,7 @@ public class GenomeAssemblyCallable implements Callable<List<GenomeRegion>> {
      * @throws GenomeException if regions don't pass the validation.
      */
     @Override
-    public List<GenomeRegion> call() throws GenomeException, GenomeFileException {
+    public List<GenomeRegion> call() {
         // getSAMRecordList the list of sam records for each person
         //SAMRecordList samRecords = new BAMParser(this.bamFile.getBAMFileName()).parse(feature);
         SAMRecordList samRecords = this.bamFile.parse(feature);

@@ -68,7 +68,7 @@ public class MarkerRegionFeature extends BEDFeature {
      * @param motif      Nucleotide sequence which represents this marker.
      * @throws GenomeFileException if invalid input occurs.
      */
-    public MarkerRegionFeature(String chrom, int start, int end, String markerName, Pattern motif) throws GenomeFileException {
+    public MarkerRegionFeature(String chrom, int start, int end, String markerName, Pattern motif) {
         super(chrom, start, end, chrom.contains("Y") ? Y_STR : X_STR);
         this.markerName = markerName;
         this.repeatMotif = motif;

@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package executors;
 
-import bam.BAMParser;
-import bam.BEDFeature;
+import bam.regular.BAMParser;
+import bam.regular.BEDFeature;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import genome.assembly.GenomeConstructor;

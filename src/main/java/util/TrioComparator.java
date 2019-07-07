@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator;
+package util;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.analyzis.GeneComparisonResultAnalyzer;
-import genome.compare.comparator.executors.GenomeComparatorExecutor;
-import util.Pair;
+import executors.GenomeComparatorExecutor;
+import genome.compare.ComparatorType;
+import genome.compare.analyzis.ComparisonResultAnalyzer;
+import genome.compare.analyzis.LevenshteinComparisonResultAnalyzer;
 
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class TrioComparator {
      * @param BAMFileName1       name of the BAM file which contains genome of the 1st person
      * @param BAMFileName2       name of the BAM file which contains genome of the 2nd person
      * @param BEDFileName        name of the BED file
+     * @param type               Type of the comparator, that will be used to compare genomes.
      * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
      *                           else - only the main chromosome results will be obtained
      * @param threadsNum         Number of threads that will be used to process exons.
@@ -51,12 +53,11 @@ public class TrioComparator {
      * @throws GenomeFileException if some errors of input files occurred
      * @throws GenomeException     if some errors occurred through the work of code
      */
-    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, int threadsNum, boolean intermediateOutput) throws
-        GenomeFileException, GenomeException {
-        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(BAMFileName1, BAMFileName2, BEDFileName, threadsNum);
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer = comparator.compareGenomes(intermediateOutput);
+    public static String compareTwoGenomes(String BAMFileName1, String BAMFileName2, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) {
+        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(BAMFileName1, BAMFileName2, BEDFileName, type);
+        ComparisonResultAnalyzer geneComparisonResultAnalyzer = comparator.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer.analyze();
-        return geneComparisonResultAnalyzer.toString();
+        return geneComparisonResultAnalyzer.getResultString();
     }
 
     /**
@@ -66,28 +67,34 @@ public class TrioComparator {
      * @param motherBAMFileName  name of the BAM file which contains genome of the mother
      * @param sonBAMFileName     name of the BAM file which contains genome of the son
      * @param BEDFileName        name of the BED file
+     * @param type               Type of the comparator, that will be used to compare genomes.
      * @param threadsNum         Number of threads that will be used to process exons.
      * @param intermediateOutput if this flag is true , then interim genome comparison results will be displayed,
      *                           else - only the main chromosome results will be obtained
      * @return String with results of genomes comparing of three persons: son with father and son with mother
-     * @throws GenomeFileException if some errors of input files occurred
      * @throws GenomeException     if some errors occurred through the work of code
      */
-    public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, int threadsNum, boolean intermediateOutput) throws
-        GenomeFileException, GenomeException {
-        // todo make the comparison in parallel
-        GenomeComparatorExecutor comparator1 = new GenomeComparatorExecutor(sonBAMFileName, fatherBAMFileName, BEDFileName, threadsNum);
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer1 = comparator1.compareGenomes(intermediateOutput);
+    public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput)
+            throws GenomeException{
+        if (type == ComparatorType.Y_STR) {
+                throw new GenomeException("TrioComparator", "compareThreeGenomes(...)", "invalid type of the comparator: women do not have Y chr");
+        }
+        GenomeComparatorExecutor comparator1 = new GenomeComparatorExecutor(sonBAMFileName, fatherBAMFileName, BEDFileName, type);
+        ComparisonResultAnalyzer geneComparisonResultAnalyzer1 = comparator1.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer1.analyze();
         StringBuilder result = new StringBuilder("Comparison of father and son genomes:\n");
         result.append(geneComparisonResultAnalyzer1);
 
-        GenomeComparatorExecutor comparator2 = new GenomeComparatorExecutor(sonBAMFileName, motherBAMFileName, BEDFileName, threadsNum);
-        GeneComparisonResultAnalyzer geneComparisonResultAnalyzer2 = comparator2.compareGenomes(intermediateOutput);
+        GenomeComparatorExecutor comparator2 = new GenomeComparatorExecutor(sonBAMFileName, motherBAMFileName, BEDFileName, type);
+        ComparisonResultAnalyzer geneComparisonResultAnalyzer2 = comparator2.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer2.analyze();
         result.append("\nComparison of mother and son genomes:\n");
         result.append(geneComparisonResultAnalyzer2);
-        result.append(getChromosomeFromParentsInfo(geneComparisonResultAnalyzer1.getResults(), geneComparisonResultAnalyzer2.getResults()));
+
+        // TODO add support of XSTRAnalyzer, when it will be developed
+        LevenshteinComparisonResultAnalyzer analyzer1 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer1;
+        LevenshteinComparisonResultAnalyzer analyzer2 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer2;
+        result.append(getChromosomeFromParentsInfo(analyzer1.getResults(), analyzer2.getResults()));
 
         return result.toString();
     }

@@ -26,7 +26,7 @@ package cmd;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.comparator.TrioComparator;
+import util.TrioComparator;
 
 /**
  * This class implements a basic command line arguments parser
@@ -71,12 +71,14 @@ public class Operation {
      *
      * @param config Configuration object.
      * @return Result of the execution of the program with this arguments.
+     * @throws GenomeException
+     * @throws GenomeFileException if error occurs while comparing genomes.
      */
-    public String start(Configuration config) throws GenomeFileException, GenomeException {
+    public String start(Configuration config) {
         if (config.numberOfRecipients == 2) {
-            return TrioComparator.compareTwoGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToBed, config.threadsNumber, config.intermediateOutput);
+            return TrioComparator.compareTwoGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToBed, config.type, config.threadsNumber, config.intermediateOutput);
         } else if (config.numberOfRecipients == 3) {
-            return TrioComparator.compareThreeGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToThirdRecipient, config.pathToBed, config.threadsNumber, config.intermediateOutput);
+            return TrioComparator.compareThreeGenomes(config.pathToFirstRecipient, config.pathToSecondRecipient, config.pathToThirdRecipient, config.pathToBed, config.type, config.threadsNumber, config.intermediateOutput);
         } else {
             return HELP_MESSAGE;
         }

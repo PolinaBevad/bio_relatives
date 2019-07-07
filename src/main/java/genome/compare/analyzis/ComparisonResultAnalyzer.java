@@ -21,74 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package genome.compare.analyzis;
 
-package util;
+import exception.GenomeException;
+
+import java.util.Collection;
 
 /**
- * Structure for storage 2 objects
- *
- * @param <K> key
- * @param <V> value
+ * Interface , which defines interface of all the classes, that
+ * analyze results of gene comparison
  * @author Vladislav Marchenko
  */
-public class Pair<K, V> {
+public interface ComparisonResultAnalyzer {
     /**
-     * Key of this Pair
-     */
-    private K key;
-    /**
-     * Value of this Pair
-     */
-    private V value;
-
-    /**
-     * Creates a new pair
+     * Method for adding a list of gene comparison results for storage and analyzing.
      *
-     * @param key   The key for this pair
-     * @param value The value to use for this pair
+     * @param collection Collection with the results of the comparison.
      */
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
+    default void add(Collection<? extends ComparisonResult> collection) {
+        for (ComparisonResult element : collection) {
+            this.add(element);
+        }
     }
 
     /**
-     * Gets the key for this pair.
-     *
-     * @return key for this pair
+     * Method for adding one gene comparison result for storage and analyzing.
+     * @param comparisonResult one of the gene comparison result
      */
-    public K getKey() {
-        return key;
-    }
+    void add(ComparisonResult comparisonResult);
 
     /**
-     * Gets the value for this pair.
-     *
-     * @return value for this pair
+     * Method for analyzing of comparison results.
      */
-    public V getValue() {
-        return value;
-    }
+    void analyze();
 
     /**
-     * Sets the value for this pair.
-     * @param value for this pair
+     * Method, which returns analyzing results in String format
+     * @return String, which contains result of analyzing
      */
-    public void setValue(V value) {
-        this.value = value;
-    }
-
-
-    /**
-     * Sets the key for this pair.
-     * @param key for this pair
-     */
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    @Override
-    public String toString() {
-        return "[" + "first=" + key + ", second=" + value + "]";
-    }
+    String getResultString();
 }

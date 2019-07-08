@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package bam;
+package bam.regular;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
@@ -38,9 +38,9 @@ public class BEDFeature {
 
     /**
      * Regular expression that contains all
-     * the allowed symbols for the gene name.
+     * the allowed symbols for the names used in the records.
      */
-    private static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
+    public static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
 
     /**
      * Name of the chromosome.
@@ -69,9 +69,9 @@ public class BEDFeature {
      * @param start Start position.
      * @param end   End position.
      * @param gene  Name of the gene.
-     * @throws GenomeException if start or end positions are incorrect.
+     * @throws GenomeFileException if start or end positions are incorrect.
      */
-    public BEDFeature(String chrom, int start, int end, String gene) throws GenomeFileException {
+    public BEDFeature(String chrom, int start, int end, String gene) {
         this.chrom = chrom;
         if (start < 0 || end < 0 || start >= end) {
             throw new GenomeFileException("Error occurred during initialization of BEDFeature object: " + "Incorrect parameters were passed: [" + chrom + ", " + start + ", " + end + ", " + gene);

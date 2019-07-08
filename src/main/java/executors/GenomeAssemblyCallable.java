@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator.executors;
+package executors;
 
-import bam.BAMParser;
-import bam.BEDFeature;
+import bam.regular.BAMParser;
+import bam.regular.BEDFeature;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import genome.assembly.GenomeConstructor;
@@ -76,7 +76,7 @@ public class GenomeAssemblyCallable implements Callable<List<GenomeRegion>> {
      * @throws GenomeException if regions don't pass the validation.
      */
     @Override
-    public List<GenomeRegion> call() throws GenomeException, GenomeFileException {
+    public List<GenomeRegion> call() {
         // getSAMRecordList the list of sam records for each person
         //SAMRecordList samRecords = new BAMParser(this.bamFile.getBAMFileName()).parse(feature);
         SAMRecordList samRecords = this.bamFile.parse(feature);

@@ -22,73 +22,30 @@
  * SOFTWARE.
  */
 
-package util;
+package genome.compare.analyzis;
+
+import genome.compare.ComparatorType;
 
 /**
- * Structure for storage 2 objects
+ * Interface, which defines the interface of all
+ * the classes, that are designed to store the results
+ * of the comparison of the genomes.
  *
- * @param <K> key
- * @param <V> value
- * @author Vladislav Marchenko
+ * @author Sergey Khvatov
  */
-public class Pair<K, V> {
-    /**
-     * Key of this Pair
-     */
-    private K key;
-    /**
-     * Value of this Pair
-     */
-    private V value;
+public interface ComparisonResult {
 
     /**
-     * Creates a new pair
+     * Defines, which comparator was used to get these results.
+     * @return type of the comparator.
+     */
+    ComparatorType getComparatorType();
+
+    /**
+     * Returns string representation of the results of the comparison
+     * of two genome regions.
      *
-     * @param key   The key for this pair
-     * @param value The value to use for this pair
+     * @return string representation of the results of the comparison.
      */
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    /**
-     * Gets the key for this pair.
-     *
-     * @return key for this pair
-     */
-    public K getKey() {
-        return key;
-    }
-
-    /**
-     * Gets the value for this pair.
-     *
-     * @return value for this pair
-     */
-    public V getValue() {
-        return value;
-    }
-
-    /**
-     * Sets the value for this pair.
-     * @param value for this pair
-     */
-    public void setValue(V value) {
-        this.value = value;
-    }
-
-
-    /**
-     * Sets the key for this pair.
-     * @param key for this pair
-     */
-    public void setKey(K key) {
-        this.key = key;
-    }
-
-    @Override
-    public String toString() {
-        return "[" + "first=" + key + ", second=" + value + "]";
-    }
+    String getResults();
 }

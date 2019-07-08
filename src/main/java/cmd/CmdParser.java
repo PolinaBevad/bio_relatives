@@ -24,6 +24,7 @@
 package cmd;
 
 import exception.CommandLineException;
+import genome.compare.ComparatorType;
 import org.apache.commons.cli.*;
 
 /**
@@ -38,8 +39,9 @@ public class CmdParser {
      *
      * @param args User input arguments.
      * @return User input arguments.
+     * @throws CommandLineException if error occurs while parsing user input.
      */
-    public Configuration parseCommandLine(String... args) throws CommandLineException {
+    public Configuration parseCommandLine(String... args) {
         try {
             Options options = this.buildOptions();
             CommandLineParser cmd = new DefaultParser();
@@ -56,8 +58,9 @@ public class CmdParser {
      *
      * @param cmd User input arguments.
      * @return User input arguments.
+     * @throws CommandLineException if error occurs while parsing user input.
      */
-    private Configuration parseParameters(CommandLine cmd) throws CommandLineException {
+    private Configuration parseParameters(CommandLine cmd) {
         Configuration config = new Configuration();
 
         // check main arguments
@@ -90,6 +93,24 @@ public class CmdParser {
         // check if advanced output is requested
         if (cmd.hasOption("io")) {
             config.intermediateOutput = true;
+        }
+
+        // check if advanced output is requested
+        if (cmd.hasOption("m")) {
+            String mode = cmd.getOptionValue("m").toUpperCase();
+            switch (mode) {
+                case "X":
+                    config.type = ComparatorType.X_STR;
+                    break;
+                case "Y":
+                    config.type = ComparatorType.Y_STR;
+                    break;
+                case "L":
+                    config.type = ComparatorType.LEVENSHTEIN;
+                    break;
+                default:
+                    throw new CommandLineException("Incorrect user input! Type [-h] or [--help] for help!");
+            }
         }
 
         // check if number of threads was changed
@@ -140,6 +161,17 @@ public class CmdParser {
                 .hasArg()
                 .numberOfArgs(4)
                 .argName("father> <mother> <son> <bed")
+                .type(String.class)
+                .build()
+        );
+
+        options.addOption(
+            Option.builder("m")
+                .longOpt("mode")
+                .desc("Defines, which comparator will be used.")
+                .hasArg()
+                .numberOfArgs(1)
+                .argName("mode: X, Y, L")
                 .type(String.class)
                 .build()
         );

@@ -22,24 +22,16 @@
  * SOFTWARE.
  */
 
-package exception;
+package genome.compare;
 
 /**
- * Represents basic exception, that may occur while working with genome methods.
+ * Defines which comparator was used
+ * to compare genomes.
  *
  * @author Sergey Khvatov
  */
-public class GenomeException extends RuntimeException {
-
-    public GenomeException(String message) {
-        super(message);
-    }
-
-    public GenomeException(String cls, String method, String wrongField, String message) {
-        super("Error occurred in class [" + cls + "] " + "in method [" + method + "]: field [" + wrongField + "] is [" + message + "].");
-    }
-
-    public GenomeException(String cls, String method, String message) {
-        super("Error occurred in class [" + cls + "] " + "in method [" + method + "]: message is [" + message + "].");
-    }
+public enum ComparatorType {
+    X_STR,
+    Y_STR,
+    LEVENSHTEIN
 }

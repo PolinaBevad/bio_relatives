@@ -1,8 +1,9 @@
 package genome.assembly;
 
-import bam.BAMParser;
-import bam.BEDFeature;
-import bam.BEDParser;
+
+import bam.regular.BAMParser;
+import bam.regular.BEDFeature;
+import bam.regular.BEDParser;
 import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
 import org.junit.Test;

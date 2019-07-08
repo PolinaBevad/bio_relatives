@@ -30,7 +30,7 @@ package exception;
  * @author Sergey Khvatov
  */
 
-public class CommandLineException extends Exception {
+public class CommandLineException extends RuntimeException {
     public CommandLineException(String message) {
         super("Error occurred in class [CommandLineParser] in method [parse]: " + message);
     }

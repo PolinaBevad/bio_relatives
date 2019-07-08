@@ -23,6 +23,8 @@
  */
 package cmd;
 
+import genome.compare.ComparatorType;
+
 /**
  * Defines a public class with configuration information parsed from
  * the command line input.
@@ -75,4 +77,9 @@ public class Configuration {
      * created to process the information analysis.
      */
     public int threadsNumber = 1;
+
+    /**
+     * Defines the type of the comparator that will be used.
+     */
+    public ComparatorType type = ComparatorType.LEVENSHTEIN;
 }

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package bam;
+package bam.regular;
 
 import exception.GenomeException;
 import exception.GenomeFileException;
@@ -54,12 +54,12 @@ public class BEDParser {
      * Default start word of the browse line in
      * the bed file we are not interested in.
      */
-    private static final String COMMENT_LINE = "#";
+    protected static final String COMMENT_LINE = "#";
 
     /**
      * Input BED file.
      */
-    private File bedFile;
+    protected File bedFile;
 
     /**
      * Default class constructor from BED file.
@@ -67,7 +67,7 @@ public class BEDParser {
      * @param BEDFileName filename of the BED file to create object from.
      * @throws GenomeFileException if file is incorrect.
      */
-    public BEDParser(String BEDFileName) throws GenomeFileException {
+    public BEDParser(String BEDFileName) {
         this.bedFile = new File(BEDFileName);
         if (isInvalid()) {
             throw new GenomeFileException(this.getClass().getName(), "BEDParser", this.bedFile.getName(), "error occurred during file validation");
@@ -99,9 +99,9 @@ public class BEDParser {
      *
      * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
-     * @throws GenomeException if any kind of exception occurs in the method.
+     * @throws GenomeFileException if any kind of exception occurs in the method.
      */
-    public Map<String, List<BEDFeature>> parse() throws GenomeFileException {
+    public Map<String, List<BEDFeature>> parse()  {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons

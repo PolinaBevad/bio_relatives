@@ -24,18 +24,20 @@
 
 package genome.compare.analyzis;
 
+import exception.GenomeException;
 import util.Pair;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * This class analyze results of gene comparison of two persons
+ * This class analyze results of gene comparison of two persons(for Levenshtein comparator type)
  *
  * @author Vladislav Marchenko
  * @author Sergey Khvatov
  */
-public class GeneComparisonResultAnalyzer {
+
+public class LevenshteinComparisonResultAnalyzer implements  ComparisonResultAnalyzer{
 
     /**
      * High percentage of chromosome similarity for the parent and child.
@@ -67,7 +69,7 @@ public class GeneComparisonResultAnalyzer {
      * @return String with these results
      */
     @Override
-    public String toString() {
+    public String getResultString() {
         StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
         for (Pair<String, Double> averageSimilarityValue : averageSimilarityValues) {
             result.append("\tName of chromosome: ");
@@ -121,35 +123,27 @@ public class GeneComparisonResultAnalyzer {
      *
      * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
      */
-    public void add(GeneComparisonResult geneComparisonResult) {
-        if (geneComparisonResults.containsKey(geneComparisonResult.getChromName())) {
-            if (geneComparisonResults.get(geneComparisonResult.getChromName()).containsKey(geneComparisonResult.getGene())) {
-                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setKey(geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getKey() + geneComparisonResult.getDifference());
-                geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).setValue(geneComparisonResults.get(geneComparisonResult.getChromName()).get(geneComparisonResult.getGene()).getValue() + geneComparisonResult.getSequenceLen());
+    @Override
+    public void add(ComparisonResult geneComparisonResult) {
+        LevenshteinComparisonResult levenshteinComparisonResult = (LevenshteinComparisonResult) geneComparisonResult;
+        if (geneComparisonResults.containsKey(levenshteinComparisonResult.getChromName())) {
+            if (geneComparisonResults.get(levenshteinComparisonResult.getChromName()).containsKey(levenshteinComparisonResult.getGene())) {
+                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).setKey(geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).getKey() + levenshteinComparisonResult.getDifference());
+                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).setValue(geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).getValue() + levenshteinComparisonResult.getSequenceLen());
             } else {
-                geneComparisonResults.get(geneComparisonResult.getChromName()).put(geneComparisonResult.getGene(), new Pair<>(geneComparisonResult.getDifference(), geneComparisonResult.getSequenceLen()));
+                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).put(levenshteinComparisonResult.getGene(), new Pair<>(levenshteinComparisonResult.getDifference(), levenshteinComparisonResult.getSequenceLen()));
             }
         } else {
             Map<String, Pair<Integer, Integer>> currentGene = new ConcurrentHashMap<>();
-            currentGene.put(geneComparisonResult.getGene(), new Pair<>(geneComparisonResult.getDifference(), geneComparisonResult.getSequenceLen()));
-            geneComparisonResults.put(geneComparisonResult.getChromName(), currentGene);
-        }
-    }
-
-    /**
-     * Method for adding a list of gene comparison results into Map of chromosomes and genes.
-     *
-     * @param collection Collection with the results of the comparison.
-     */
-    public void add(Collection<GeneComparisonResult> collection) {
-        for (GeneComparisonResult element : collection) {
-            this.add(element);
+            currentGene.put(levenshteinComparisonResult.getGene(), new Pair<>(levenshteinComparisonResult.getDifference(), levenshteinComparisonResult.getSequenceLen()));
+            geneComparisonResults.put(levenshteinComparisonResult.getChromName(), currentGene);
         }
     }
 
     /**
      * Method which analyze results of comparison of two gene
      */
+    @Override
     public void analyze() {
         for (String chrom : geneComparisonResults.keySet()) {
             if (getSumSeqLengthFromChrom(geneComparisonResults.get(chrom)) != 0) {
@@ -212,3 +206,4 @@ public class GeneComparisonResultAnalyzer {
         return chrom.keySet().stream().mapToInt(gene -> chrom.get(gene).getKey()).sum();
     }
 }
+

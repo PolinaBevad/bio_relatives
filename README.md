@@ -86,7 +86,7 @@ To run the integration tests, go to the `src/test/bash/`. Then, run the script `
 The output of each test can be found in the `src/test/bash/output/` folder. You can see the expected test results in the `src/test/bash/expected/` folder. You can see the difference between the test and expected data in the `src/test/bash/output` 
 
 ## Usage
-    java -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] 
+    java -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] [-m | --mode <X | Y | L>] [-th | --threadsNumber <number of threads>]
 ### Options
 
 `-h`, `--help` - show help message.
@@ -96,6 +96,10 @@ The output of each test can be found in the `src/test/bash/output/` folder. You 
 `-c2`, `--compare2` - compare genomes of two persons.
 
 `-c3`, `--compare3` - compare genomes of three persons (father/mother/son).
+
+`-m`, `--mode` - defines  which comparator will be used.
+
+`-th`, `--threadsNumber` - defines number of threads that should be created to process the information analysis.
 
 ### Examples
 #### Comparison of the genomes of two persons

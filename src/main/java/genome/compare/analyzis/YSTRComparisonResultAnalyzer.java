@@ -62,6 +62,11 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
     private List<Pair<String, Integer>> scdPersonMarkers = new ArrayList<>();
 
     /**
+     * Count of markers, which repeats different times in each genome
+     */
+    private int countOfDiffMarkers = 0;
+
+    /**
      * Method for adding one gene comparison result for storage and analyzing.
      * @param comparisonResult one of the gene comparison result
      */
@@ -93,7 +98,11 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
                 fstPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getKey()));
                 scdPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getValue()));
             }
-
+            else if (markerComparisonResults.get(markerName).getKey() != 0 || markerComparisonResults.get(markerName).getValue() != 0) {
+                countOfDiffMarkers++;
+                fstPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getKey()));
+                scdPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getValue()));
+            }
         }
     }
 
@@ -107,11 +116,14 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
         result.append(getPersonalResultString(fstPersonMarkers));
         result.append("\tMarker regions of the second person:\n");
         result.append(getPersonalResultString(scdPersonMarkers));
-        if (fstPersonMarkers.size() == scdPersonMarkers.size()) {
-            result.append("These persons are son and father");
+        result.append("Total number of markers with different repeating number in each genome- ");
+        result.append(countOfDiffMarkers);
+        result.append(";\n");
+        if (countOfDiffMarkers == 0) {
+            result.append("These persons are son and father.");
         }
         else {
-            result.append("These persons are not father and son");
+            result.append("These persons are not father and son.");
         }
         return result.toString();
     }

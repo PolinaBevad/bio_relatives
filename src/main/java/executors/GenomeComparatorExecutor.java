@@ -9,6 +9,8 @@ import exception.GenomeFileException;
 import genome.compare.ComparatorType;
 import genome.compare.analyzis.ComparisonResult;
 import genome.compare.analyzis.ComparisonResultAnalyzer;
+import genome.compare.analyzis.LevenshteinComparisonResultAnalyzer;
+import genome.compare.analyzis.YSTRComparisonResultAnalyzer;
 
 import java.util.List;
 import java.util.Map;
@@ -51,8 +53,7 @@ public class GenomeComparatorExecutor {
      * @throws GenomeException     if exception occurs file parsing the BED file.
      * @throws GenomeFileException if incorrect BED or BAM file is passed.
      */
-    public GenomeComparatorExecutor(String pathToFirstBAM, String pathToSecondBAM, String pathToBED, ComparatorType type) throws GenomeException,
-        GenomeFileException {
+    public GenomeComparatorExecutor(String pathToFirstBAM, String pathToSecondBAM, String pathToBED, ComparatorType type) {
         this.firstBAMFile = new BAMParser(pathToFirstBAM);
         this.secondBAMFile = new BAMParser(pathToSecondBAM);
         this.type = type;
@@ -71,11 +72,18 @@ public class GenomeComparatorExecutor {
      */
     public ComparisonResultAnalyzer compareGenomes(int threadsNum, boolean advancedOutput) throws GenomeException {
         // results of the comparison
-        ComparisonResultAnalyzer comparisonResults = new ComparisonResultAnalyzer();
+        ComparisonResultAnalyzer comparisonResults;
         // executors that will be used in the method
         ExecutorService executorPool = Executors.newFixedThreadPool(threadsNum);
         CompletionService<List<ComparisonResult>> executorService = new ExecutorCompletionService<>(executorPool);
         try {
+            if (type == ComparatorType.LEVENSHTEIN) {
+                comparisonResults = new LevenshteinComparisonResultAnalyzer();
+            }
+            else {
+                comparisonResults = new YSTRComparisonResultAnalyzer();
+            }
+            // TODO add XSTRComparisonResultAnalyzer, when it will be developed
             int tasksNumber = 0;
             for (String gene : exons.keySet()) {
                 // add tasks to the executor and wait for the results

@@ -29,7 +29,7 @@ package util;
  *
  * @param <K> key
  * @param <V> value
- * @author Vladiislav Marchenko
+ * @author Vladislav Marchenko
  */
 public class Pair<K, V> {
     /**

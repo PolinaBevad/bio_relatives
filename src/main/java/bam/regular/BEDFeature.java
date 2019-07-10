@@ -69,7 +69,7 @@ public class BEDFeature {
      * @param start Start position.
      * @param end   End position.
      * @param gene  Name of the gene.
-     * @throws GenomeException if start or end positions are incorrect.
+     * @throws GenomeFileException if start or end positions are incorrect.
      */
     public BEDFeature(String chrom, int start, int end, String gene) {
         this.chrom = chrom;

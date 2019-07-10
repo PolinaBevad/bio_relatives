@@ -138,7 +138,7 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
      * @throws InterruptedException if thread was interrupted.
      */
     @Override
-    public List<ComparisonResult> call() throws GenomeException, InterruptedException {
+    public List<ComparisonResult> call() throws InterruptedException {
         // executor services that will be used in the method
         ExecutorService assemblyService = Executors.newFixedThreadPool(ASSEMBLY_THREADS_NUM);
         ExecutorService comparePool = Executors.newFixedThreadPool(compareThreadsNumber);

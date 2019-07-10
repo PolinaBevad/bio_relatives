@@ -1,11 +1,12 @@
 package genome.compare;
 
-import genome.compare.analyzis.ComparisonResultAnalyzer;
 import executors.GenomeComparatorExecutor;
+import genome.compare.analyzis.ComparisonResultAnalyzer;
+import genome.compare.comparator.GenomeComparator;
 import org.junit.Test;
 
 /**
- * Tests for the {@link } class.
+ * Tests for the {@link GenomeComparator} class.
  *
  * @author Vladislav Marchenko
  */
@@ -64,7 +65,7 @@ public class GenomeComparatorTest {
     public void GenomeComparisonOfNotParentAndChild() throws Exception {
         long startTime = System.currentTimeMillis();
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED, ComparatorType.LEVENSHTEIN);
-        ComparisonResultAnalyzer result = comparator.compareGenomes(1, false);
+        ComparisonResultAnalyzer result = comparator.compareGenomes(3, false);
         System.out.println(result);
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));
     }

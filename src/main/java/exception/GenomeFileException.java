@@ -24,6 +24,8 @@
 
 package exception;
 
+import java.io.IOException;
+
 /**
  * Represents basic exception, that may occur while working with files methods.
  *

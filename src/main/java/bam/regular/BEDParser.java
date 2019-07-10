@@ -99,9 +99,9 @@ public class BEDParser {
      *
      * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
-     * @throws GenomeException if any kind of exception occurs in the method.
+     * @throws GenomeFileException if any kind of exception occurs in the method.
      */
-    public Map<String, List<BEDFeature>> parse() {
+    public Map<String, List<BEDFeature>> parse()  {
         // parse file line by line
         try (FileReader input = new FileReader(this.bedFile)) {
             // result HashMap of exons

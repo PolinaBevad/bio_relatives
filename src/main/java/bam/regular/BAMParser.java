@@ -97,6 +97,7 @@ public class BAMParser {
      *
      * @param exons List of exons that were parsed from the corresponding BED file.
      * @return SAMRecordList of SAMRecords from the current gene
+     * @throws GenomeException if anything went wrong
      */
     public SAMRecordList parse(List<BEDFeature> exons) {
         // output SAMRecordList
@@ -168,9 +169,9 @@ public class BAMParser {
      * @param chrom Name of the chromosome.
      * @param gene  Name of the gene.
      * @return List with the regions from the bed file.
-     * @throws GenomeException if incorrect parameters were passed while creating BEDFeature object.
+     * @throws GenomeFileException if incorrect parameters were passed while creating BEDFeature object.
      */
-    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene) {
+    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene)  {
         List<BEDFeature> list = new ArrayList<>();
         // split big region into small parts
         int exonLen = end - start;

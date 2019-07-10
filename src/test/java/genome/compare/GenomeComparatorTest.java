@@ -1,5 +1,6 @@
 package genome.compare;
 
+import executors.GenomeAssemblyCallable;
 import executors.GenomeComparatorExecutor;
 import genome.compare.analyzis.ComparisonResultAnalyzer;
 import genome.compare.comparator.GenomeComparator;
@@ -61,13 +62,38 @@ public class GenomeComparatorTest {
      */
     private final static  String PATH_TO_BED = "src/test/resources/genome/compare/correct.bed";
 
+    /**
+     * Path to the bed file with marker regions
+     */
+    private final static  String PATH_TO_MARKER_BED = "src/test/resources/genome/compare/Ymarker.bed";
+
+    /**
+     * Path to marker dad bam
+     */
+    private final static String PATH_TO_DAD_Y ="src/test/resources/genome/compare/tdadY.bam";
+
+    /**
+     * Path to marker son bam
+     */
+    private final static String PATH_TO_SON_Y="src/test/resources/genome/compare/tsonY.bam";
+
     @Test
-    public void GenomeComparisonOfNotParentAndChild() throws Exception {
+    public void GenomeComparisonOfNotParentAndChild() {
         long startTime = System.currentTimeMillis();
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED, ComparatorType.LEVENSHTEIN);
         ComparisonResultAnalyzer result = comparator.compareGenomes(3, false);
-        System.out.println(result);
+        System.out.println(result.getResultString());
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));
     }
+
+    @Test
+    public void YMarkerComparisonOfDadAndSon() {
+        GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_Y, PATH_TO_DAD_Y, PATH_TO_MARKER_BED, ComparatorType.Y_STR);
+        ComparisonResultAnalyzer res = comparator.compareGenomes(5, false);
+        res.analyze();
+        System.out.println(res.getResultString());
+    }
+
+
 
 }

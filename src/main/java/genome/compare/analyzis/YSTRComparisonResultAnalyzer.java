@@ -38,6 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
     /**
+     * Maximal difference between number of repeats of marker motif in each genome
+     */
+    private final static int EPS = 1;
+    /**
      * The results of the comparison of the two genomes for marker regions as follows:
      * key of Map - name of marker region, value of Map - Pair
      * key of Pair - number of times marker motif has appeared in the first genome region,
@@ -84,18 +88,12 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
     @Override
     public void analyze() {
         for (String markerName : markerComparisonResults.keySet()) {
-            switch (markerComparisonResults.get(markerName).getKey().compareTo(markerComparisonResults.get(markerName).getValue())) {
-                case -1 :
-                    scdPersonMarkers.add(new Pair<>(markerName, markerComparisonResults.get(markerName).getValue()));
-                    break;
-                case 0 :
-                    scdPersonMarkers.add(new Pair<>(markerName, markerComparisonResults.get(markerName).getValue()));
-                    fstPersonMarkers.add(new Pair<>(markerName, markerComparisonResults.get(markerName).getKey()));
-                    break;
-                case 1:
-                    fstPersonMarkers.add(new Pair<>(markerName, markerComparisonResults.get(markerName).getKey()));
-                    break;
+            if (Math.abs(markerComparisonResults.get(markerName).getKey() - markerComparisonResults.get(markerName).getValue()) <= EPS
+                    && (markerComparisonResults.get(markerName).getKey() != 0 || markerComparisonResults.get(markerName).getValue() != 0))  {
+                fstPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getKey()));
+                scdPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getValue()));
             }
+
         }
     }
 

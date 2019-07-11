@@ -89,7 +89,7 @@ public class GenomeComparatorTest {
     @Test
     public void YMarkerComparisonOfDadAndSon() {
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_Y, PATH_TO_DAD_Y, PATH_TO_MARKER_BED, ComparatorType.Y_STR);
-        ComparisonResultAnalyzer res = comparator.compareGenomes(5, false);
+        ComparisonResultAnalyzer res = comparator.compareGenomes(4, false);
         res.analyze();
         System.out.println(res.getResultString());
     }

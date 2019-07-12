@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,12 +22,17 @@
  * SOFTWARE.
  */
 
-package genome.compare.analyzis;
+package genome.compare.levenshtein;
 
 import exception.GenomeException;
+import genome.compare.common.ComparisonResult;
+import genome.compare.common.ComparisonResultAnalyzer;
 import util.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -37,7 +42,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Sergey Khvatov
  */
 
-public class LevenshteinComparisonResultAnalyzer implements  ComparisonResultAnalyzer{
+public class LevenshteinComparisonResultAnalyzer implements ComparisonResultAnalyzer {
 
     /**
      * High percentage of chromosome similarity for the parent and child.
@@ -122,9 +127,16 @@ public class LevenshteinComparisonResultAnalyzer implements  ComparisonResultAna
      * Method for adding gene comparison result into Map of chromosomes and genes
      *
      * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
+     * @throws GenomeException if geneComparisonResult is not an instance of {@link LevenshteinComparisonResult}.
      */
     @Override
     public void add(ComparisonResult geneComparisonResult) {
+        // check the type
+        if (!(geneComparisonResult instanceof LevenshteinComparisonResult)) {
+            throw new GenomeException(this.getClass().getName(), "add", "comparison result variable has incorrect type: " + geneComparisonResult.getClass());
+        }
+
+        // add results
         LevenshteinComparisonResult levenshteinComparisonResult = (LevenshteinComparisonResult) geneComparisonResult;
         if (geneComparisonResults.containsKey(levenshteinComparisonResult.getChromName())) {
             if (geneComparisonResults.get(levenshteinComparisonResult.getChromName()).containsKey(levenshteinComparisonResult.getGene())) {
@@ -151,7 +163,7 @@ public class LevenshteinComparisonResultAnalyzer implements  ComparisonResultAna
             }
         }
         for (Pair<String, Double> similarity : averageSimilarityValues) {
-            if (Double.compare(similarity.getValue(),HIGH_PERCENTAGE) == 0 || Double.compare(similarity.getValue(),HIGH_PERCENTAGE) == 1) {
+            if (Double.compare(similarity.getValue(), HIGH_PERCENTAGE) == 0 || Double.compare(similarity.getValue(), HIGH_PERCENTAGE) == 1) {
                 highSimilarityChromosomeCount++;
             } else {
                 nonSimilarityChromosomeCount++;

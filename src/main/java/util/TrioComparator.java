@@ -27,9 +27,9 @@ package util;
 import exception.GenomeException;
 import exception.GenomeFileException;
 import executors.GenomeComparatorExecutor;
-import genome.compare.ComparatorType;
-import genome.compare.analyzis.ComparisonResultAnalyzer;
-import genome.compare.analyzis.LevenshteinComparisonResultAnalyzer;
+import genome.compare.common.ComparatorType;
+import genome.compare.common.ComparisonResultAnalyzer;
+import genome.compare.levenshtein.LevenshteinComparisonResultAnalyzer;
 
 import java.util.List;
 

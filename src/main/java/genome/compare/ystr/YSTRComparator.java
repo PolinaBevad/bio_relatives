@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,12 +22,13 @@
  * SOFTWARE.
  */
 
-package genome.compare.comparator;
+package genome.compare.ystr;
 
 import bam.marker_region.MarkerRegionFeature;
+import bam.regular.BEDFeature;
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.YSTRComparisonResult;
+import genome.compare.common.GenomeComparator;
 
 import java.util.regex.Matcher;
 
@@ -52,11 +53,14 @@ public class YSTRComparator extends GenomeComparator {
      * @param marker Marker region feature.
      * @param first  Genome of the first person.
      * @param second Genome of the second person.
-     * @throws GenomeException if regions fail validation.
+     * @throws GenomeException if regions fail validation or if marker is not an instance of {@link MarkerRegionFeature}.
      */
-    public YSTRComparator(MarkerRegionFeature marker, GenomeRegion first, GenomeRegion second) {
+    public YSTRComparator(BEDFeature marker, GenomeRegion first, GenomeRegion second) {
         super(first, second);
-        this.feature = marker;
+        if (!(marker instanceof MarkerRegionFeature)) {
+            throw new GenomeException(getClass().getName(), getClass().getName(), "expected marker region feature.");
+        }
+        this.feature = (MarkerRegionFeature) marker;
     }
 
     /**

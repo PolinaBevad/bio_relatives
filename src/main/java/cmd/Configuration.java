@@ -23,7 +23,7 @@
  */
 package cmd;
 
-import genome.compare.ComparatorType;
+import genome.compare.common.ComparatorType;
 
 /**
  * Defines a public class with configuration information parsed from

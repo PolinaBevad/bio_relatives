@@ -6,11 +6,11 @@ import bam.regular.BEDFeature;
 import bam.regular.BEDParser;
 import exception.GenomeException;
 import exception.GenomeFileException;
-import genome.compare.ComparatorType;
-import genome.compare.analyzis.ComparisonResult;
-import genome.compare.analyzis.ComparisonResultAnalyzer;
-import genome.compare.analyzis.LevenshteinComparisonResultAnalyzer;
-import genome.compare.analyzis.YSTRComparisonResultAnalyzer;
+import genome.compare.common.ComparatorType;
+import genome.compare.common.ComparisonResult;
+import genome.compare.common.ComparisonResultAnalyzer;
+import genome.compare.levenshtein.LevenshteinComparisonResultAnalyzer;
+import genome.compare.ystr.YSTRComparisonResultAnalyzer;
 
 import java.util.List;
 import java.util.Map;
@@ -83,6 +83,7 @@ public class GenomeComparatorExecutor {
             else {
                 comparisonResults = new YSTRComparisonResultAnalyzer();
             }
+
             // TODO add XSTRComparisonResultAnalyzer, when it will be developed
             int tasksNumber = 0;
             for (String gene : exons.keySet()) {
@@ -92,6 +93,7 @@ public class GenomeComparatorExecutor {
                     tasksNumber++;
                 }
             }
+
             for (int i = 0; i < tasksNumber; i++) {
                 comparisonResults.add(executorService.take().get());
             }

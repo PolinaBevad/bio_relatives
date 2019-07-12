@@ -48,19 +48,6 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
      * value of Pair - number of times marker motif has appeared in the second genome region.
      */
     private Map<String, Pair<Integer, Integer>> markerComparisonResults = new ConcurrentHashMap<>();
-
-    /**
-     * A list of marker regions, which contains in the first genome:
-     * key of Pair - name of the marker, value of Pair - number of times marker motif has appeared in the genome
-     */
-    private List<Pair<String, Integer>> fstPersonMarkers = new ArrayList<>();
-
-    /**
-     * A list of marker regions, which contains in the second genome:
-     * key of Pair - name of the marker, value of Pair - number of times marker motif has appeared in the genome
-     */
-    private List<Pair<String, Integer>> scdPersonMarkers = new ArrayList<>();
-
     /**
      * Count of markers, which repeats different times in each genome
      */
@@ -93,15 +80,8 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
     @Override
     public void analyze() {
         for (String markerName : markerComparisonResults.keySet()) {
-            if (Math.abs(markerComparisonResults.get(markerName).getKey() - markerComparisonResults.get(markerName).getValue()) <= EPS
-                    && (markerComparisonResults.get(markerName).getKey() != 0 || markerComparisonResults.get(markerName).getValue() != 0))  {
-                fstPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getKey()));
-                scdPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getValue()));
-            }
-            else if (markerComparisonResults.get(markerName).getKey() != 0 || markerComparisonResults.get(markerName).getValue() != 0) {
+            if (Math.abs(markerComparisonResults.get(markerName).getKey() - markerComparisonResults.get(markerName).getValue()) > EPS) {
                 countOfDiffMarkers++;
-                fstPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getKey()));
-                scdPersonMarkers.add(new Pair<> (markerName, markerComparisonResults.get(markerName).getValue()));
             }
         }
     }
@@ -112,11 +92,19 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
      */
     @Override
     public String getResultString() {
-        StringBuilder result = new StringBuilder("Comparison results of marker regions:\n\tMarker regions of the first person:\n");
-        result.append(getPersonalResultString(fstPersonMarkers));
-        result.append("\tMarker regions of the second person:\n");
-        result.append(getPersonalResultString(scdPersonMarkers));
-        result.append("Total number of markers with different repeating number in each genome- ");
+        StringBuilder result = new StringBuilder("Comparison results of marker regions:\n");
+        for (String markerName : markerComparisonResults.keySet()) {
+            result.append("\tName of marker - ");
+            result.append(markerName);
+            result.append(", which has appeared in the both genomes, as: ");
+            result.append(markerComparisonResults.get(markerName).getKey());
+            result.append(" and ");
+            result.append(markerComparisonResults.get(markerName).getValue());
+            result.append(" times;\n");
+        }
+        result.append("Total number of markers with different repeating number(more, than EPS = ");
+        result.append(EPS);
+        result.append(") in each genome - ");
         result.append(countOfDiffMarkers);
         result.append(";\n");
         if (countOfDiffMarkers == 0) {
@@ -125,26 +113,6 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
         else {
             result.append("These persons are not father and son.");
         }
-        return result.toString();
-    }
-
-    /**
-     * Method , which returns string, which contains analyzing results for one person
-     * @param personMarkers A list of marker regions, which contains in the genome of one person
-     * @return string, which contains analyzing results for one person
-     */
-    private String getPersonalResultString(List<Pair<String, Integer>> personMarkers) {
-        StringBuilder result = new StringBuilder();
-        for (Pair<String, Integer> marker : personMarkers) {
-            result.append("\t\tMarker region- ");
-            result.append(marker.getKey());
-            result.append(", number of times in the genome- ");
-            result.append(marker.getValue());
-            result.append(";\n");
-        }
-        result.append("\tTotal number of markers in the genome- ");
-        result.append(personMarkers.size());
-        result.append(";\n");
         return result.toString();
     }
 }

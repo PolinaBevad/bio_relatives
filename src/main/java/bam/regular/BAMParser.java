@@ -134,11 +134,17 @@ public class BAMParser {
      * @throws GenomeException if error occurs while parsing.
      */
     private SAMRecordList parseExon(BEDFeature exon) {
-        try {
-            SAMRecordList samRecords = new SAMRecordList();
+        SAMRecordList samRecords = new SAMRecordList();
+        try (SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile)) {
+            // check if bam file contains this chromosome
+            if (samReader.getFileHeader().getSequence(exon.getChromosomeName()) == null) {
+                // if it doesn't then change it
+                exon.changeChromosomeName();
+            }
+
             // Start iterating from start to end of current chromosome.
-            SamReader samReader = SamReaderFactory.makeDefault().validationStringency(ValidationStringency.STRICT).open(BAMFile);
             SAMRecordIterator iter = samReader.query(exon.getChromosomeName(), exon.getStartPos(), exon.getEndPos(), false);
+
             // while there are sam strings in this region
             while (iter.hasNext()) {
                 // Iterate thorough each record and extract fragment size
@@ -149,7 +155,6 @@ public class BAMParser {
             }
             // stop iterator
             iter.close();
-            samReader.close();
             return samRecords;
         } catch (NullPointerException | IllegalArgumentException | SAMException | IOException ioex) {
             // If catch an exception then create our GenomeException exception;
@@ -171,7 +176,7 @@ public class BAMParser {
      * @return List with the regions from the bed file.
      * @throws GenomeFileException if incorrect parameters were passed while creating BEDFeature object.
      */
-    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene)  {
+    private static List<BEDFeature> generateExons(int start, int end, String chrom, String gene) {
         List<BEDFeature> list = new ArrayList<>();
         // split big region into small parts
         int exonLen = end - start;

@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,10 +24,10 @@
 
 package bam.regular;
 
-import exception.GenomeException;
 import exception.GenomeFileException;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * BED file record class.
@@ -41,6 +41,23 @@ public class BEDFeature {
      * the allowed symbols for the names used in the records.
      */
     public static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
+
+    /**
+     * Dictionary with names for chromosomes.
+     */
+    private static final Map<String, String> CHROMOSOMES_NAMES = new HashMap<>();
+
+    // initialization of the dictionary
+    static {
+        // initialization of autosomal chr
+        for (int i = 0; i < 22; i++) {
+            CHROMOSOMES_NAMES.put(Integer.toString(i), "chr" + i);
+        }
+        // initialization of other chr
+        CHROMOSOMES_NAMES.put("X", "chrX");
+        CHROMOSOMES_NAMES.put("Y", "chrY");
+        CHROMOSOMES_NAMES.put("MT", "chrMT");
+    }
 
     /**
      * Name of the chromosome.
@@ -92,12 +109,29 @@ public class BEDFeature {
     }
 
     /**
-     * Get the nam of the chromosome method.
+     * Get the name of the chromosome method.
      *
      * @return Name of the chromosome.
      */
     public String getChromosomeName() {
         return chrom;
+    }
+
+    /**
+     * Changes the name of the chromosome  if it is a known one,
+     * or keeps it the same.
+     */
+    public void changeChromosomeName() {
+        if (CHROMOSOMES_NAMES.containsKey(chrom)) {
+            chrom = CHROMOSOMES_NAMES.get(chrom);
+        } else if (CHROMOSOMES_NAMES.containsValue(chrom)) {
+            for (Map.Entry<String, String> entry : CHROMOSOMES_NAMES.entrySet()) {
+                if (chrom.equals(entry.getValue())) {
+                    chrom = entry.getKey();
+                    return;
+                }
+            }
+        }
     }
 
     /**

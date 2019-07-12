@@ -24,16 +24,16 @@
 
 package executors;
 
+import bam.marker_region.MarkerRegionFeature;
 import bam.regular.BAMParser;
 import bam.regular.BEDFeature;
-import bam.marker_region.MarkerRegionFeature;
 import exception.GenomeException;
 import genome.assembly.GenomeRegion;
-import genome.compare.ComparatorType;
-import genome.compare.analyzis.ComparisonResult;
-import genome.compare.comparator.GenomeComparator;
-import genome.compare.comparator.LevenshteinComparator;
-import genome.compare.comparator.YSTRComparator;
+import genome.compare.common.ComparatorType;
+import genome.compare.common.ComparisonResult;
+import genome.compare.common.GenomeComparator;
+import genome.compare.levenshtein.LevenshteinComparator;
+import genome.compare.ystr.YSTRComparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -113,12 +113,8 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
      * @param threadsNumber    Number of threads that are used in {@link GenomeComparatorExecutor}.
      * @param additionalOutput if this flag is true, then advanced region comparison results will be displayed,
      *                         else - only the main chromosome results will be obtained
-     * @throws GenomeException if mode of comparator used is X_STR or Y_STR, but regular features were passed.
      */
     public FeatureCallable(BEDFeature feature, BAMParser firstParser, BAMParser secondParser, ComparatorType type, int threadsNumber, boolean additionalOutput) {
-        if ((type == ComparatorType.Y_STR || type == ComparatorType.X_STR) && !(feature instanceof MarkerRegionFeature)) {
-            throw new GenomeException(this.getClass().getName(), "FeatureCallable", "Incompatible types occurred: mode=" + type + ", but wrong features were passed");
-        }
         this.mode = type;
         this.feature = feature;
         this.firstBAMFile = firstParser;
@@ -174,14 +170,14 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
             for (int i = 0; i < firstGenome.size(); i++) {
                 GenomeComparator comparator = null;
                 switch (mode) {
-                    case LEVENSHTEIN:
-                        comparator = new LevenshteinComparator(firstGenome.get(i), secondGenome.get(i));
-                        break;
                     case Y_STR:
-                        comparator = new YSTRComparator((MarkerRegionFeature) feature, firstGenome.get(i), secondGenome.get(i));
+                        comparator = new YSTRComparator(feature, firstGenome.get(i), secondGenome.get(i));
                         break;
                     case X_STR:
                         // TODO add XSTRComparator
+                        break;
+                    case LEVENSHTEIN:
+                        comparator = new LevenshteinComparator(firstGenome.get(i), secondGenome.get(i));
                         break;
                 }
                 compareService.submit(new GenomeRegionCallable(comparator, additionalOutput));

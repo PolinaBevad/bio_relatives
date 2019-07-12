@@ -24,7 +24,7 @@
 package cmd;
 
 import exception.CommandLineException;
-import genome.compare.ComparatorType;
+import genome.compare.common.ComparatorType;
 import org.apache.commons.cli.*;
 
 /**

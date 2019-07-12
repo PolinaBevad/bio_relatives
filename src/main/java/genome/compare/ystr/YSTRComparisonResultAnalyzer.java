@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,21 +22,23 @@
  * SOFTWARE.
  */
 
-package genome.compare.analyzis;
+package genome.compare.ystr;
 
 
+import exception.GenomeException;
+import genome.compare.common.ComparisonResult;
+import genome.compare.common.ComparisonResultAnalyzer;
 import util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class analyze results of gene comparison of two persons(for Y-STR comparator type)
+ *
  * @author Vladislav Marchenko
  */
-public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
+public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
     /**
      * Maximal difference between number of repeats of marker motif in each genome
      */
@@ -55,20 +57,22 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
 
     /**
      * Method for adding one gene comparison result for storage and analyzing.
+     *
      * @param comparisonResult one of the gene comparison result
+     * @throws GenomeException if geneComparisonResult is not an instance of {@link YSTRComparisonResult}.
      */
     @Override
     public void add(ComparisonResult comparisonResult) {
-        YSTRComparisonResult ystrComparisonResult =  (YSTRComparisonResult) comparisonResult;
+        // check the type
+        if (!(comparisonResult instanceof YSTRComparisonResult)) {
+            throw new GenomeException(this.getClass().getName(), "add", "comparison result variable has incorrect type: " + comparisonResult.getClass());
+        }
+
+        // add results
+        YSTRComparisonResult ystrComparisonResult = (YSTRComparisonResult) comparisonResult;
         if (markerComparisonResults.containsKey(ystrComparisonResult.getMarker().getMarkerName())) {
-            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setKey(
-                    markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getKey() +
-                            ystrComparisonResult.getResult().getKey()
-            );
-            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setValue(
-                    markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getValue() +
-                            ystrComparisonResult.getResult().getValue()
-            );
+            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setKey(markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getKey() + ystrComparisonResult.getResult().getKey());
+            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setValue(markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getValue() + ystrComparisonResult.getResult().getValue());
         } else {
             markerComparisonResults.put(ystrComparisonResult.getMarker().getMarkerName(), ystrComparisonResult.getResult());
         }
@@ -88,6 +92,7 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
 
     /**
      * Method, which returns analyzing results in String format
+     *
      * @return String, which contains result of analyzing
      */
     @Override
@@ -109,8 +114,7 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer{
         result.append(";\n");
         if (countOfDiffMarkers == 0) {
             result.append("These persons are son and father.");
-        }
-        else {
+        } else {
             result.append("These persons are not father and son.");
         }
         return result.toString();

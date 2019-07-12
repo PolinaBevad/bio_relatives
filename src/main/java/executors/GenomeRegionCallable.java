@@ -25,10 +25,9 @@
 package executors;
 
 import exception.GenomeException;
-import genome.compare.analyzis.ComparisonResult;
-import genome.compare.analyzis.LevenshteinComparisonResult;
-import genome.compare.comparator.GenomeComparator;
-import genome.compare.comparator.LevenshteinComparator;
+import genome.compare.common.ComparisonResult;
+import genome.compare.levenshtein.LevenshteinComparisonResult;
+import genome.compare.common.GenomeComparator;
 
 import java.util.concurrent.Callable;
 

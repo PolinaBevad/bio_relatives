@@ -1,9 +1,9 @@
 package genome.compare;
 
-import executors.GenomeAssemblyCallable;
 import executors.GenomeComparatorExecutor;
-import genome.compare.analyzis.ComparisonResultAnalyzer;
-import genome.compare.comparator.GenomeComparator;
+import genome.compare.common.ComparatorType;
+import genome.compare.common.ComparisonResultAnalyzer;
+import genome.compare.common.GenomeComparator;
 import org.junit.Test;
 
 /**

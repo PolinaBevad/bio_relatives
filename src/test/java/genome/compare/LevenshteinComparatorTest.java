@@ -1,8 +1,8 @@
 package genome.compare;
 
 import genome.assembly.GenomeRegion;
-import genome.compare.analyzis.LevenshteinComparisonResult;
-import genome.compare.comparator.LevenshteinComparator;
+import genome.compare.levenshtein.LevenshteinComparisonResult;
+import genome.compare.levenshtein.LevenshteinComparator;
 import org.junit.Before;
 import org.junit.Test;
 

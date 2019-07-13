@@ -40,12 +40,16 @@ public class Operation {
      * Help message that will be shown if help is requested.
      */
     private static final String HELP_MESSAGE = "## Usage\n" +
-        "\tjava -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput][-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] \n" +
+        "\tjava -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput] [-m | --mode <L | XY>] [-th | --threadsNumber <number>] [-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] \n" +
         "### Options\n" +
         "\t\n" +
         "\t`-h`, `--help` - show help message.\n" +
         "\t\n" +
         "\t`-io`, `--intermediateOutput` - key, which enables intermediate results output.\n" +
+        "\t\n" +
+        "\t`m`, `--mode` - defines the type of the comparator that will be used.\n" +
+        "\t\n" +
+        "\t`-th`, `--threadsNumber` - defines number of threads that will be used to process the genome.\n" +
         "\t\n" +
         "\t`-c2`, `--compare2` - compare genomes of two persons.\n" +
         "\t\n" +

@@ -10,7 +10,7 @@ import genome.compare.common.ComparatorType;
 import genome.compare.common.ComparisonResult;
 import genome.compare.common.ComparisonResultAnalyzer;
 import genome.compare.levenshtein.LevenshteinComparisonResultAnalyzer;
-import genome.compare.ystr.YSTRComparisonResultAnalyzer;
+import genome.compare.str.STRComparisonResultAnalyzer;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +81,7 @@ public class GenomeComparatorExecutor {
                 comparisonResults = new LevenshteinComparisonResultAnalyzer();
             }
             else {
-                comparisonResults = new YSTRComparisonResultAnalyzer();
+                comparisonResults = new STRComparisonResultAnalyzer();
             }
 
             // TODO add XSTRComparisonResultAnalyzer, when it will be developed

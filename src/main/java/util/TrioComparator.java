@@ -75,9 +75,6 @@ public class TrioComparator {
      * @throws GenomeException     if some errors occurred through the work of code
      */
     public static String compareThreeGenomes(String fatherBAMFileName, String motherBAMFileName, String sonBAMFileName, String BEDFileName, ComparatorType type, int threadsNum, boolean intermediateOutput) {
-        if (type == ComparatorType.Y_STR) {
-                throw new GenomeException("TrioComparator", "compareThreeGenomes(...)", "invalid type of the comparator: women do not have Y chr");
-        }
         GenomeComparatorExecutor comparator1 = new GenomeComparatorExecutor(sonBAMFileName, fatherBAMFileName, BEDFileName, type);
         ComparisonResultAnalyzer geneComparisonResultAnalyzer1 = comparator1.compareGenomes(threadsNum, intermediateOutput);
         geneComparisonResultAnalyzer1.analyze();
@@ -90,10 +87,12 @@ public class TrioComparator {
         result.append("\nComparison of mother and son genomes:\n");
         result.append(geneComparisonResultAnalyzer2.getResultString());
 
-        // TODO add support of XSTRAnalyzer, when it will be developed
-        LevenshteinComparisonResultAnalyzer analyzer1 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer1;
-        LevenshteinComparisonResultAnalyzer analyzer2 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer2;
-        result.append(getChromosomeFromParentsInfo(analyzer1.getResults(), analyzer2.getResults()));
+        // if levenshtein was requested
+        if (type == ComparatorType.LEVENSHTEIN) {
+            LevenshteinComparisonResultAnalyzer analyzer1 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer1;
+            LevenshteinComparisonResultAnalyzer analyzer2 = (LevenshteinComparisonResultAnalyzer) geneComparisonResultAnalyzer2;
+            result.append(getChromosomeFromParentsInfo(analyzer1.getResults(), analyzer2.getResults()));
+        }
 
         return result.toString();
     }

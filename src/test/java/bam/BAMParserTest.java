@@ -100,7 +100,7 @@ public class BAMParserTest {
         BAMParser parser = new BAMParser(pathToNotAFile);
     }
 
-    @Test(expected = GenomeException.class)
+    @Test(expected = GenomeFileException.class)
     public void ParsingIncorrectFile() throws Exception {
         BAMParser parser = new BAMParser(pathToIncorrectFile);
         parser.parse(exons.get(geneName1));

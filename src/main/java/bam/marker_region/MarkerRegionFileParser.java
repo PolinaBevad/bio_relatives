@@ -85,11 +85,9 @@ public class MarkerRegionFileParser extends BEDParser {
                 String[] rows = temp.split("\\s+");
                 // check the input row of the table
                 if (rows.length != 5) {
-                    if (temp.equals("\n")) {
-                        continue;
+                    if (!temp.equals("\n")) {
+                        throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 5 (chrom, start, end, marker name, marker motif), got " + rows.length);
                     }
-                    // must be at 4 elements in the row
-                    throw new GenomeFileException("Error occurred during reading from the file [" + this.bedFile.getName() + "]: " + "incorrect number of rows in the table. Expected 5 (chrom, start, end, marker name, marker motif), got " + rows.length);
                 }
 
                 // elements of the bed file record

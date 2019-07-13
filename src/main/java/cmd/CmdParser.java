@@ -99,11 +99,8 @@ public class CmdParser {
         if (cmd.hasOption("m")) {
             String mode = cmd.getOptionValue("m").toUpperCase();
             switch (mode) {
-                case "X":
-                    config.type = ComparatorType.X_STR;
-                    break;
-                case "Y":
-                    config.type = ComparatorType.Y_STR;
+                case "XY":
+                    config.type = ComparatorType.XY_STR;
                     break;
                 case "L":
                     config.type = ComparatorType.LEVENSHTEIN;
@@ -171,7 +168,7 @@ public class CmdParser {
                 .desc("Defines, which comparator will be used.")
                 .hasArg()
                 .numberOfArgs(1)
-                .argName("mode: X, Y, L")
+                .argName("L> <XY")
                 .type(String.class)
                 .build()
         );
@@ -188,6 +185,7 @@ public class CmdParser {
             Option.builder("th")
                 .longOpt("threadsNumber")
                 .desc("Defines number of threads that should be created to process the information analysis.")
+                .argName("number")
                 .hasArg()
                 .type(Integer.class)
                 .build()

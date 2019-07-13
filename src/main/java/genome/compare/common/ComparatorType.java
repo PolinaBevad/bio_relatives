@@ -31,5 +31,5 @@ package genome.compare.common;
  * @author Sergey Khvatov
  */
 public enum ComparatorType {
-    X_STR, Y_STR, LEVENSHTEIN
+    XY_STR, LEVENSHTEIN
 }

@@ -24,7 +24,6 @@
 
 package executors;
 
-import bam.marker_region.MarkerRegionFeature;
 import bam.regular.BAMParser;
 import bam.regular.BEDFeature;
 import exception.GenomeException;
@@ -33,7 +32,7 @@ import genome.compare.common.ComparatorType;
 import genome.compare.common.ComparisonResult;
 import genome.compare.common.GenomeComparator;
 import genome.compare.levenshtein.LevenshteinComparator;
-import genome.compare.ystr.YSTRComparator;
+import genome.compare.str.STRComparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -170,11 +169,8 @@ public class FeatureCallable implements Callable<List<ComparisonResult>> {
             for (int i = 0; i < firstGenome.size(); i++) {
                 GenomeComparator comparator = null;
                 switch (mode) {
-                    case Y_STR:
-                        comparator = new YSTRComparator(feature, firstGenome.get(i), secondGenome.get(i));
-                        break;
-                    case X_STR:
-                        // TODO add XSTRComparator
+                    case XY_STR:
+                        comparator = new STRComparator(feature, firstGenome.get(i), secondGenome.get(i));
                         break;
                     case LEVENSHTEIN:
                         comparator = new LevenshteinComparator(firstGenome.get(i), secondGenome.get(i));

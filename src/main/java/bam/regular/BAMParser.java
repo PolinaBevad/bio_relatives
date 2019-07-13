@@ -86,6 +86,10 @@ public class BAMParser {
             return true;
         }
 
+        if (BAMFile.length() == 0) {
+            return true;
+        }
+
         String[] filename = BAMFile.getName().split("\\.");
         String extension = filename[filename.length - 1];
 
@@ -140,6 +144,13 @@ public class BAMParser {
             if (samReader.getFileHeader().getSequence(exon.getChromosomeName()) == null) {
                 // if it doesn't then change it
                 exon.changeChromosomeName();
+
+                // if bam file still doesn't contain this chromosome
+                // return an empty list to prevent SamReader from
+                // throwing an exception because of it
+                if (samReader.getFileHeader().getSequence(exon.getChromosomeName()) == null) {
+                    return samRecords;
+                }
             }
 
             // Start iterating from start to end of current chromosome.

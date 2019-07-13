@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.ystr;
+package genome.compare.str;
 
 import bam.marker_region.MarkerRegionFeature;
 import genome.compare.common.ComparisonResult;
@@ -34,7 +34,7 @@ import util.Pair;
  *
  * @author Sergey Khvatov
  */
-public class YSTRComparisonResult implements ComparisonResult {
+public class STRComparisonResult implements ComparisonResult {
 
     /**
      * Name of the marker.
@@ -58,7 +58,7 @@ public class YSTRComparisonResult implements ComparisonResult {
      * @param secondNum Number of times marker motif has appeared in
      *                  the second genome region.
      */
-    public YSTRComparisonResult(MarkerRegionFeature marker, int firstNum, int secondNum) {
+    public STRComparisonResult(MarkerRegionFeature marker, int firstNum, int secondNum) {
         this.marker = marker;
         result = new Pair<>(firstNum, secondNum);
     }

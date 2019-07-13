@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.ystr;
+package genome.compare.str;
 
 import bam.marker_region.MarkerRegionFeature;
 import bam.regular.BEDFeature;
@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
  *
  * @author Sergey Khvatov
  */
-public class YSTRComparator extends GenomeComparator {
+public class STRComparator extends GenomeComparator {
 
     /**
      * Information about marker.
@@ -55,7 +55,7 @@ public class YSTRComparator extends GenomeComparator {
      * @param second Genome of the second person.
      * @throws GenomeException if regions fail validation or if marker is not an instance of {@link MarkerRegionFeature}.
      */
-    public YSTRComparator(BEDFeature marker, GenomeRegion first, GenomeRegion second) {
+    public STRComparator(BEDFeature marker, GenomeRegion first, GenomeRegion second) {
         super(first, second);
         if (!(marker instanceof MarkerRegionFeature)) {
             throw new GenomeException(getClass().getName(), getClass().getName(), "expected marker region feature.");
@@ -71,7 +71,7 @@ public class YSTRComparator extends GenomeComparator {
      * @return Results of the comparison of two genome regions.
      */
     @Override
-    public YSTRComparisonResult compare() {
+    public STRComparisonResult compare() {
         Matcher firstMatcher = feature.getRepeatMotif().matcher(first.getNucleotideSequence());
         int firstNum = 0;
         while (firstMatcher.find()) {
@@ -84,6 +84,6 @@ public class YSTRComparator extends GenomeComparator {
             secondNum++;
         }
 
-        return new YSTRComparisonResult(feature, firstNum, secondNum);
+        return new STRComparisonResult(feature, firstNum, secondNum);
     }
 }

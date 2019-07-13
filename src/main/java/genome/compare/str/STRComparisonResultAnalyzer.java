@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package genome.compare.ystr;
+package genome.compare.str;
 
 
 import exception.GenomeException;
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Vladislav Marchenko
  */
-public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
+public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
     /**
      * Maximal difference between number of repeats of marker motif in each genome
      */
@@ -59,22 +59,22 @@ public class YSTRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
      * Method for adding one gene comparison result for storage and analyzing.
      *
      * @param comparisonResult one of the gene comparison result
-     * @throws GenomeException if geneComparisonResult is not an instance of {@link YSTRComparisonResult}.
+     * @throws GenomeException if geneComparisonResult is not an instance of {@link STRComparisonResult}.
      */
     @Override
     public void add(ComparisonResult comparisonResult) {
         // check the type
-        if (!(comparisonResult instanceof YSTRComparisonResult)) {
+        if (!(comparisonResult instanceof STRComparisonResult)) {
             throw new GenomeException(this.getClass().getName(), "add", "comparison result variable has incorrect type: " + comparisonResult.getClass());
         }
 
         // add results
-        YSTRComparisonResult ystrComparisonResult = (YSTRComparisonResult) comparisonResult;
-        if (markerComparisonResults.containsKey(ystrComparisonResult.getMarker().getMarkerName())) {
-            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setKey(markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getKey() + ystrComparisonResult.getResult().getKey());
-            markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).setValue(markerComparisonResults.get(ystrComparisonResult.getMarker().getMarkerName()).getValue() + ystrComparisonResult.getResult().getValue());
+        STRComparisonResult STRComparisonResult = (STRComparisonResult) comparisonResult;
+        if (markerComparisonResults.containsKey(STRComparisonResult.getMarker().getMarkerName())) {
+            markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).setKey(markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).getKey() + STRComparisonResult.getResult().getKey());
+            markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).setValue(markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).getValue() + STRComparisonResult.getResult().getValue());
         } else {
-            markerComparisonResults.put(ystrComparisonResult.getMarker().getMarkerName(), ystrComparisonResult.getResult());
+            markerComparisonResults.put(STRComparisonResult.getMarker().getMarkerName(), STRComparisonResult.getResult());
         }
     }
 

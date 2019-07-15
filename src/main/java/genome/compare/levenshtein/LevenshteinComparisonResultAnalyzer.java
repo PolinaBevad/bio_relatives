@@ -69,58 +69,12 @@ public class LevenshteinComparisonResultAnalyzer implements ComparisonResultAnal
     private int nonSimilarityChromosomeCount = 0;
 
     /**
-     * Method , which return String with results of the analysis of the results of comparing two genes
-     *
-     * @return String with these results
-     */
-    @Override
-    public String getResultString() {
-        StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
-        for (Pair<String, Double> averageSimilarityValue : averageSimilarityValues) {
-            result.append("\tName of chromosome: ");
-            result.append(averageSimilarityValue.getKey());
-            result.append(". Similarity percentage: ");
-            result.append(averageSimilarityValue.getValue());
-            result.append("%\n");
-            result.append("\tNumber of nucleotides compared: ");
-            result.append(getSumSeqLengthFromChrom(geneComparisonResults.get(averageSimilarityValue.getKey())));
-            result.append("\n");
-            result.append(getGeneComparisonResultsString(averageSimilarityValue.getKey()));
-        }
-
-        result.append("Count of chromosomes with 99.7+% similarity: ");
-        result.append(highSimilarityChromosomeCount);
-        result.append("\nCount of dissimilar chromosomes: ");
-        result.append(nonSimilarityChromosomeCount);
-        result.append("\n");
-        return result.toString();
-    }
-
-    /**
      * Method which returns List of two person similarities for each chromosomes
+     *
      * @return field averageSimilarityValues
      */
     public List<Pair<String, Double>> getResults() {
         return averageSimilarityValues;
-    }
-
-    /**
-     * Method which returns info String of genes similarities from the chromosome
-     *
-     * @param chrName name of chromosome
-     * @return string with info of each gene similarity
-     */
-    private String getGeneComparisonResultsString(String chrName) {
-        StringBuilder result = new StringBuilder("\tSimilarity percentage for each gene from this chromosome:\n");
-        Map<String, Pair<Integer, Integer>> currentGenes = geneComparisonResults.get(chrName);
-        for (String gene : currentGenes.keySet()) {
-            result.append("\t\tName of gene: ");
-            result.append(gene);
-            result.append(". Similarity percentage: ");
-            result.append(getAverageSimilarity(currentGenes.get(gene).getKey(), currentGenes.get(gene).getValue()));
-            result.append("%\n");
-        }
-        return result.toString();
     }
 
     /**
@@ -156,7 +110,7 @@ public class LevenshteinComparisonResultAnalyzer implements ComparisonResultAnal
      * Method which analyze results of comparison of two gene
      */
     @Override
-    public void analyze() {
+    public String analyze() {
         for (String chrom : geneComparisonResults.keySet()) {
             if (getSumSeqLengthFromChrom(geneComparisonResults.get(chrom)) != 0) {
                 averageSimilarityValues.add(new Pair<>(chrom, getAverageSimilarity(geneComparisonResults.get(chrom))));
@@ -169,6 +123,53 @@ public class LevenshteinComparisonResultAnalyzer implements ComparisonResultAnal
                 nonSimilarityChromosomeCount++;
             }
         }
+        return generateResultString();
+    }
+
+    /**
+     * Method, which return String with results of the analysis of the results of comparing two genes
+     *
+     * @return String with these results
+     */
+    private String generateResultString() {
+        StringBuilder result = new StringBuilder("Similarity percentage for each chromosome:\n");
+        for (Pair<String, Double> averageSimilarityValue : averageSimilarityValues) {
+            result.append("\tName of chromosome: ");
+            result.append(averageSimilarityValue.getKey());
+            result.append(". Similarity percentage: ");
+            result.append(averageSimilarityValue.getValue());
+            result.append("%\n");
+            result.append("\tNumber of nucleotides compared: ");
+            result.append(getSumSeqLengthFromChrom(geneComparisonResults.get(averageSimilarityValue.getKey())));
+            result.append("\n");
+            result.append(getGeneComparisonResultsString(averageSimilarityValue.getKey()));
+        }
+
+        result.append("Count of chromosomes with 99.7+% similarity: ");
+        result.append(highSimilarityChromosomeCount);
+        result.append("\nCount of dissimilar chromosomes: ");
+        result.append(nonSimilarityChromosomeCount);
+        result.append("\n");
+        return result.toString();
+    }
+
+    /**
+     * Method which returns info String of genes similarities from the chromosome
+     *
+     * @param chrName name of chromosome
+     * @return string with info of each gene similarity
+     */
+    private String getGeneComparisonResultsString(String chrName) {
+        StringBuilder result = new StringBuilder("\tSimilarity percentage for each gene from this chromosome:\n");
+        Map<String, Pair<Integer, Integer>> currentGenes = geneComparisonResults.get(chrName);
+        for (String gene : currentGenes.keySet()) {
+            result.append("\t\tName of gene: ");
+            result.append(gene);
+            result.append(". Similarity percentage: ");
+            result.append(getAverageSimilarity(currentGenes.get(gene).getKey(), currentGenes.get(gene).getValue()));
+            result.append("%\n");
+        }
+        return result.toString();
     }
 
     /**

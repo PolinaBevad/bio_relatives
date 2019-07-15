@@ -82,7 +82,7 @@ public class GenomeComparatorTest {
         long startTime = System.currentTimeMillis();
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_BAM_1, PATH_TO_DAD_BAM_1, PATH_TO_BED, ComparatorType.LEVENSHTEIN);
         ComparisonResultAnalyzer result = comparator.compareGenomes(3, false);
-        System.out.println(result.getResultString());
+        System.out.println(result.analyze());
         System.out.println("Time: " + (System.currentTimeMillis() - startTime));
     }
 
@@ -90,8 +90,7 @@ public class GenomeComparatorTest {
     public void YMarkerComparisonOfDadAndSon() {
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_Y, PATH_TO_DAD_Y, PATH_TO_MARKER_BED, ComparatorType.XY_STR);
         ComparisonResultAnalyzer res = comparator.compareGenomes(4, false);
-        res.analyze();
-        System.out.println(res.getResultString());
+        System.out.println(res.analyze());
     }
 
 

@@ -110,6 +110,14 @@ public class CmdParser {
             }
         }
 
+        if (cmd.hasOption("g")) {
+            if (config.type == ComparatorType.XY_STR) {
+                config.path = cmd.getOptionValue("g");
+            } else {
+                throw new CommandLineException("Incorrect user input! Type [-h] or [--help] for help!");
+            }
+        }
+
         // check if number of threads was changed
         if (cmd.hasOption("th")) {
             int threadsNum = Integer.parseInt(cmd.getOptionValue("th"));
@@ -178,6 +186,17 @@ public class CmdParser {
                 .longOpt("intermediateOutput")
                 .desc("Defines, whether intermediate information should be printed or not.")
                 .hasArg(false)
+                .build()
+        );
+
+        options.addOption(
+            Option.builder("g")
+                .longOpt("graph")
+                .desc("Defines, whether graph should be printed or not.")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .argName("path to the file")
+                .type(String.class)
                 .build()
         );
 

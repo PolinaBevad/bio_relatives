@@ -18,35 +18,7 @@ public class UserInputParserTest {
 
     private final static String PATH_TO_BAM_3 = "src/test/resources/genome/compare/testSon4.bam";
 
-    private final static String CHECK_STR_0 = "## Usage\n" +
-        "\tjava -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput] [-m | --mode <L | XY>] [-th | --threadsNumber <number>] [-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] \n" +
-        "### Options\n" +
-        "\t\n" +
-        "\t`-h`, `--help` - show help message.\n" +
-        "\t\n" +
-        "\t`-io`, `--intermediateOutput` - key, which enables intermediate results output.\n" +
-        "\t\n" +
-        "\t`m`, `--mode` - defines the type of the comparator that will be used.\n" +
-        "\t\n" +
-        "\t`-th`, `--threadsNumber` - defines number of threads that will be used to process the genome.\n" +
-        "\t\n" +
-        "\t`-c2`, `--compare2` - compare genomes of two persons.\n" +
-        "\t\n" +
-        "\t`-c3`, `--compare3` - compare genomes of three persons (father/mother/son).\n" +
-        "\t\n" +
-        "### Examples\n" +
-        "\t#### Comparison of the genomes of two persons\n" +
-        "\t\t```\n" +
-        "\t\tjava -jar bio_relatives.jar --compare2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed\n" +
-        "\t\t```\n" +
-        "\t#### Comparison of the genomes of three persons\n" +
-        "\t\t```\n" +
-        "\t\tjava -jar bio_relatives.jar --compare3 ~/path/to/father.bam ~/path/to/mother.bam ~/path/to/son.bam ~/path/to/file.bed\n" +
-        "\t\t```\n" +
-        "\t#### Comparison of the genomes with intermediate output\n" +
-        "\t\t```\n" +
-        "\t\tjava -jar bio_relatives.jar -io -c2 ~/path/to/first.bam ~/path/to/second.bam ~/path/to/file.bed\n" +
-        "\t\t```\n";
+    private final static String CHECK_STR_0 = "## Usage\n" + "    java -jar bio_relatives.jar [-h | --help] [-io | --intermediateOutput] [-g | --graph <path to the file>] [-c2 | --compare2 <first> <second> <bed>] [-c3 | --compare3 <father> <mother> <son> <bed>] [-m | --mode <L | XY>] [-th | --threadsNumber <number>]\n" + "### Options\n" + "\n" + "`-h`, `--help` - show help message.\n" + "\n" + "`-io`, `--intermediateOutput` - key, which enables intermediate results output.\n" + "\n" + "`-c2`, `--compare2` - compare genomes of two persons.\n" + "\n" + "`-c3`, `--compare3` - compare genomes of three persons (father/mother/son).\n" + "\n" + "`-m`, `--mode` - defines which comparator will be used.\n" + "\n" + "`-g`, `--graph` - defines whether graph should be printed or not (used only in STR comparison).\n" + "\n" + "`-th`, `--threadsNumber` - defines number of threads that should be created to process the information analysis.\n";;
     private final static String CHECK_STR_1 ="Similarity percentage for each chromosome:\n" +
             "\tName of chromosome: 4. Similarity percentage: 100.0%\n" +
             "\tNumber of nucleotides compared: 1768\n" +

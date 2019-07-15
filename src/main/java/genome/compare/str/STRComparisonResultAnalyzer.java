@@ -32,20 +32,16 @@ import exception.GenomeFileException;
 import genome.compare.common.ComparisonResult;
 import genome.compare.common.ComparisonResultAnalyzer;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import util.Pair;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -228,7 +224,7 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
             // setup axis appearance
             CategoryAxis domainAxis = chart.getCategoryPlot().getDomainAxis();
             domainAxis.setMaximumCategoryLabelLines(3);
-            domainAxis.setLowerMargin(.05);
+            domainAxis.setLowerMargin(.01);
             domainAxis.setCategoryMargin(.05);
 
             // write it to the file

@@ -12,6 +12,7 @@ import genome.compare.common.ComparisonResultAnalyzer;
 import genome.compare.levenshtein.LevenshteinComparisonResultAnalyzer;
 import genome.compare.str.STRComparisonResultAnalyzer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionService;
@@ -67,10 +68,11 @@ public class GenomeComparatorExecutor {
      * @param threadsNum     Number of threads that will be used to process exons.
      * @param advancedOutput if this flag is true , then interim genome comparison results will be displayed,
      *                       else - only the main chromosome results will be obtained
+     * @param path           Path to the file with graph.
      * @return Object ComparisonResultAnalyzer which contains results of the comparison of two genomes
      * @throws GenomeException if exception occurs while parsing the input files.
      */
-    public ComparisonResultAnalyzer compareGenomes(int threadsNum, boolean advancedOutput) throws GenomeException {
+    public ComparisonResultAnalyzer compareGenomes(int threadsNum, boolean advancedOutput, String path) throws GenomeException {
         // results of the comparison
         ComparisonResultAnalyzer comparisonResults;
         // executors that will be used in the method
@@ -79,9 +81,12 @@ public class GenomeComparatorExecutor {
         try {
             if (type == ComparatorType.LEVENSHTEIN) {
                 comparisonResults = new LevenshteinComparisonResultAnalyzer();
-            }
-            else {
-                comparisonResults = new STRComparisonResultAnalyzer();
+            } else {
+                List<BEDFeature> features = new ArrayList<>();
+                for (String gene : exons.keySet()) {
+                    features.addAll(exons.get(gene));
+                }
+                comparisonResults = new STRComparisonResultAnalyzer(path, features);
             }
 
             // TODO add XSTRComparisonResultAnalyzer, when it will be developed
@@ -110,5 +115,18 @@ public class GenomeComparatorExecutor {
         } finally {
             executorPool.shutdownNow();
         }
+    }
+
+    /**
+     * Compares two genomes parsing regions for each gene from the input files.
+     *
+     * @param threadsNum     Number of threads that will be used to process exons.
+     * @param advancedOutput if this flag is true , then interim genome comparison results will be displayed,
+     *                       else - only the main chromosome results will be obtained
+     * @return Object ComparisonResultAnalyzer which contains results of the comparison of two genomes
+     * @throws GenomeException if exception occurs while parsing the input files.
+     */
+    public ComparisonResultAnalyzer compareGenomes(int threadsNum, boolean advancedOutput) throws GenomeException {
+        return compareGenomes(threadsNum, advancedOutput, null);
     }
 }

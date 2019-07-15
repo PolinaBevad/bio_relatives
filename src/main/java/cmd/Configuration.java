@@ -82,4 +82,9 @@ public class Configuration {
      * Defines the type of the comparator that will be used.
      */
     public ComparatorType type = ComparatorType.LEVENSHTEIN;
+
+    /**
+     * Path to the file with graph - default null
+     */
+    public String path = null;
 }

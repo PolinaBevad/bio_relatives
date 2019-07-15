@@ -28,6 +28,7 @@ import java.util.Collection;
 /**
  * Interface , which defines interface of all the classes, that
  * analyze results of gene comparison
+ *
  * @author Vladislav Marchenko
  */
 public interface ComparisonResultAnalyzer {
@@ -44,18 +45,15 @@ public interface ComparisonResultAnalyzer {
 
     /**
      * Method for adding one gene comparison result for storage and analyzing.
+     *
      * @param comparisonResult one of the gene comparison result
      */
     void add(ComparisonResult comparisonResult);
 
     /**
      * Method for analyzing of comparison results.
+     *
+     * @return String representation of the result analysis.
      */
-    void analyze();
-
-    /**
-     * Method, which returns analyzing results in String format
-     * @return String, which contains result of analyzing
-     */
-    String getResultString();
+    String analyze();
 }

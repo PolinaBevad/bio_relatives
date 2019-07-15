@@ -34,6 +34,8 @@ import org.apache.commons.cli.*;
  */
 public class CmdParser {
 
+    private static final String INCORRECT_INPUT_MESSAGE = "Incorrect user input! Type [-h] or [--help] for help!";
+
     /**
      * Parses the arguments from the command line.
      *
@@ -71,7 +73,7 @@ public class CmdParser {
             config.numberOfRecipients = 2;
             String[] paths = cmd.getOptionValues("c2");
             if (paths == null || paths.length != 3) {
-                throw new CommandLineException("Incorrect keys and arguments were passed! See help for more info.");
+                throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
             }
             config.pathToFirstRecipient = paths[0];
             config.pathToSecondRecipient = paths[1];
@@ -80,14 +82,14 @@ public class CmdParser {
             config.numberOfRecipients = 3;
             String[] paths = cmd.getOptionValues("c3");
             if (paths == null || paths.length != 4) {
-                throw new CommandLineException("Incorrect keys and arguments were passed! See help for more info.");
+                throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
             }
             config.pathToFirstRecipient = paths[0];
             config.pathToSecondRecipient = paths[1];
             config.pathToThirdRecipient = paths[2];
             config.pathToBed = paths[3];
         } else {
-            throw new CommandLineException("Incorrect user input! Type [-h] or [--help] for help!");
+            throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
         }
 
         // check if advanced output is requested
@@ -106,7 +108,15 @@ public class CmdParser {
                     config.type = ComparatorType.LEVENSHTEIN;
                     break;
                 default:
-                    throw new CommandLineException("Incorrect user input! Type [-h] or [--help] for help!");
+                    throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
+            }
+        }
+
+        if (cmd.hasOption("g")) {
+            if (config.type == ComparatorType.XY_STR) {
+                config.path = cmd.getOptionValue("g");
+            } else {
+                throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
             }
         }
 
@@ -114,7 +124,7 @@ public class CmdParser {
         if (cmd.hasOption("th")) {
             int threadsNum = Integer.parseInt(cmd.getOptionValue("th"));
             if (threadsNum < 1) {
-                throw new CommandLineException("Incorrect keys and arguments were passed! See help for more info.");
+                throw new CommandLineException(INCORRECT_INPUT_MESSAGE);
             }
             config.threadsNumber = threadsNum;
         }
@@ -178,6 +188,17 @@ public class CmdParser {
                 .longOpt("intermediateOutput")
                 .desc("Defines, whether intermediate information should be printed or not.")
                 .hasArg(false)
+                .build()
+        );
+
+        options.addOption(
+            Option.builder("g")
+                .longOpt("graph")
+                .desc("Defines, whether graph should be printed or not.")
+                .hasArg(true)
+                .numberOfArgs(1)
+                .argName("path to the file")
+                .type(String.class)
                 .build()
         );
 

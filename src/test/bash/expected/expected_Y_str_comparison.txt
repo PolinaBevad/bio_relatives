@@ -1,0 +1,27 @@
+Comparison results of marker regions:
+	Name of marker - DYS488, which has appeared in the both genomes, as: 15 and 15 times;
+	Name of marker - DYS385, which has appeared in the both genomes, as: 16 and 16 times;
+	Name of marker - DYS626, which has appeared in the both genomes, as: 40 and 40 times;
+	Name of marker - DYS448, which has appeared in the both genomes, as: 23 and 22 times;
+	Name of marker - DYS569, which has appeared in the both genomes, as: 11 and 11 times;
+	Name of marker - DYS449, which has appeared in the both genomes, as: 34 and 34 times;
+	Name of marker - DYS480, which has appeared in the both genomes, as: 14 and 14 times;
+	Name of marker - DYS481, which has appeared in the both genomes, as: 26 and 26 times;
+	Name of marker - DYS576, which has appeared in the both genomes, as: 17 and 17 times;
+	Name of marker - DYS456, which has appeared in the both genomes, as: 11 and 10 times;
+	Name of marker - DYS497, which has appeared in the both genomes, as: 21 and 21 times;
+	Name of marker - DYS476, which has appeared in the both genomes, as: 16 and 15 times;
+	Name of marker - DYS495, which has appeared in the both genomes, as: 18 and 18 times;
+	Name of marker - DYS570, which has appeared in the both genomes, as: 19 and 19 times;
+	Name of marker - DYS472, which has appeared in the both genomes, as: 13 and 13 times;
+	Name of marker - DYS439, which has appeared in the both genomes, as: 19 and 20 times;
+	Name of marker - DYS635, which has appeared in the both genomes, as: 5 and 6 times;
+	Name of marker - DYS437, which has appeared in the both genomes, as: 18 and 17 times;
+	Name of marker - DYS458, which has appeared in the both genomes, as: 19 and 19 times;
+	Name of marker - DYS392, which has appeared in the both genomes, as: 11 and 12 times;
+	Name of marker - DYS491, which has appeared in the both genomes, as: 23 and 22 times;
+	Name of marker - DYS393, which has appeared in the both genomes, as: 11 and 11 times;
+	Name of marker - DYS391, which has appeared in the both genomes, as: 11 and 11 times;
+	Name of marker - DYS490, which has appeared in the both genomes, as: 14 and 14 times;
+Total number of markers with different repeating number(more, than EPS = 1) in each genome - 0;
+These persons are son and parent.

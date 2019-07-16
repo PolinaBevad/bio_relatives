@@ -70,12 +70,12 @@ public class GenomeComparatorTest {
     /**
      * Path to marker dad bam
      */
-    private final static String PATH_TO_DAD_Y ="src/test/resources/genome/compare/tdadY.bam";
+    private final static String PATH_TO_DAD_Y ="src/test/resources/genome/compare/Ytest2.bam";
 
     /**
      * Path to marker son bam
      */
-    private final static String PATH_TO_SON_Y="src/test/resources/genome/compare/tsonY.bam";
+    private final static String PATH_TO_SON_Y="src/test/resources/genome/compare/Ytest1.bam";
 
     @Test
     public void GenomeComparisonOfNotParentAndChild() {
@@ -89,7 +89,7 @@ public class GenomeComparatorTest {
     @Test
     public void YMarkerComparisonOfDadAndSon() {
         GenomeComparatorExecutor comparator = new GenomeComparatorExecutor(PATH_TO_SON_Y, PATH_TO_DAD_Y, PATH_TO_MARKER_BED, ComparatorType.XY_STR);
-        ComparisonResultAnalyzer res = comparator.compareGenomes(4, false, "src/test/resources/screens/ystr.png");
+        ComparisonResultAnalyzer res = comparator.compareGenomes(4, false);
         System.out.println(res.analyze());
     }
 

@@ -1,0 +1,10 @@
+Comparison results of marker regions:
+	Name of marker - DXS7423, which has appeared in the both genomes, as: 8 and 8 times;
+	Name of marker - DXS1187, which has appeared in the both genomes, as: 10 and 10 times;
+	Name of marker - DXS6807, which has appeared in the both genomes, as: 16 and 16 times;
+	Name of marker - DXS6809, which has appeared in the both genomes, as: 33 and 33 times;
+	Name of marker - XHPRT, which has appeared in the both genomes, as: 9 and 9 times;
+	Name of marker - DXS6803, which has appeared in the both genomes, as: 9 and 9 times;
+	Name of marker - DXS981, which has appeared in the both genomes, as: 15 and 15 times;
+Total number of markers with different repeating number(more, than EPS = 1) in each genome - 0;
+These persons are son and parent.

@@ -164,9 +164,9 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
         result.append(countOfDiffMarkers);
         result.append(";\n");
         if (countOfDiffMarkers == 0) {
-            result.append("These persons are not relatives.");
-        } else {
             result.append("These persons are relatives.");
+        } else {
+            result.append("These persons are not relatives.");
         }
         return result.toString();
     }

@@ -7,4 +7,4 @@ Comparison results of marker regions:
 	Name of marker - DXS6803, which has appeared in the both genomes, as: 9 and 9 times;
 	Name of marker - DXS981, which has appeared in the both genomes, as: 15 and 15 times;
 Total number of markers with different repeating number(more, than EPS = 1) in each genome - 0;
-These persons are son and parent.
+These persons are relatives.

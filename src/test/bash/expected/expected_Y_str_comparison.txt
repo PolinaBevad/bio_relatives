@@ -2,8 +2,8 @@ Comparison results of marker regions:
 	Name of marker - DYS488, which has appeared in the both genomes, as: 15 and 15 times;
 	Name of marker - DYS385, which has appeared in the both genomes, as: 16 and 16 times;
 	Name of marker - DYS626, which has appeared in the both genomes, as: 40 and 40 times;
-	Name of marker - DYS448, which has appeared in the both genomes, as: 23 and 22 times;
 	Name of marker - DYS569, which has appeared in the both genomes, as: 11 and 11 times;
+	Name of marker - DYS448, which has appeared in the both genomes, as: 23 and 22 times;
 	Name of marker - DYS449, which has appeared in the both genomes, as: 34 and 34 times;
 	Name of marker - DYS480, which has appeared in the both genomes, as: 14 and 14 times;
 	Name of marker - DYS481, which has appeared in the both genomes, as: 26 and 26 times;
@@ -24,4 +24,4 @@ Comparison results of marker regions:
 	Name of marker - DYS391, which has appeared in the both genomes, as: 11 and 11 times;
 	Name of marker - DYS490, which has appeared in the both genomes, as: 14 and 14 times;
 Total number of markers with different repeating number(more, than EPS = 1) in each genome - 0;
-These persons are son and parent.
+These persons are relatives.

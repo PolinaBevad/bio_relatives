@@ -39,9 +39,11 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import util.Pair;
+import util.STRResultGraph;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,11 +61,6 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
     private final static int EPS = 1;
 
     /**
-     * Default extension of the graph file.
-     */
-    private static final String EXTENSION = "png";
-
-    /**
      * The results of the comparison of the two genomes for marker regions as follows:
      * key of Map - name of marker region, value of Map - Pair
      * key of Pair - number of times marker motif has appeared in the first genome region,
@@ -74,7 +71,7 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
     /**
      * Map with position of each marker in the genome.
      */
-    private Map<String, String> markerPositions = new ConcurrentHashMap<>();
+    private Map<String, Pair<Integer, Integer>> markerPositions = new ConcurrentHashMap<>();
 
     /**
      * Count of markers, which repeats different times in each genome
@@ -95,11 +92,10 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
         this.graphFileName = filename;
         // init positions map
         for (BEDFeature marker : markers) {
-            String posString = marker.getStartPos() + " - " + marker.getEndPos();
             if (!(marker instanceof MarkerRegionFeature)) {
                 throw new GenomeException(getClass().getName(), "STRComparisonResultAnalyzer", "incorrect feature type was used");
             }
-            markerPositions.put(((MarkerRegionFeature) marker).getMarkerName(), posString);
+            markerPositions.put(((MarkerRegionFeature) marker).getMarkerName(), new Pair<>(marker.getStartPos(), marker.getEndPos()));
         }
     }
 
@@ -179,58 +175,15 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
      * Creates the file with the visual representation of the result.
      */
     private void createGraph() {
-        try {
-            // create new file
-            File graphFile = new File(graphFileName);
-
-            // create file if it doesn't exist
-            if (!graphFile.exists()) {
-                if (!graphFile.createNewFile()) {
-                    throw new GenomeFileException(getClass().getName(), "createGraph", graphFileName, "incorrect input file");
-                }
+        STRResultGraph graph = new STRResultGraph();
+        for (String markerName : markerComparisonResults.keySet()) {
+            Pair<Integer, Integer> result = markerComparisonResults.get(markerName);
+            // throw exception if we are trying to process unknown marker
+            if (!markerPositions.containsKey(markerName)) {
+                throw new GenomeException(getClass().getName(), "createGraph", "unknown marker appeared");
             }
-
-            // check file
-            String[] filename = graphFileName.split("\\.");
-            String extension = filename[filename.length - 1];
-            // if smth wrong, then throw exception
-            if (graphFile.isDirectory() || !graphFile.canWrite() || !extension.equals(EXTENSION)) {
-                throw new GenomeFileException(getClass().getName(), "createGraph", graphFileName, "incorrect input file");
-            }
-
-            // data set for the garph
-            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-            // add data to the set
-            for (String markerName : markerComparisonResults.keySet()) {
-                Pair<Integer, Integer> result = markerComparisonResults.get(markerName);
-
-                // throw exception if we are trying to process unknown marker
-                if (!markerPositions.containsKey(markerName)) {
-                    throw new GenomeException(getClass().getName(), "createGraph", "unknown marker appeared");
-                }
-
-                dataset.addValue(result.getKey(), "first person", markerName + "\n" + markerPositions.get(markerName));
-                dataset.addValue(result.getValue(), "second person", markerName + "\n" + markerPositions.get(markerName));
-            }
-
-            // create chart
-            JFreeChart chart = ChartFactory.createBarChart("STR COMPARISON", "MARKER", "OCCURRENCE NUMBER", dataset, PlotOrientation.VERTICAL, true, true, false);
-
-            // setup bar appearance
-            BarRenderer br = (BarRenderer) chart.getCategoryPlot().getRenderer();
-            br.setMaximumBarWidth(.35);
-            br.setItemMargin(.05);
-
-            // setup axis appearance
-            CategoryAxis domainAxis = chart.getCategoryPlot().getDomainAxis();
-            domainAxis.setMaximumCategoryLabelLines(3);
-            domainAxis.setLowerMargin(.01);
-            domainAxis.setCategoryMargin(.05);
-
-            // write it to the file
-            ChartUtils.saveChartAsPNG(graphFile, chart, 1920, 1080);
-        } catch (IOException ioex) {
-            throw new GenomeFileException(getClass().getName(), "createGraph", graphFileName, "incorrect input file");
+            graph.add(markerName, "first person", "second person", markerPositions.get(markerName), result);
         }
+        graph.createGraphic(graphFileName);
     }
 }

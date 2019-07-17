@@ -59,7 +59,7 @@ public class MarkerRegionFileParser extends BEDParser {
     /**
      * Parse marker region file line by line and create output HashMap (see @return)
      *
-     * @return HashMap<String, ArrayList <BEDFeature>> where: key - name of gene,
+     * @return HashMap &ltString, ArrayList &ltBEDFeature&gt&gt where: key - name of gene,
      * value - ArrayList of BEDFeatures which contain this gene
      * @throws GenomeFileException if any kind of exception occurs in the method.
      */

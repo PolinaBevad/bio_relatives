@@ -105,7 +105,7 @@ public class GenomeRegion {
      *
      * @param pos Position of the nucleotide in the sequence.
      * @return Pair of nucleotide and it's quality.
-     * @throws GenomeException if pos is < 0 or len < pos.
+     * @throws GenomeException if pos is out of nucleotide positions.
      */
     public Pair<Character, Byte> getNucleotide(int pos) {
         if (pos < 0 || pos >= nucleotideSeq.length()) {

@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -27,8 +27,8 @@ package util;
 /**
  * Structure for storage 2 objects
  *
- * @param <K> key
- * @param <V> value
+ * @param <K></K> key
+ * @param <V></V> value
  * @author Vladislav Marchenko
  */
 public class Pair<K, V> {

@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -23,8 +23,6 @@
  */
 
 package exception;
-
-import java.io.IOException;
 
 /**
  * Represents basic exception, that may occur while working with files methods.

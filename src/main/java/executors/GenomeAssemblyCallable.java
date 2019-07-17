@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -27,7 +27,6 @@ package executors;
 import bam.regular.BAMParser;
 import bam.regular.BEDFeature;
 import exception.GenomeException;
-import exception.GenomeFileException;
 import genome.assembly.GenomeConstructor;
 import genome.assembly.GenomeRegion;
 import genome.assembly.SAMRecordList;

@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -80,29 +80,34 @@ public class LevenshteinComparisonResultAnalyzer implements ComparisonResultAnal
     /**
      * Method for adding gene comparison result into Map of chromosomes and genes
      *
-     * @param geneComparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
+     * @param comparisonResult -  gene comparison result which we take from (@link GenomeRegionComparator)
      * @throws GenomeException if geneComparisonResult is not an instance of {@link LevenshteinComparisonResult}.
      */
     @Override
-    public void add(ComparisonResult geneComparisonResult) {
+    public void add(ComparisonResult comparisonResult) {
         // check the type
-        if (!(geneComparisonResult instanceof LevenshteinComparisonResult)) {
-            throw new GenomeException(this.getClass().getName(), "add", "comparison result variable has incorrect type: " + geneComparisonResult.getClass());
+        if (!(comparisonResult instanceof LevenshteinComparisonResult)) {
+            throw new GenomeException(this.getClass().getName(), "add", "comparison result variable has incorrect type: " + comparisonResult.getClass());
         }
 
         // add results
-        LevenshteinComparisonResult levenshteinComparisonResult = (LevenshteinComparisonResult) geneComparisonResult;
-        if (geneComparisonResults.containsKey(levenshteinComparisonResult.getChromName())) {
-            if (geneComparisonResults.get(levenshteinComparisonResult.getChromName()).containsKey(levenshteinComparisonResult.getGene())) {
-                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).setKey(geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).getKey() + levenshteinComparisonResult.getDifference());
-                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).setValue(geneComparisonResults.get(levenshteinComparisonResult.getChromName()).get(levenshteinComparisonResult.getGene()).getValue() + levenshteinComparisonResult.getSequenceLen());
+        LevenshteinComparisonResult levenshteinComparisonResult = (LevenshteinComparisonResult) comparisonResult;
+        String chrom = levenshteinComparisonResult.getChromName();
+        String gene = levenshteinComparisonResult.getGene();
+        Integer diff = levenshteinComparisonResult.getDifference();
+        Integer len = levenshteinComparisonResult.getSequenceLen();
+        if (geneComparisonResults.containsKey(chrom)) {
+            Map<String, Pair<Integer, Integer>> chromComparisonResult = geneComparisonResults.get(chrom);
+            if (chromComparisonResult.containsKey(gene)) {
+                chromComparisonResult.get(gene).setKey(chromComparisonResult.get(gene).getKey() + diff);
+                chromComparisonResult.get(gene).setValue(chromComparisonResult.get(gene).getValue() + len);
             } else {
-                geneComparisonResults.get(levenshteinComparisonResult.getChromName()).put(levenshteinComparisonResult.getGene(), new Pair<>(levenshteinComparisonResult.getDifference(), levenshteinComparisonResult.getSequenceLen()));
+                chromComparisonResult.put(gene, new Pair<>(diff, len));
             }
         } else {
             Map<String, Pair<Integer, Integer>> currentGene = new ConcurrentHashMap<>();
-            currentGene.put(levenshteinComparisonResult.getGene(), new Pair<>(levenshteinComparisonResult.getDifference(), levenshteinComparisonResult.getSequenceLen()));
-            geneComparisonResults.put(levenshteinComparisonResult.getChromName(), currentGene);
+            currentGene.put(gene, new Pair<>(diff, len));
+            geneComparisonResults.put(chrom, currentGene);
         }
     }
 

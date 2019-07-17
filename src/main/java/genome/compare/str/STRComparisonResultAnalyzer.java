@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -28,22 +28,11 @@ package genome.compare.str;
 import bam.marker_region.MarkerRegionFeature;
 import bam.regular.BEDFeature;
 import exception.GenomeException;
-import exception.GenomeFileException;
 import genome.compare.common.ComparisonResult;
 import genome.compare.common.ComparisonResultAnalyzer;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtils;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
 import util.Pair;
 import util.STRResultGraph;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,11 +103,14 @@ public class STRComparisonResultAnalyzer implements ComparisonResultAnalyzer {
 
         // add results
         STRComparisonResult STRComparisonResult = (STRComparisonResult) comparisonResult;
-        if (markerComparisonResults.containsKey(STRComparisonResult.getMarker().getMarkerName())) {
-            markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).setKey(markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).getKey() + STRComparisonResult.getResult().getKey());
-            markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).setValue(markerComparisonResults.get(STRComparisonResult.getMarker().getMarkerName()).getValue() + STRComparisonResult.getResult().getValue());
+        String markerName = STRComparisonResult.getMarker().getMarkerName();
+        Pair<Integer, Integer> result = STRComparisonResult.getResult();
+        if (markerComparisonResults.containsKey(markerName)) {
+            Pair<Integer, Integer> markerComparisonResult = markerComparisonResults.get(markerName);
+            markerComparisonResult.setKey(markerComparisonResult.getKey() + result.getKey());
+            markerComparisonResult.setValue(markerComparisonResult.getValue() + result.getValue());
         } else {
-            markerComparisonResults.put(STRComparisonResult.getMarker().getMarkerName(), STRComparisonResult.getResult());
+            markerComparisonResults.put(markerName, result);
         }
     }
 

@@ -1,8 +1,31 @@
+/*
+ * MIT License
+ * <p>
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package bam;
 
 import bam.regular.BEDFeature;
 import bam.regular.BEDParser;
-import exception.GenomeException;
 import exception.GenomeFileException;
 import org.junit.Test;
 
@@ -71,45 +94,45 @@ public class BEDParserTest {
 
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToNonExistentFile() throws Exception {
+    public void CreationFromPathToNonExistentFile() {
         BEDParser parser = new BEDParser(pathToNonExistentFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToFileWithWrongExtension() throws Exception {
+    public void CreationFromPathToFileWithWrongExtension() {
         BEDParser parser = new BEDParser(pathToFileWithWrongExt);
     }
 
     @Test
-    public void CreationFromPathToCorrectFile() throws Exception {
+    public void CreationFromPathToCorrectFile() {
         BEDParser parser = new BEDParser(pathToCorrectFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToNotAFile() throws Exception {
+    public void CreationFromPathToNotAFile() {
         BEDParser parser = new BEDParser(pathToNotAFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void ParsingIncorrectFileWithWrongStartEnd() throws Exception {
+    public void ParsingIncorrectFileWithWrongStartEnd() {
         BEDParser parser = new BEDParser(pathToIncorrectFile1);
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
     @Test(expected = GenomeFileException.class)
-    public void ParsingIncorrectFileWithWrongGenome() throws Exception {
+    public void ParsingIncorrectFileWithWrongGenome() {
         BEDParser parser = new BEDParser(pathToIncorrectFile2);
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
     @Test(expected = GenomeFileException.class)
-    public void ParsingIncorrectFileWithGeneContainsInTwoChromosomes() throws Exception {
+    public void ParsingIncorrectFileWithGeneContainsInTwoChromosomes() {
         BEDParser parser = new BEDParser(pathToIncorrectFile3);
         Map<String, List<BEDFeature>> result = parser.parse();
     }
 
     @Test
-    public void ParsingCorrectFile() throws Exception {
+    public void ParsingCorrectFile() {
         BEDParser parser = new BEDParser(pathToCorrectFile);
         Map<String, List<BEDFeature>> result = parser.parse();
     }

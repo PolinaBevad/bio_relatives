@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -24,7 +24,6 @@
 
 package bam.regular;
 
-import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.SAMException;
 

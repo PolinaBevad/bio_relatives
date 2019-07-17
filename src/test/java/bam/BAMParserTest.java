@@ -1,9 +1,32 @@
+/*
+ * MIT License
+ * <p>
+ * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package bam;
 
 import bam.regular.BAMParser;
 import bam.regular.BEDFeature;
 import bam.regular.BEDParser;
-import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.SAMRecord;
 import org.junit.Before;
@@ -76,38 +99,38 @@ public class BAMParserTest {
     private static Map<String, List<BEDFeature>> exons;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         exons = new BEDParser(pathToBEDFile).parse();
     }
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToNonExistentFile() throws Exception {
+    public void CreationFromPathToNonExistentFile() {
         BAMParser parser = new BAMParser(pathToNonExistentFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToFileWithWrongExtension() throws Exception {
+    public void CreationFromPathToFileWithWrongExtension() {
         BAMParser parser = new BAMParser(pathToFileWithWrongExt);
     }
 
     @Test
-    public void CreationFromPathToCorrectFile() throws Exception {
+    public void CreationFromPathToCorrectFile() {
         BAMParser parser = new BAMParser(pathToCorrectFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void CreationFromPathToNotAFile() throws Exception {
+    public void CreationFromPathToNotAFile() {
         BAMParser parser = new BAMParser(pathToNotAFile);
     }
 
     @Test(expected = GenomeFileException.class)
-    public void ParsingIncorrectFile() throws Exception {
+    public void ParsingIncorrectFile() {
         BAMParser parser = new BAMParser(pathToIncorrectFile);
         parser.parse(exons.get(geneName1));
     }
 
     @Test
-    public void ParsingCorrectFile() throws Exception {
+    public void ParsingCorrectFile() {
         BAMParser parser = new BAMParser(pathToCorrectFile);
         SAMRecordList samRecords = parser.parse(exons.get(geneName2).get(0));
         int i = 0;

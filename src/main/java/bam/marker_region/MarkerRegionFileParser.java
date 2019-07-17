@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -26,7 +26,6 @@ package bam.marker_region;
 
 import bam.regular.BEDFeature;
 import bam.regular.BEDParser;
-import exception.GenomeException;
 import exception.GenomeFileException;
 import htsjdk.samtools.SAMException;
 

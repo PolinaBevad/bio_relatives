@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -40,7 +40,7 @@ public class BEDFeature {
      * Regular expression that contains all
      * the allowed symbols for the names used in the records.
      */
-    public static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
+    private static final String ALLOWED_SYMBOLS_REGEXP = "[a-zA-Z0-9.\\-_+]*";
 
     /**
      * Dictionary with names for chromosomes.

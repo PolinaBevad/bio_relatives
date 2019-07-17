@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  * <p>
  * Copyright (c) 2019-present Polina Bevad, Sergey Hvatov, Vladislav Marchenko
@@ -47,7 +47,7 @@ public class Operation {
      *
      * @param config Configuration object.
      * @return Result of the execution of the program with this arguments.
-     * @throws GenomeException
+     * @throws GenomeException if anything went wrong
      * @throws GenomeFileException if error occurs while comparing genomes.
      */
     public String start(Configuration config) {
